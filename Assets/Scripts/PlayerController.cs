@@ -18,8 +18,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float hInput = Input.GetAxis("Horizontal");
-        float vInput = Input.GetAxis("Vertical");
+        // note: getaxisraw is basically binary with no smoothing
+        // getaxis has smoothing that could be interpreted as delay, acts like a joystick.
+        float hInput = Input.GetAxisRaw("Horizontal");
+        float vInput = Input.GetAxisRaw("Vertical");
 
         LocalMove(hInput, vInput, xSpeed, ySpeed);
         AimLook(hInput, vInput, lookSpeed);
@@ -32,16 +34,16 @@ public class PlayerController : MonoBehaviour
         float normalXSpeed = normalDirection.x * xSpeed;
         float normalYSpeed = normalDirection.y * ySpeed;
 
-        //transform.localPosition += new Vector3(normalXSpeed, normalYSpeed, 0) * Time.deltaTime;
+        transform.localPosition += new Vector3(normalXSpeed, normalYSpeed, 0) * Time.deltaTime;
         Vector3 moveDirection = new Vector3(normalXSpeed, normalYSpeed, 0);
-        transform.Translate(moveDirection * Time.deltaTime);
+        //transform.Translate(moveDirection * Time.deltaTime);
 
     }
 
     void AimLook(float h, float v, float speed)
     {
-        aimTarget.parent.position = Vector3.zero;
-        aimTarget.localPosition = new Vector3(h, v, 1);
+        aimTarget.parent.position = transform.position;
+        aimTarget.localPosition = new Vector3(h, v, 4);
 
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(aimTarget.position), Mathf.Deg2Rad * speed * Time.deltaTime);
 
