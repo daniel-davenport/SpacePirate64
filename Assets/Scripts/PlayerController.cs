@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -60,21 +62,28 @@ public class PlayerController : MonoBehaviour
 
         transform.localPosition += new Vector3(normalXSpeed, normalYSpeed, 0) * Time.deltaTime;
         //Vector3 moveDirection = new Vector3(normalXSpeed, normalYSpeed, 0);
-        //transform.Translate(moveDirection * Time.deltaTime);
-
-        // clamping the player's position
-        ClampPosition();
-
+        //transform.Translate(moveDirection * Time.deltaTime
     }
 
+
+    private void LateUpdate()
+    {
+        // clamping the player's position
+        // note: this has to be in lateupdate
+        ClampPosition();
+    }
 
     // Clamps the player's position to the camera viewport, they wont ever be able to exceed the viewport's bounds.
     void ClampPosition()
     {
         Vector3 position = Camera.main.WorldToViewportPoint(transform.position);
 
-        position.x = Mathf.Clamp01(position.x);
-        position.y = Mathf.Clamp01(position.y);
+        //position.x = Mathf.Clamp01(position.x);
+        //position.y = Mathf.Clamp01(position.y);
+
+        // slightly less forgiving clamp bounds so that the player always fully remains on screen
+        position.x = Mathf.Clamp(position.x, 0.1f, 0.9f);
+        position.y = Mathf.Clamp(position.y, 0.1f, 0.9f);
 
         transform.position = Camera.main.ViewportToWorldPoint(position);
     }
