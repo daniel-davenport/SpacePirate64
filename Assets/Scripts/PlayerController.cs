@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,11 +22,30 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     public Transform aimTarget;
 
+
+    // Weapon Inputs & debounces
+    InputAction attack1Action;
+    InputAction attack2Action;
+
+    float chargeTime = 1f;
+    float attack1CT = 0f;
+    float attack2CT = 0f;
+
+    bool attack1DB = false;
+    bool attack2DB = false;
+
+    
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         // gets the player's model under the hitbox
         playerModel = transform.GetChild(0);
+
+        // getting the player's keybinds
+        attack1Action = InputSystem.actions.FindAction("AttackLeft");
+        attack2Action = InputSystem.actions.FindAction("AttackRight");
     }
 
     // Update is called once per frame
@@ -50,7 +71,90 @@ public class PlayerController : MonoBehaviour
         HorizontalLean(playerModel, hInput, leanLimit, leanLerpSpeed);
 
 
+        // Attacking (normally i dont like repeating myself like this but idk much abt unity's input system)
+        if (attack1Action.IsPressed())
+        {
+            if (!attack1DB)
+            {
+                attack1DB = true;
+                Attack(1);
+            }
+            
+
+            // check if they're holding to do a charged shot
+            attack1CT += Time.deltaTime;
+
+            if (attack1CT >= chargeTime)
+            {
+                print("fully charged");
+            }
+            
+
+        } else if (attack1Action.WasReleasedThisFrame())
+        {
+            print("released at: " + attack1CT);
+
+            if (attack1CT >= chargeTime)
+            {
+                print("charged shot");
+            }
+
+            attack1CT = 0;
+
+            // reset the weapon's cooldown, this can be checked in other ways later.
+            StartCoroutine(ResetAttack(1));
+        }
+
+
+
+
+        if (attack2Action.IsPressed() && !attack2DB)
+        {
+            attack2DB = true;
+            Attack(2);
+
+            // check if they're holding to do a charged shot
+        }
+
     }
+
+    // ---------------------------------- Player Actions -------------------------------------------- // 
+
+    // Fires and then starts a coroutine to wait for its cooldown
+    void Attack(int weaponSlot)
+    {
+        print("Firing slot: " + weaponSlot);
+
+
+        // weapon's code should go here
+
+
+
+    }
+
+
+    // resets the weapon's slot after X amount of time. 
+    // note: cooldown time should be pulled from the weapon's live data, for now it's a default value
+    IEnumerator ResetAttack(int weaponSlot)
+    {
+        // wait time until it comes back
+        yield return new WaitForSeconds(1f);
+        // print("weapon " + weaponSlot + " reset");
+
+        if (weaponSlot == 1)
+        {
+            attack1DB = false;
+        }
+        else
+        {
+            attack2DB = false;
+        }
+    }
+
+
+
+
+    // ---------------------------------- Player Movement -------------------------------------------- // 
 
 
     // Moves the player locally, vectors are normalized and speed can be variable on X and Y axes
