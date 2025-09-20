@@ -98,6 +98,13 @@ public class PlayerController : MonoBehaviour
         }
 
 
+        /*
+         * when a player collides with something it gets shoved backwards in the Z axis which messes up the camera
+         * when taking damage, maybe enable IsKinematic on the rigidbody, push the player towards the center of the screen/away from whatever it 
+         * 
+         */
+
+
     }
 
     private void LateUpdate()

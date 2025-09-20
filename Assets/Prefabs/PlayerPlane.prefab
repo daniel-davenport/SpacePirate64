@@ -72,7 +72,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1401928223526117788}
-  - component: {fileID: 9067603041109347452}
+  - component: {fileID: 7295563442617481456}
   m_Layer: 0
   m_Name: PlayerPlane
   m_TagString: Untagged
@@ -98,7 +98,7 @@ Transform:
   - {fileID: 789139768644364172}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &9067603041109347452
+--- !u!114 &7295563442617481456
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -110,7 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbf9d5bf9a5f7f441a8815d32415f1a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
+  moveSpeed: 1
   player: {fileID: 6304848417311388752}
 --- !u!1 &6304848417311388752
 GameObject:

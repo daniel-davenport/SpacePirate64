@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerFor : MonoBehaviour
+public class ForwardMovement : MonoBehaviour
 {
     [Header("Settings")]
     
