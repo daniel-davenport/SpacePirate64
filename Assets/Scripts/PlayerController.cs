@@ -24,16 +24,24 @@ public class PlayerController : MonoBehaviour
 
 
     // Weapon Inputs & debounces
-    InputAction attack1Action;
-    InputAction attack2Action;
+    InputAction attackLeftAction;
+    InputAction attackRightAction;
 
-    float chargeTime = 1f;
+    // Arrays that handle charge times and debounces based on weapon
+    // note: AttackLeft = slot 0
+    //       AttackRight = slot 1
+    float[] chargeTimes = new float[] { 0f, 0f }; // Tracks the current charge level
+    float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
+
+    bool[] attackDebounces = new bool[] { false, false };
+
+    /*
     float attack1CT = 0f;
     float attack2CT = 0f;
 
     bool attack1DB = false;
     bool attack2DB = false;
-
+    */
     
 
 
@@ -44,8 +52,8 @@ public class PlayerController : MonoBehaviour
         playerModel = transform.GetChild(0);
 
         // getting the player's keybinds
-        attack1Action = InputSystem.actions.FindAction("AttackLeft");
-        attack2Action = InputSystem.actions.FindAction("AttackRight");
+        attackLeftAction = InputSystem.actions.FindAction("AttackLeft");
+        attackRightAction = InputSystem.actions.FindAction("AttackRight");
     }
 
     // Update is called once per frame
@@ -71,66 +79,96 @@ public class PlayerController : MonoBehaviour
         HorizontalLean(playerModel, hInput, leanLimit, leanLerpSpeed);
 
 
-        // Attacking (normally i dont like repeating myself like this but idk much abt unity's input system)
-        if (attack1Action.IsPressed())
+        // Attacking with slot 0
+        if (attackLeftAction.IsPressed())
         {
-            if (!attack1DB)
-            {
-                attack1DB = true;
-                Attack(1);
-            }
-            
-
-            // check if they're holding to do a charged shot
-            attack1CT += Time.deltaTime;
-
-            if (attack1CT >= chargeTime)
-            {
-                print("fully charged");
-            }
-            
-
-        } else if (attack1Action.WasReleasedThisFrame())
+            AttackStart(0);
+        } else if (attackLeftAction.WasReleasedThisFrame())
         {
-            print("released at: " + attack1CT);
+            print("released at: " + chargeTimes[0]);
 
-            if (attack1CT >= chargeTime)
-            {
-                print("charged shot");
-            }
+            AttackStart(0, chargeTimes[0]);
 
-            attack1CT = 0;
+            // reset the weapon's cooldown, this can be checked in other ways later.
+            StartCoroutine(ResetAttack(0));
+        }
+
+        // Attacking with slot 1
+        if (attackRightAction.IsPressed())
+        {
+            AttackStart(1);
+        }
+        else if (attackRightAction.WasReleasedThisFrame())
+        {
+            print("released at: " + chargeTimes[1]);
+
+            AttackStart(1, chargeTimes[1]);
 
             // reset the weapon's cooldown, this can be checked in other ways later.
             StartCoroutine(ResetAttack(1));
         }
 
 
-
-
-        if (attack2Action.IsPressed() && !attack2DB)
-        {
-            attack2DB = true;
-            Attack(2);
-
-            // check if they're holding to do a charged shot
-        }
-
     }
 
     // ---------------------------------- Player Actions -------------------------------------------- // 
 
-    // Fires and then starts a coroutine to wait for its cooldown
-    void Attack(int weaponSlot)
+
+    // handles code relating to individual weapon slot debounces
+    void AttackStart(int weaponSlot, float chargeTime = 0f)
     {
-        print("Firing slot: " + weaponSlot);
+        if (chargeTime > 0f && chargeTime >= maxChargeTimes[weaponSlot]) // firing a charged shot (ignores debounces)
+        {
+            Attack(weaponSlot, true);
+            chargeTimes[weaponSlot] = 0;
+        }
+        else if (!attackDebounces[weaponSlot]) // firing a regular shot
+        {
+            attackDebounces[weaponSlot] = true;
+            Attack(weaponSlot, false);
+            chargeTimes[weaponSlot] = 0;
+        } 
+
+
+        
+        // charging up that slot's charged shot
+        if (chargeTimes[weaponSlot] >= maxChargeTimes[weaponSlot])
+        {
+            print(" ----------- fully charged slot " + weaponSlot + " ----------- ");
+        }
+        else
+        {
+            chargeTimes[weaponSlot] += Time.deltaTime;
+        }
+            
+    }
+
+
+
+    // Fires and then starts a coroutine to wait for its cooldown
+    void Attack(int weaponSlot, bool isCharged)
+    {
+
+        if (isCharged)
+        {
+            print("charged shot: " + weaponSlot);
+        }
+        else
+        {
+            print("firing slot: " + weaponSlot);
+        }
 
 
         // weapon's code should go here
 
 
 
+
+
     }
+
+
+
 
 
     // resets the weapon's slot after X amount of time. 
@@ -141,14 +179,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(1f);
         // print("weapon " + weaponSlot + " reset");
 
-        if (weaponSlot == 1)
-        {
-            attack1DB = false;
-        }
-        else
-        {
-            attack2DB = false;
-        }
+        attackDebounces[weaponSlot] = false;
     }
 
 
