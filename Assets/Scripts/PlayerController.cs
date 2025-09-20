@@ -100,6 +100,15 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    private void LateUpdate()
+    {
+        // clamping the player's position
+        // note: this has to be in lateupdate
+        ClampPosition();
+    }
+
+
+
     // ---------------------------------- Player Actions -------------------------------------------- // 
 
 
@@ -136,7 +145,7 @@ public class PlayerController : MonoBehaviour
         // charging up that slot's charged shot
         if (chargeTimes[weaponSlot] >= maxChargeTimes[weaponSlot])
         {
-            print(" ----------- fully charged slot " + weaponSlot + " ----------- ");
+            //print(" ----------- fully charged slot " + weaponSlot + " ----------- ");
 
             Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
             objectRenderer.material.color = Color.red;
@@ -157,11 +166,14 @@ public class PlayerController : MonoBehaviour
 
         if (isCharged)
         {
-            print("charged shot: " + weaponSlot);
+            //print("charged shot: " + weaponSlot);
         }
         else
         {
-            print("firing slot: " + weaponSlot);
+            //print("firing slot: " + weaponSlot);
+
+            // reset the weapon's cooldown, this can be checked in other ways later.
+            StartCoroutine(ResetAttack(weaponSlot));
         }
 
 
@@ -170,8 +182,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-        // reset the weapon's cooldown, this can be checked in other ways later.
-        StartCoroutine(ResetAttack(weaponSlot));
+
     }
 
 
@@ -183,7 +194,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator ResetAttack(int weaponSlot)
     {
         // wait time until it comes back
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.1f);
         // print("weapon " + weaponSlot + " reset");
 
         Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
@@ -208,14 +219,6 @@ public class PlayerController : MonoBehaviour
         transform.localPosition += new Vector3(normalXSpeed, normalYSpeed, 0) * Time.deltaTime;
         //Vector3 moveDirection = new Vector3(normalXSpeed, normalYSpeed, 0);
         //transform.Translate(moveDirection * Time.deltaTime
-    }
-
-
-    private void LateUpdate()
-    {
-        // clamping the player's position
-        // note: this has to be in lateupdate
-        ClampPosition();
     }
 
     // Clamps the player's position to the camera viewport, they wont ever be able to exceed the viewport's bounds.
