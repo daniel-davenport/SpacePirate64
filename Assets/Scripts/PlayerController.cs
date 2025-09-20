@@ -85,9 +85,6 @@ public class PlayerController : MonoBehaviour
         } else if (attackLeftAction.WasReleasedThisFrame())
         {
             AttackStart(0, chargeTimes[0]);
-
-            // reset the weapon's cooldown, this can be checked in other ways later.
-            StartCoroutine(ResetAttack(0));
         }
 
         // Attacking with slot 1
@@ -98,9 +95,6 @@ public class PlayerController : MonoBehaviour
         else if (attackRightAction.WasReleasedThisFrame())
         {
             AttackStart(1, chargeTimes[1]);
-
-            // reset the weapon's cooldown, this can be checked in other ways later.
-            StartCoroutine(ResetAttack(1));
         }
 
 
@@ -112,19 +106,29 @@ public class PlayerController : MonoBehaviour
     // handles code relating to individual weapon slot debounces and charged attacks
     void AttackStart(int weaponSlot, float chargeTime = 0f)
     {
+
         if (chargeTime > 0f && chargeTime >= maxChargeTimes[weaponSlot]) // firing a charged shot (ignores debounces)
         {
             Attack(weaponSlot, true);
-            chargeTimes[weaponSlot] = 0;
+            chargeTimes[weaponSlot] = 0f;
 
             Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
             objectRenderer.material.color = Color.white;
+            return;
         }
-        else if (!attackDebounces[weaponSlot]) // firing a regular shot
+        else if (chargeTime > 0f && chargeTime < maxChargeTimes[weaponSlot]) // didnt fully charge
+        {
+            chargeTimes[weaponSlot] = 0f;
+            return;
+        }
+        else if (attackDebounces[weaponSlot] == false && chargeTimes[weaponSlot] <= 0f) // firing a regular shot (note: will not fire if you're charging)
         {
             attackDebounces[weaponSlot] = true;
             Attack(weaponSlot, false);
-            chargeTimes[weaponSlot] = 0;
+            chargeTimes[weaponSlot] = 0f;
+
+            Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
+            objectRenderer.material.color = Color.blue;
         } 
 
 
@@ -133,6 +137,7 @@ public class PlayerController : MonoBehaviour
         if (chargeTimes[weaponSlot] >= maxChargeTimes[weaponSlot])
         {
             print(" ----------- fully charged slot " + weaponSlot + " ----------- ");
+
             Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
             objectRenderer.material.color = Color.red;
             
@@ -165,7 +170,8 @@ public class PlayerController : MonoBehaviour
 
 
 
-
+        // reset the weapon's cooldown, this can be checked in other ways later.
+        StartCoroutine(ResetAttack(weaponSlot));
     }
 
 
@@ -179,6 +185,9 @@ public class PlayerController : MonoBehaviour
         // wait time until it comes back
         yield return new WaitForSeconds(1f);
         // print("weapon " + weaponSlot + " reset");
+
+        Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
+        objectRenderer.material.color = Color.white;
 
         attackDebounces[weaponSlot] = false;
     }
