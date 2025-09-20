@@ -15,14 +15,15 @@ public class PlayerController : MonoBehaviour
     public float xSpeed = 18;
     public float ySpeed = 18;
     public float lookSpeed = 320;
+    public float lookIntensity = 1.5f;
 
     public float leanLimit = 80;
     public float leanLerpSpeed = 0.1f;
 
     [Header("References")]
     public Transform aimTarget;
-    public GameObject leftWeapon;
-    public GameObject rightWeapon;
+    public GameObject leftWeaponModel;
+    public GameObject rightWeaponModel;
 
     // Weapon Inputs & debounces
     InputAction attackLeftAction;
@@ -50,8 +51,8 @@ public class PlayerController : MonoBehaviour
         attackRightAction = InputSystem.actions.FindAction("AttackRight");
 
         // getting the player's weapons
-        weaponModels[0] = leftWeapon;
-        weaponModels[1] = rightWeapon;
+        weaponModels[0] = leftWeaponModel;
+        weaponModels[1] = rightWeaponModel;
     }
 
     // Update is called once per frame
@@ -108,7 +109,7 @@ public class PlayerController : MonoBehaviour
     // ---------------------------------- Player Actions -------------------------------------------- // 
 
 
-    // handles code relating to individual weapon slot debounces
+    // handles code relating to individual weapon slot debounces and charged attacks
     void AttackStart(int weaponSlot, float chargeTime = 0f)
     {
         if (chargeTime > 0f && chargeTime >= maxChargeTimes[weaponSlot]) // firing a charged shot (ignores debounces)
@@ -145,7 +146,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-    // Fires and then starts a coroutine to wait for its cooldown
+    // Fires the specific weapon called, also takes in the argument if it's a charged attack or not
     void Attack(int weaponSlot, bool isCharged)
     {
 
@@ -226,11 +227,14 @@ public class PlayerController : MonoBehaviour
     // Makes the player look in the direction they're currently flying
     void AimLook(float h, float v, float speed)
     {
-        aimTarget.parent.localPosition = Vector3.zero;
-        aimTarget.localPosition = new Vector3(h, v, 1);
+        // this way allows you to rotate in the same smooth manner without it breaking at 0,0,0
+        aimTarget.parent.localPosition = new Vector3(transform.position.x, transform.position.y, 0);
+        aimTarget.localPosition = new Vector3(h, v, lookIntensity);
 
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(aimTarget.position), speed * Time.deltaTime);
+        transform.LookAt(aimTarget);
 
+        // note: below only works if you stay on 0,0,0, if you try to move it'll break and you won't rotate anymore.
+        //transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(aimTarget.position), speed * Time.deltaTime);
     }
 
 

@@ -2506,6 +2506,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerHolder
       objectReference: {fileID: 0}
+    - target: {fileID: 6250415391192665422, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: m_Name
+      value: 'awingRig '
+      objectReference: {fileID: 0}
     - target: {fileID: 6653078750240335235, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -2517,8 +2521,10 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 8541649723790602912, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
     - {fileID: 4159931920995828569, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+    - {fileID: 7472239358163259573, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
     m_RemovedGameObjects:
     - {fileID: 1672640450966246233, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+    - {fileID: 7436838055650458986, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
