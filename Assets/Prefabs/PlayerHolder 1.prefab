@@ -226,6 +226,8 @@ MonoBehaviour:
   leanLimit: 80
   leanLerpSpeed: 0.1
   aimTarget: {fileID: 8999175693336901521}
+  leftWeapon: {fileID: 2236262213208497845}
+  rightWeapon: {fileID: 7838342585696837375}
 --- !u!1 &6764684166486520411
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,8 +483,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fcc262cca1bc1a34691a20991453c030, type: 3}
+--- !u!1 &2236262213208497845 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4218664636879556950, guid: fcc262cca1bc1a34691a20991453c030, type: 3}
+  m_PrefabInstance: {fileID: 6520234241729589279}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6770668368561969140 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fcc262cca1bc1a34691a20991453c030, type: 3}
+  m_PrefabInstance: {fileID: 6520234241729589279}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7838342585696837375 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -5279373859585806624, guid: fcc262cca1bc1a34691a20991453c030, type: 3}
   m_PrefabInstance: {fileID: 6520234241729589279}
   m_PrefabAsset: {fileID: 0}

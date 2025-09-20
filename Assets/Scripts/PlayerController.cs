@@ -21,7 +21,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("References")]
     public Transform aimTarget;
-
+    public GameObject leftWeapon;
+    public GameObject rightWeapon;
 
     // Weapon Inputs & debounces
     InputAction attackLeftAction;
@@ -32,17 +33,10 @@ public class PlayerController : MonoBehaviour
     //       AttackRight = slot 1
     float[] chargeTimes = new float[] { 0f, 0f }; // Tracks the current charge level
     float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
+    GameObject[] weaponModels = new GameObject[2];
 
     bool[] attackDebounces = new bool[] { false, false };
 
-    /*
-    float attack1CT = 0f;
-    float attack2CT = 0f;
-
-    bool attack1DB = false;
-    bool attack2DB = false;
-    */
-    
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -54,6 +48,10 @@ public class PlayerController : MonoBehaviour
         // getting the player's keybinds
         attackLeftAction = InputSystem.actions.FindAction("AttackLeft");
         attackRightAction = InputSystem.actions.FindAction("AttackRight");
+
+        // getting the player's weapons
+        weaponModels[0] = leftWeapon;
+        weaponModels[1] = rightWeapon;
     }
 
     // Update is called once per frame
@@ -85,8 +83,6 @@ public class PlayerController : MonoBehaviour
             AttackStart(0);
         } else if (attackLeftAction.WasReleasedThisFrame())
         {
-            print("released at: " + chargeTimes[0]);
-
             AttackStart(0, chargeTimes[0]);
 
             // reset the weapon's cooldown, this can be checked in other ways later.
@@ -100,8 +96,6 @@ public class PlayerController : MonoBehaviour
         }
         else if (attackRightAction.WasReleasedThisFrame())
         {
-            print("released at: " + chargeTimes[1]);
-
             AttackStart(1, chargeTimes[1]);
 
             // reset the weapon's cooldown, this can be checked in other ways later.
@@ -121,6 +115,9 @@ public class PlayerController : MonoBehaviour
         {
             Attack(weaponSlot, true);
             chargeTimes[weaponSlot] = 0;
+
+            Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
+            objectRenderer.material.color = Color.white;
         }
         else if (!attackDebounces[weaponSlot]) // firing a regular shot
         {
@@ -135,6 +132,9 @@ public class PlayerController : MonoBehaviour
         if (chargeTimes[weaponSlot] >= maxChargeTimes[weaponSlot])
         {
             print(" ----------- fully charged slot " + weaponSlot + " ----------- ");
+            Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
+            objectRenderer.material.color = Color.red;
+            
         }
         else
         {
