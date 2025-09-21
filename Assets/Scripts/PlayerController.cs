@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     public float leanLimit = 80; 
     public float leanLerpSpeed = 0.1f;
 
-    public float tiltLimit = 45;
+    public float tiltLimit = 60;
     public float tiltLerpSpeed = 0.5f;
 
     [Header("References")]
@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     InputAction tiltLeftAction;
     InputAction tiltRightAction;
 
+    private Tweener tiltTween;
     string lastTiltSide;
 
     // Weapon Inputs & debounces
@@ -117,11 +118,10 @@ public class PlayerController : MonoBehaviour
         // tilting and aeliron
         if (tiltLeftAction.WasPressedThisFrame())
         {
-            print("tilt left");
             Tilt("left");
         } else if (tiltLeftAction.WasReleasedThisFrame())
         {
-            print("tilt reset");
+            EndTilt();
         }
 
 
@@ -129,11 +129,10 @@ public class PlayerController : MonoBehaviour
 
         if (tiltRightAction.WasPressedThisFrame())
         {
-            print("tilt right");
             Tilt("right");
         } else if (tiltRightAction.WasReleasedThisFrame())
         {
-            print("tilt reset");
+            EndTilt();
         }
 
 
@@ -237,17 +236,35 @@ public class PlayerController : MonoBehaviour
 
     void Tilt(string side)
     {
+        // debounce to prevent dotween from getting overloaded
+        if (tiltTween != null)
+            return;
+
         int dir = side == "left" ? -1 : 1;
         //Vector3 targetEulerAngles = playerModel.localEulerAngles;
         //playerModel.localEulerAngles = new Vector3(targetEulerAngles.x, targetEulerAngles.y, Mathf.LerpAngle(targetEulerAngles.z, -dir * tiltLimit, tiltLerpSpeed));
 
         Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, -dir * tiltLimit);
 
-        playerModel.DOLocalRotate(tiltAmount, tiltLerpSpeed, RotateMode.LocalAxisAdd).SetEase(Ease.OutExpo).SetAutoKill(false);
+        tiltTween = playerModel.DOLocalRotate(tiltAmount, tiltLerpSpeed, RotateMode.Fast).SetAutoKill(false).SetEase(Ease.OutQuad)
+            .OnComplete(() =>
+            {
+                // stopping the rotation while they're holding
+                playerModel.DOPause();
+                tiltTween.Pause();
+            });
 
         lastTiltSide = side;
     }
 
+    void EndTilt()
+    {
+        if (tiltTween != null)
+        {
+            tiltTween.Kill();
+            tiltTween = null;
+        }
+    }
 
     void Aileron(string side)
     {

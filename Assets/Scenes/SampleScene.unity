@@ -5876,9 +5876,25 @@ PrefabInstance:
       value: 280
       objectReference: {fileID: 0}
     - target: {fileID: 334089062770637649, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: tiltLimit
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 334089062770637649, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: leanLerpSpeed
       value: 0.15
       objectReference: {fileID: 0}
+    - target: {fileID: 334089062770637649, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: tiltLerpSpeed
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 334089062770637649, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: leftWeaponModel
+      value: 
+      objectReference: {fileID: 8621119360605480809}
+    - target: {fileID: 334089062770637649, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: rightWeaponModel
+      value: 
+      objectReference: {fileID: 8621119360605480808}
     - target: {fileID: 725797575813728709, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -6013,6 +6029,16 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1926432411}
   m_SourcePrefab: {fileID: 100100000, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+--- !u!1 &8621119360605480808 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 150007127898613082, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+  m_PrefabInstance: {fileID: 8621119360605480807}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8621119360605480809 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8204222748499731728, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+  m_PrefabInstance: {fileID: 8621119360605480807}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8873738135208392584
 PrefabInstance:
   m_ObjectHideFlags: 0
