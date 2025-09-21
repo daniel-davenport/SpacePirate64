@@ -1,8 +1,10 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,13 +19,24 @@ public class PlayerController : MonoBehaviour
     public float lookSpeed = 320;
     public float lookIntensity = 1.5f;
 
-    public float leanLimit = 80;
+    // note: lean is for the automatic horizontal leaning for moving horizontally
+    //       whereas tilt is for the manual tilting by pressing bumpers or Q/E
+    public float leanLimit = 80; 
     public float leanLerpSpeed = 0.1f;
+
+    public float tiltLimit = 45;
+    public float tiltLerpSpeed = 0.5f;
 
     [Header("References")]
     public Transform aimTarget;
     public GameObject leftWeaponModel;
     public GameObject rightWeaponModel;
+
+    // Tilting Inputs
+    InputAction tiltLeftAction;
+    InputAction tiltRightAction;
+
+    string lastTiltSide;
 
     // Weapon Inputs & debounces
     InputAction attackLeftAction;
@@ -49,6 +62,9 @@ public class PlayerController : MonoBehaviour
         // getting the player's keybinds
         attackLeftAction = InputSystem.actions.FindAction("AttackLeft");
         attackRightAction = InputSystem.actions.FindAction("AttackRight");
+
+        tiltLeftAction = InputSystem.actions.FindAction("TiltLeft");
+        tiltRightAction = InputSystem.actions.FindAction("TiltRight");
 
         // getting the player's weapons
         weaponModels[0] = leftWeaponModel;
@@ -96,6 +112,32 @@ public class PlayerController : MonoBehaviour
         {
             AttackStart(1, chargeTimes[1]);
         }
+
+
+        // tilting and aeliron
+        if (tiltLeftAction.WasPressedThisFrame())
+        {
+            print("tilt left");
+            Tilt("left");
+        } else if (tiltLeftAction.WasReleasedThisFrame())
+        {
+            print("tilt reset");
+        }
+
+
+
+
+        if (tiltRightAction.WasPressedThisFrame())
+        {
+            print("tilt right");
+            Tilt("right");
+        } else if (tiltRightAction.WasReleasedThisFrame())
+        {
+            print("tilt reset");
+        }
+
+
+
 
 
         /*
@@ -193,6 +235,25 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    void Tilt(string side)
+    {
+        int dir = side == "left" ? -1 : 1;
+        //Vector3 targetEulerAngles = playerModel.localEulerAngles;
+        //playerModel.localEulerAngles = new Vector3(targetEulerAngles.x, targetEulerAngles.y, Mathf.LerpAngle(targetEulerAngles.z, -dir * tiltLimit, tiltLerpSpeed));
+
+        Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, -dir * tiltLimit);
+
+        playerModel.DOLocalRotate(tiltAmount, tiltLerpSpeed, RotateMode.LocalAxisAdd).SetEase(Ease.OutExpo).SetAutoKill(false);
+
+        lastTiltSide = side;
+    }
+
+
+    void Aileron(string side)
+    {
+        int dir = side == "left" ? -1 : 1;
+        playerModel.DOLocalRotate(new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, 720 * -dir), .5f, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine);
+    }
 
 
 
