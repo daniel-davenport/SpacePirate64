@@ -37,6 +37,7 @@ public class PlayerController : MonoBehaviour
     InputAction tiltRightAction;
 
     private Tweener tiltTween;
+    private Tweener resetTween;
     string lastTiltSide;
 
     // Weapon Inputs & debounces
@@ -70,6 +71,9 @@ public class PlayerController : MonoBehaviour
         // getting the player's weapons
         weaponModels[0] = leftWeaponModel;
         weaponModels[1] = rightWeaponModel;
+
+        resetTween.SetAutoKill(false);
+        tiltTween.SetAutoKill(false);
     }
 
     // Update is called once per frame
@@ -92,7 +96,7 @@ public class PlayerController : MonoBehaviour
 
         LocalMove(hInput, vInput, xSpeed, ySpeed);
         AimLook(hInput, vInput, lookSpeed);
-        HorizontalLean(playerModel, hInput, leanLimit, leanLerpSpeed);
+        //HorizontalLean(playerModel, hInput, leanLimit, leanLerpSpeed);
 
 
         // Attacking with slot 0
@@ -238,7 +242,7 @@ public class PlayerController : MonoBehaviour
     {
         // debounce to prevent dotween from getting overloaded
         if (tiltTween != null)
-            return;
+            EndTilt();
 
         int dir = side == "left" ? -1 : 1;
         //Vector3 targetEulerAngles = playerModel.localEulerAngles;
@@ -246,11 +250,10 @@ public class PlayerController : MonoBehaviour
 
         Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, -dir * tiltLimit);
 
-        tiltTween = playerModel.DOLocalRotate(tiltAmount, tiltLerpSpeed, RotateMode.Fast).SetAutoKill(false).SetEase(Ease.OutQuad)
+        // stopping the tween when it's completed to keep the leaning
+        tiltTween = playerModel.DORotate(tiltAmount, tiltLerpSpeed, RotateMode.Fast).SetEase(Ease.OutQuad).SetAutoKill(false)
             .OnComplete(() =>
             {
-                // stopping the rotation while they're holding
-                playerModel.DOPause();
                 tiltTween.Pause();
             });
 
@@ -261,8 +264,19 @@ public class PlayerController : MonoBehaviour
     {
         if (tiltTween != null)
         {
-            tiltTween.Kill();
-            tiltTween = null;
+            // play the tween in reverse
+            //tiltTween.Rewind();
+            // setting the tween for resetting after a tilt/aileron
+            Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, 0);
+            resetTween = playerModel.DORotate(tiltAmount, tiltLerpSpeed / 2, RotateMode.Fast).SetEase(Ease.OutQuad);
+
+            resetTween.OnComplete(() =>
+            {
+                print("rewinded");
+                tiltTween.Kill();
+                tiltTween = null;
+                lastTiltSide = null;
+            });
         }
     }
 
@@ -338,8 +352,13 @@ public class PlayerController : MonoBehaviour
     // realistically leaning the player horizontally when turning 
     void HorizontalLean(Transform target, float axis, float leanLimit, float lerpTime)
     {
-        Vector3 targetEulerAngles = target.localEulerAngles;
-        target.localEulerAngles = new Vector3(targetEulerAngles.x, targetEulerAngles.y, Mathf.LerpAngle(targetEulerAngles.z, -axis * leanLimit, lerpTime));
+        // only applying this if you're not tilting
+        if (lastTiltSide == null)
+        {
+            Vector3 targetEulerAngles = target.localEulerAngles;
+            target.localEulerAngles = new Vector3(targetEulerAngles.x, targetEulerAngles.y, Mathf.LerpAngle(targetEulerAngles.z, -axis * leanLimit, lerpTime));
+        }
+        
     }
 
 
