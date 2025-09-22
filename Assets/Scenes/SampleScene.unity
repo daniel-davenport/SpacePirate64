@@ -3315,6 +3315,32 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5819919753731813299, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
   m_PrefabInstance: {fileID: 8621119360605480807}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1561094583 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4840888438967973127, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+  m_PrefabInstance: {fileID: 8621119360605480807}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1561094585
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1561094583}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.5631187, y: 0.31359407, z: 0.99626374}
+  m_Center: {x: 0.012751178, y: 0.036102965, z: -0.24618742}
 --- !u!43 &1621059735
 Mesh:
   m_ObjectHideFlags: 0
@@ -7282,6 +7308,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 334089062770637649, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: iFrames
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 334089062770637649, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: aimTarget
       value: 
       objectReference: {fileID: 1720460675}
@@ -7434,6 +7464,10 @@ PrefabInstance:
       value: 0.99626374
       objectReference: {fileID: 0}
     - target: {fileID: 7657903764301933069, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7657903764301933069, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: m_Center.x
       value: 0.012751178
       objectReference: {fileID: 0}
@@ -7474,6 +7508,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6304848417311388752, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1926432411}
+    - targetCorrespondingSourceObject: {fileID: 4840888438967973127, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1561094585}
   m_SourcePrefab: {fileID: 100100000, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
 --- !u!1 &8621119360605480808 stripped
 GameObject:

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.HID;
 using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
@@ -18,7 +19,7 @@ public class PlayerController : MonoBehaviour
     public float playerHealth = 3;
     public float maxHealth = 3;
     public bool isInvincible = false;
-    public float iFrames = 0.5f;
+    public float iFrames = 1.5f;
 
     public float xSpeed = 18;
     public float ySpeed = 18;
@@ -226,7 +227,35 @@ public class PlayerController : MonoBehaviour
         {
             playerHealth = 0;
 
+            print("player dead");
             // end the game, the player has died.
+        }
+    }
+
+    // makes the player invisible recursively
+    // false = invisible, true = visible
+    private void PlayerVisibility(Transform transform, bool state)
+    {
+        // check the base transform first
+        MeshRenderer transMR = transform.GetComponent<MeshRenderer>();
+        if (transMR)
+            transMR.enabled = state;
+
+        // check the children
+        foreach (Transform child in transform)
+        {
+            MeshRenderer mr = child.GetComponent<MeshRenderer>();
+            if (mr)
+                mr.enabled = state;
+
+            if (child.childCount > 0)
+            {
+                foreach (Transform descendant in child)
+                {
+                    PlayerVisibility(descendant, state);
+                }
+                   
+            }
         }
     }
 
@@ -412,16 +441,35 @@ public class PlayerController : MonoBehaviour
         bombDebounce = false;
     }
 
-    // makes the player invincibile for their iFrame time
+    // makes the player blink while invincible
+    IEnumerator InvincibleBlink()
+    {
+        bool visible = true;
+        int totalBlinks = 12; // divide this by two
+        float timeBetweenBlinks = iFrames / totalBlinks;
+
+        for (int i = 0; i < totalBlinks; i++)
+        {
+            yield return new WaitForSeconds(timeBetweenBlinks);
+            PlayerVisibility(playerModel.transform, !visible);
+            visible = !visible;
+        }
+    }
+
+    // makes the player invincible for their iFrame time
     IEnumerator PlayerInvincibility()
     {
         isInvincible = true;
 
-        // make them blink to show they're invincible
-
+        // make them blink
+        StartCoroutine(InvincibleBlink());
 
         yield return new WaitForSeconds(iFrames);
         isInvincible = false;
+
+        // make them visible
+        PlayerVisibility(playerModel.transform, true);
+
     }
 
     // ---------------------------------- Player Movement -------------------------------------------- // 
@@ -523,7 +571,7 @@ public class PlayerController : MonoBehaviour
     // note: they have to have IsTrigger set to true
     private void OnTriggerEnter(Collider other)
     {
-        print(other.gameObject.layer);
+        // checking the layer
         int otherLayer = other.gameObject.layer;
 
         // colliding with an obstacle
@@ -533,6 +581,9 @@ public class PlayerController : MonoBehaviour
             TakeDamage(1);
 
             // push them away from the obstacle
+            Vector3 contactPos = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
+            Vector3 oppositeDirection = transform.position - contactPos;
+
 
 
         }
