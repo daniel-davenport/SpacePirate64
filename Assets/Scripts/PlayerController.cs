@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
     public float lookSpeed = 320;
     public float lookIntensity = 1.5f;
 
+    [Header("Combat Parameters")]
+    public float aileronCooldown = 1f;
+
     // note: lean is for the automatic horizontal leaning for moving horizontally
     //       whereas tilt is for the manual tilting by pressing bumpers or Q/E
     public float leanLimit = 80; 
@@ -37,8 +40,9 @@ public class PlayerController : MonoBehaviour
     InputAction tiltRightAction;
 
     private Tweener tiltTween;
-    private Tweener resetTween;
-    string lastTiltSide;
+    private string lastTiltSide;
+    private bool doingAileron;
+    private bool canAileron = true;
 
     // Weapon Inputs & debounces
     InputAction attackLeftAction;
@@ -72,7 +76,6 @@ public class PlayerController : MonoBehaviour
         weaponModels[0] = leftWeaponModel;
         weaponModels[1] = rightWeaponModel;
 
-        resetTween.SetAutoKill(false);
         tiltTween.SetAutoKill(false);
     }
 
@@ -96,7 +99,7 @@ public class PlayerController : MonoBehaviour
 
         LocalMove(hInput, vInput, xSpeed, ySpeed);
         AimLook(hInput, vInput, lookSpeed);
-        //HorizontalLean(playerModel, hInput, leanLimit, leanLerpSpeed);
+        HorizontalLean(playerModel, hInput, leanLimit, leanLerpSpeed);
 
 
         // Attacking with slot 0
@@ -122,21 +125,40 @@ public class PlayerController : MonoBehaviour
         // tilting and aeliron
         if (tiltLeftAction.WasPressedThisFrame())
         {
-            Tilt("left");
+            string side = "left";
+
+            if (lastTiltSide == side && canAileron)
+            {
+                doingAileron = true;
+                Aileron(side, hInput);
+            } 
+            else
+            {
+                Tilt(side);
+            }
+
         } else if (tiltLeftAction.WasReleasedThisFrame())
         {
-            EndTilt();
+            EndTilt(hInput);
         }
-
-
-
 
         if (tiltRightAction.WasPressedThisFrame())
         {
-            Tilt("right");
+            string side = "right";
+            print(lastTiltSide + canAileron);
+            if (lastTiltSide == side && canAileron)
+            {
+                doingAileron = true;
+                Aileron(side, hInput);
+            }
+            else
+            {
+                Tilt(side);
+            }
+
         } else if (tiltRightAction.WasReleasedThisFrame())
         {
-            EndTilt();
+            EndTilt(hInput);
         }
 
 
@@ -240,52 +262,72 @@ public class PlayerController : MonoBehaviour
 
     void Tilt(string side)
     {
-        // debounce to prevent dotween from getting overloaded
-        if (tiltTween != null)
-            EndTilt();
+
+        // debounce to prevent dotween from getting overloaded and from tweens clashing
+        if (tiltTween != null || doingAileron == true)
+            return;
 
         int dir = side == "left" ? -1 : 1;
-        //Vector3 targetEulerAngles = playerModel.localEulerAngles;
-        //playerModel.localEulerAngles = new Vector3(targetEulerAngles.x, targetEulerAngles.y, Mathf.LerpAngle(targetEulerAngles.z, -dir * tiltLimit, tiltLerpSpeed));
+        lastTiltSide = side;
 
         Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, -dir * tiltLimit);
 
         // stopping the tween when it's completed to keep the leaning
-        tiltTween = playerModel.DORotate(tiltAmount, tiltLerpSpeed, RotateMode.Fast).SetEase(Ease.OutQuad).SetAutoKill(false)
+        tiltTween = playerModel.DOLocalRotate(tiltAmount, tiltLerpSpeed, RotateMode.Fast).SetEase(Ease.OutQuad).SetAutoKill(false)
             .OnComplete(() =>
             {
                 tiltTween.Pause();
             });
-
-        lastTiltSide = side;
     }
 
-    void EndTilt()
+    // setting the tween for resetting after a tilt/aileron
+    void EndTilt(float axis)
     {
-        if (tiltTween != null)
+        if (tiltTween != null && !doingAileron)
         {
-            // play the tween in reverse
-            //tiltTween.Rewind();
-            // setting the tween for resetting after a tilt/aileron
-            Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, 0);
-            resetTween = playerModel.DORotate(tiltAmount, tiltLerpSpeed / 2, RotateMode.Fast).SetEase(Ease.OutQuad);
+            // calculating what axis the player should be at when the tilt ends
+            float zDest = -axis * leanLimit;
+            Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, zDest);
 
-            resetTween.OnComplete(() =>
-            {
-                print("rewinded");
-                tiltTween.Kill();
-                tiltTween = null;
-                lastTiltSide = null;
-            });
+            // setting the wings back to the proper axis
+            playerModel.DOLocalRotate(tiltAmount, tiltLerpSpeed / 4, RotateMode.Fast).SetEase(Ease.OutQuad)
+                .OnComplete(() => // once this ends you can't do an aileron anymore
+                {
+                    lastTiltSide = null;
+                });
+
+            tiltTween.Kill();
+            tiltTween = null;
+
         }
     }
 
-    void Aileron(string side)
+    void Aileron(string side, float axis)
     {
+        canAileron = false;
         int dir = side == "left" ? -1 : 1;
-        playerModel.DOLocalRotate(new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, 720 * -dir), .5f, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine);
+
+        playerModel.DOLocalRotate(new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, 720 * -dir), .4f, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine)
+            .OnComplete(() =>
+            {
+                doingAileron = false;
+                lastTiltSide = null;
+
+                // calculating what axis the player should be at when the aileron ends
+                float zDest = -axis * leanLimit;
+                Vector3 resetAngle = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, zDest);
+                playerModel.transform.localEulerAngles = resetAngle;
+
+                StartCoroutine(ResetAileron(aileronCooldown));
+            });
     }
 
+    IEnumerator ResetAileron(float cooldown)
+    {
+        yield return new WaitForSeconds(cooldown);
+        canAileron = true;
+        print("aileron reset");
+    }
 
 
     // resets the weapon's slot after X amount of time. 
