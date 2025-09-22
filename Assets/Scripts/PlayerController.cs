@@ -235,9 +235,7 @@ public class PlayerController : MonoBehaviour
             
     }
 
-
-
-    // Fires the specific weapon called, also takes in the argument if it's a charged attack or not
+    // Fires the specific weapon called, also takes in the argument if it's a charged attack or not.
     void Attack(int weaponSlot, bool isCharged)
     {
 
@@ -263,6 +261,8 @@ public class PlayerController : MonoBehaviour
     }
 
 
+
+    // tilts the ship as an action and increases your speed in that direction while lowering your speed in the opposite direction.
     void Tilt(string side)
     {
 
@@ -283,7 +283,7 @@ public class PlayerController : MonoBehaviour
             });
     }
 
-    // setting the tween for resetting after a tilt/aileron
+    // setting the tween for resetting after a tilt/aileron.
     void EndTilt(float axis)
     {
         if (tiltTween != null && !doingAileron)
@@ -305,6 +305,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // performs an aileron roll. currently no function besides looking cool.
     void Aileron(string side, float axis)
     {
         canAileron = false;
@@ -325,13 +326,14 @@ public class PlayerController : MonoBehaviour
             });
     }
 
+
+
+    // resets the aileron's cooldown, modifiable cooldown.
     IEnumerator ResetAileron(float cooldown)
     {
         yield return new WaitForSeconds(cooldown);
         canAileron = true;
-        print("aileron reset");
     }
-
 
     // resets the weapon's slot after X amount of time. 
     // note: cooldown time should be pulled from the weapon's live data, for now it's a default value
@@ -354,6 +356,7 @@ public class PlayerController : MonoBehaviour
 
 
     // Moves the player locally, vectors are normalized and speed can be variable on X and Y axes
+    // affected by tilting (see above)
     void LocalMove(float x, float y, float xSpeed, float ySpeed)
     {
         Vector3 normalDirection = new Vector3(x, y, 0).normalized;
