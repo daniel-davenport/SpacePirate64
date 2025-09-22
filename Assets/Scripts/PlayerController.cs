@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Combat Parameters")]
     public float aileronCooldown = 1f;
+    public float bombCooldown = 1f;
 
     // note: lean is for the automatic horizontal leaning for moving horizontally
     //       whereas tilt is for the manual tilting by pressing bumpers or Q/E
@@ -50,15 +51,17 @@ public class PlayerController : MonoBehaviour
     // Weapon Inputs & debounces
     InputAction attackLeftAction;
     InputAction attackRightAction;
+    InputAction bombAction;
 
     // Arrays that handle charge times and debounces based on weapon
     // note: AttackLeft = slot 0
     //       AttackRight = slot 1
-    float[] chargeTimes = new float[] { 0f, 0f }; // Tracks the current charge level
-    float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
+    private float[] chargeTimes = new float[] { 0f, 0f }; // Tracks the current charge level
+    public float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
     GameObject[] weaponModels = new GameObject[2];
 
     bool[] attackDebounces = new bool[] { false, false };
+    private bool bombDebounce = false;
 
 
 
@@ -71,6 +74,7 @@ public class PlayerController : MonoBehaviour
         // getting the player's keybinds
         attackLeftAction = InputSystem.actions.FindAction("AttackLeft");
         attackRightAction = InputSystem.actions.FindAction("AttackRight");
+        bombAction = InputSystem.actions.FindAction("Bomb");
 
         tiltLeftAction = InputSystem.actions.FindAction("TiltLeft");
         tiltRightAction = InputSystem.actions.FindAction("TiltRight");
@@ -124,6 +128,11 @@ public class PlayerController : MonoBehaviour
             AttackStart(1, chargeTimes[1]);
         }
 
+        // Firing a bomb
+        if (bombAction.WasPressedThisFrame())
+        {
+            Bomb();
+        }
 
         // tilting and aeliron
         // note: for whatever reason there seems to be an anti-spam feature built in?
@@ -260,6 +269,17 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    // fires a bomb based on what you have equipped (added later)
+    void Bomb()
+    {
+        if (bombDebounce == false)
+        {
+            bombDebounce = true;
+            print("firing bomb");
+
+            StartCoroutine(ResetBomb(bombCooldown));
+        }
+    }
 
 
     // tilts the ship as an action and increases your speed in that direction while lowering your speed in the opposite direction.
@@ -349,7 +369,11 @@ public class PlayerController : MonoBehaviour
         attackDebounces[weaponSlot] = false;
     }
 
-
+    IEnumerator ResetBomb(float cooldown)
+    {
+        yield return new WaitForSeconds(cooldown);
+        bombDebounce = false;
+    }
 
 
     // ---------------------------------- Player Movement -------------------------------------------- // 
