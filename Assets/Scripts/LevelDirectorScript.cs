@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class LevelDirector : MonoBehaviour
 {
@@ -28,7 +29,9 @@ public class LevelDirector : MonoBehaviour
 
         spawnableBlocks = new List<GameObject>(levelBlocks); // resetting the spawnable blocks list
 
-        StartGeneration();
+        
+        StartCoroutine(DelayGeneration(3f)); 
+        //StartGeneration();
     }
 
     // Update is called once per frame
@@ -73,6 +76,15 @@ public class LevelDirector : MonoBehaviour
         }
 
         spawnedBlocks.Clear();
+    }
+
+    // delaying the generation to test execution speed
+    IEnumerator DelayGeneration(float time)
+    {
+        print("level generation will begin in " + time + " seconds.");
+        yield return new WaitForSeconds(time);
+        print("generating level.");
+        StartGeneration();
     }
 
     // clears the previous level and starts a new generation

@@ -235,17 +235,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   usesRawInput: 0
+  playerHealth: 3
+  maxHealth: 3
+  isInvincible: 0
+  iFrames: 0.5
   xSpeed: 18
   ySpeed: 18
   lookSpeed: 340
   lookIntensity: 1.5
+  tiltSpeedBuff: 1.5
+  tiltSpeedNerf: 2
+  aileronCooldown: 1
+  bombCooldown: 1
   leanLimit: 80
   leanLerpSpeed: 0.1
   tiltLimit: 60
   tiltLerpSpeed: 0.5
+  maxChargeTimes:
+  - 1
+  - 1
+  heldBombs: 1
+  maxBombs: 3
   aimTarget: {fileID: 8999175693336901521}
-  leftWeaponModel: {fileID: 0}
-  rightWeaponModel: {fileID: 0}
+  leftWeaponModel: {fileID: 8204222748499731728}
+  rightWeaponModel: {fileID: 150007127898613082}
+  playerModel: {fileID: 2485589866479387672}
 --- !u!1 &6764684166486520411
 GameObject:
   m_ObjectHideFlags: 0
@@ -501,8 +515,23 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3acc39f34cc46b43ae9e707320cc2f8, type: 3}
+--- !u!1 &150007127898613082 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -5279373859585806624, guid: a3acc39f34cc46b43ae9e707320cc2f8, type: 3}
+  m_PrefabInstance: {fileID: 3796265938929306554}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2485589866479387672 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -7579103995338469470, guid: a3acc39f34cc46b43ae9e707320cc2f8, type: 3}
+  m_PrefabInstance: {fileID: 3796265938929306554}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3685548405435051089 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a3acc39f34cc46b43ae9e707320cc2f8, type: 3}
+  m_PrefabInstance: {fileID: 3796265938929306554}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8204222748499731728 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4218664636879556950, guid: a3acc39f34cc46b43ae9e707320cc2f8, type: 3}
   m_PrefabInstance: {fileID: 3796265938929306554}
   m_PrefabAsset: {fileID: 0}

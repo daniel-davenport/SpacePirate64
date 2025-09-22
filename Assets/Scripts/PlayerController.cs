@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -8,12 +9,17 @@ using static UnityEngine.GraphicsBuffer;
 
 public class PlayerController : MonoBehaviour
 {
-    private Transform playerModel;
+    private Transform playerHolder;
 
     [Header("Settings")]
     public bool usesRawInput = false;
 
     [Header("Parameters")]
+    public float playerHealth = 3;
+    public float maxHealth = 3;
+    public bool isInvincible = false;
+    public float iFrames = 0.5f;
+
     public float xSpeed = 18;
     public float ySpeed = 18;
     public float lookSpeed = 320;
@@ -47,6 +53,7 @@ public class PlayerController : MonoBehaviour
     public Transform aimTarget;
     public GameObject leftWeaponModel;
     public GameObject rightWeaponModel;
+    public GameObject playerModel;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -73,7 +80,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         // gets the player's model under the hitbox
-        playerModel = transform.GetChild(0);
+        playerHolder = transform.GetChild(0);
 
         // getting the player's keybinds
         attackLeftAction = InputSystem.actions.FindAction("AttackLeft");
@@ -110,7 +117,7 @@ public class PlayerController : MonoBehaviour
 
         LocalMove(hInput, vInput, xSpeed, ySpeed);
         AimLook(hInput, vInput, lookSpeed);
-        HorizontalLean(playerModel, hInput, leanLimit, leanLerpSpeed);
+        HorizontalLean(playerHolder, hInput, leanLimit, leanLerpSpeed);
 
 
         // Attacking with slot 0
@@ -202,6 +209,26 @@ public class PlayerController : MonoBehaviour
 
     // ---------------------------------- Player Actions -------------------------------------------- // 
 
+    // handles taking damage, handles lose states and max health.
+    public void TakeDamage(int damage)
+    {
+        // ignore this function if the player is invincible
+        if (isInvincible)
+            return;
+
+        // otherwise make them take damage
+        playerHealth -= damage;
+
+        // make them briefly invincible
+        StartCoroutine(PlayerInvincibility());
+
+        if (playerHealth < 0)
+        {
+            playerHealth = 0;
+
+            // end the game, the player has died.
+        }
+    }
 
     // handles code relating to individual weapon slot debounces and charged attacks
     void AttackStart(int weaponSlot, float chargeTime = 0f)
@@ -302,10 +329,10 @@ public class PlayerController : MonoBehaviour
         int dir = side == "left" ? -1 : 1;
         lastTiltSide = side;
 
-        Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, -dir * tiltLimit);
+        Vector3 tiltAmount = new Vector3(playerHolder.localEulerAngles.x, playerHolder.localEulerAngles.y, -dir * tiltLimit);
 
         // stopping the tween when it's completed to keep the leaning
-        tiltTween = playerModel.DOLocalRotate(tiltAmount, tiltLerpSpeed, RotateMode.Fast).SetEase(Ease.OutQuad).SetAutoKill(false)
+        tiltTween = playerHolder.DOLocalRotate(tiltAmount, tiltLerpSpeed, RotateMode.Fast).SetEase(Ease.OutQuad).SetAutoKill(false)
             .OnComplete(() =>
             {
                 tiltTween.Pause();
@@ -319,10 +346,10 @@ public class PlayerController : MonoBehaviour
         {
             // calculating what axis the player should be at when the tilt ends
             float zDest = -axis * leanLimit;
-            Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, zDest);
+            Vector3 tiltAmount = new Vector3(playerHolder.localEulerAngles.x, playerHolder.localEulerAngles.y, zDest);
 
             // setting the wings back to the proper axis
-            playerModel.DOLocalRotate(tiltAmount, tiltLerpSpeed / 4, RotateMode.Fast).SetEase(Ease.OutQuad)
+            playerHolder.DOLocalRotate(tiltAmount, tiltLerpSpeed / 4, RotateMode.Fast).SetEase(Ease.OutQuad)
                 .OnComplete(() => // once this ends you can't do an aileron anymore
                 {
                     lastTiltSide = null;
@@ -340,7 +367,7 @@ public class PlayerController : MonoBehaviour
         canAileron = false;
         int dir = side == "left" ? -1 : 1;
 
-        playerModel.DOLocalRotate(new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, 720 * -dir), .4f, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine)
+        playerHolder.DOLocalRotate(new Vector3(playerHolder.localEulerAngles.x, playerHolder.localEulerAngles.y, 720 * -dir), .4f, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine)
             .OnComplete(() =>
             {
                 doingAileron = false;
@@ -348,8 +375,8 @@ public class PlayerController : MonoBehaviour
 
                 // calculating what axis the player should be at when the aileron ends
                 float zDest = -axis * leanLimit;
-                Vector3 resetAngle = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, zDest);
-                playerModel.transform.localEulerAngles = resetAngle;
+                Vector3 resetAngle = new Vector3(playerHolder.localEulerAngles.x, playerHolder.localEulerAngles.y, zDest);
+                playerHolder.transform.localEulerAngles = resetAngle;
 
                 StartCoroutine(ResetAileron(aileronCooldown));
             });
@@ -385,6 +412,17 @@ public class PlayerController : MonoBehaviour
         bombDebounce = false;
     }
 
+    // makes the player invincibile for their iFrame time
+    IEnumerator PlayerInvincibility()
+    {
+        isInvincible = true;
+
+        // make them blink to show they're invincible
+
+
+        yield return new WaitForSeconds(iFrames);
+        isInvincible = false;
+    }
 
     // ---------------------------------- Player Movement -------------------------------------------- // 
 
@@ -476,6 +514,33 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawWireSphere(aimTarget.position, 0.5f);
         Gizmos.DrawSphere(aimTarget.position, 0.15f);
     }
+
+
+
+    // ---------------------------------- Player Collision -------------------------------------------- // 
+
+    // colliding with different things
+    // note: they have to have IsTrigger set to true
+    private void OnTriggerEnter(Collider other)
+    {
+        print(other.gameObject.layer);
+        int otherLayer = other.gameObject.layer;
+
+        // colliding with an obstacle
+        if (LayerMask.LayerToName(otherLayer) == "Obstacle")
+        {
+            // deal damage to the player if they aren't invincible
+            TakeDamage(1);
+
+            // push them away from the obstacle
+
+
+        }
+
+    }
+
+
+
 
 
 }
