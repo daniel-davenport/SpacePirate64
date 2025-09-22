@@ -112,7 +112,7 @@ public class LevelDirector : MonoBehaviour
                     {
                         // set it to the leveldirector's start
                         Vector3 offset = startPosition.position - spawnedStart.position;
-                        spawnedBlock.transform.position = offset;
+                        spawnedBlock.transform.position += offset;
                     } 
                     else
                     {
@@ -120,7 +120,7 @@ public class LevelDirector : MonoBehaviour
                         Transform previousEnd = spawnedBlocks[spawnedBlocks.Count - 1].GetComponent<LevelInformation>().endPosition;
 
                         Vector3 offset = previousEnd.position - spawnedStart.position;
-                        spawnedBlock.transform.position = offset;
+                        spawnedBlock.transform.position += offset;
 
                     }
 
