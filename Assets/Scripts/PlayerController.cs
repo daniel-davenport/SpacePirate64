@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
     public float lookSpeed = 320;
     public float lookIntensity = 1.5f;
 
+    public float tiltSpeedBuff = 1.5f; // how much faster you move if tilting in the direction you're moving
+    public float tiltSpeedNerf = 2f; // how much slower you move if tilting in the opposite direction you're moving
+
     [Header("Combat Parameters")]
     public float aileronCooldown = 1f;
 
@@ -123,6 +126,9 @@ public class PlayerController : MonoBehaviour
 
 
         // tilting and aeliron
+        // note: for whatever reason there seems to be an anti-spam feature built in?
+        //       meaning whenever an aileron completes you can't mash to do another one as soon as it's off cooldown.
+        //       maybe keep this even though i don't know how to remove it?
         if (tiltLeftAction.WasPressedThisFrame())
         {
             string side = "left";
@@ -145,7 +151,7 @@ public class PlayerController : MonoBehaviour
         if (tiltRightAction.WasPressedThisFrame())
         {
             string side = "right";
-            print(lastTiltSide + canAileron);
+            
             if (lastTiltSide == side && canAileron)
             {
                 doingAileron = true;
@@ -160,9 +166,6 @@ public class PlayerController : MonoBehaviour
         {
             EndTilt(hInput);
         }
-
-
-
 
 
         /*
@@ -354,8 +357,33 @@ public class PlayerController : MonoBehaviour
     void LocalMove(float x, float y, float xSpeed, float ySpeed)
     {
         Vector3 normalDirection = new Vector3(x, y, 0).normalized;
-        float normalXSpeed = normalDirection.x * xSpeed;
         float normalYSpeed = normalDirection.y * ySpeed;
+
+        // calculating movement boosts when tilting
+        if (x > 0) // moving right
+        {
+            if (lastTiltSide == "right")
+            {
+                xSpeed *= tiltSpeedBuff;
+            } 
+            else if (lastTiltSide == "left")
+            {
+                xSpeed /= tiltSpeedNerf;
+            }
+        } 
+        else if (x < 0) // moving left
+        {
+            if (lastTiltSide == "right")
+            {
+                xSpeed /= tiltSpeedBuff;
+            }
+            else if (lastTiltSide == "left")
+            {
+                xSpeed *= tiltSpeedNerf;
+            }
+        }
+        
+        float normalXSpeed = normalDirection.x * xSpeed;
 
         transform.localPosition += new Vector3(normalXSpeed, normalYSpeed, 0) * Time.deltaTime;
         //Vector3 moveDirection = new Vector3(normalXSpeed, normalYSpeed, 0);
