@@ -1,8 +1,10 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,26 +19,53 @@ public class PlayerController : MonoBehaviour
     public float lookSpeed = 320;
     public float lookIntensity = 1.5f;
 
-    public float leanLimit = 80;
+    public float tiltSpeedBuff = 1.5f; // how much faster you move if tilting in the direction you're moving
+    public float tiltSpeedNerf = 2f; // how much slower you move if tilting in the opposite direction you're moving
+
+    [Header("Combat Parameters")]
+    public float aileronCooldown = 1f;
+    public float bombCooldown = 1f;
+
+    // note: lean is for the automatic horizontal leaning for moving horizontally
+    //       whereas tilt is for the manual tilting by pressing bumpers or Q/E
+    public float leanLimit = 80; 
     public float leanLerpSpeed = 0.1f;
+
+    public float tiltLimit = 60;
+    public float tiltLerpSpeed = 0.5f;
+
+    // Arrays that handle charge times and debounces based on weapon
+    // note: AttackLeft = slot 0
+    //       AttackRight = slot 1
+    private float[] chargeTimes = new float[] { 0f, 0f }; // Tracks the current charge level
+    public float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
+
+    public int heldBombs = 1;
+    public int maxBombs = 3;
 
     [Header("References")]
     public Transform aimTarget;
     public GameObject leftWeaponModel;
     public GameObject rightWeaponModel;
 
+    // Tilting Inputs
+    InputAction tiltLeftAction;
+    InputAction tiltRightAction;
+
+    private Tweener tiltTween;
+    private string lastTiltSide;
+    private bool doingAileron;
+    private bool canAileron = true;
+
     // Weapon Inputs & debounces
     InputAction attackLeftAction;
     InputAction attackRightAction;
+    InputAction bombAction;
 
-    // Arrays that handle charge times and debounces based on weapon
-    // note: AttackLeft = slot 0
-    //       AttackRight = slot 1
-    float[] chargeTimes = new float[] { 0f, 0f }; // Tracks the current charge level
-    float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
     GameObject[] weaponModels = new GameObject[2];
 
     bool[] attackDebounces = new bool[] { false, false };
+    private bool bombDebounce = false;
 
 
 
@@ -49,10 +78,16 @@ public class PlayerController : MonoBehaviour
         // getting the player's keybinds
         attackLeftAction = InputSystem.actions.FindAction("AttackLeft");
         attackRightAction = InputSystem.actions.FindAction("AttackRight");
+        bombAction = InputSystem.actions.FindAction("Bomb");
+
+        tiltLeftAction = InputSystem.actions.FindAction("TiltLeft");
+        tiltRightAction = InputSystem.actions.FindAction("TiltRight");
 
         // getting the player's weapons
         weaponModels[0] = leftWeaponModel;
         weaponModels[1] = rightWeaponModel;
+
+        tiltTween.SetAutoKill(false);
     }
 
     // Update is called once per frame
@@ -95,6 +130,55 @@ public class PlayerController : MonoBehaviour
         else if (attackRightAction.WasReleasedThisFrame())
         {
             AttackStart(1, chargeTimes[1]);
+        }
+
+        // Firing a bomb
+        if (bombAction.WasPressedThisFrame())
+        {
+            Bomb();
+        }
+
+
+        // tilting and aeliron
+        // note: for whatever reason there seems to be an anti-spam feature built in?
+        //       meaning whenever an aileron completes you can't mash to do another one as soon as it's off cooldown.
+        //       maybe keep this even though i don't know how to remove it?
+        if (tiltLeftAction.WasPressedThisFrame())
+        {
+            string side = "left";
+
+            if (lastTiltSide == side && canAileron)
+            {
+                doingAileron = true;
+                Aileron(side, hInput);
+            } 
+            else
+            {
+                Tilt(side);
+            }
+
+        } else if (tiltLeftAction.WasReleasedThisFrame())
+        {
+            EndTilt(hInput);
+        }
+
+        if (tiltRightAction.WasPressedThisFrame())
+        {
+            string side = "right";
+            
+            if (lastTiltSide == side && canAileron)
+            {
+                doingAileron = true;
+                Aileron(side, hInput);
+            }
+            else
+            {
+                Tilt(side);
+            }
+
+        } else if (tiltRightAction.WasReleasedThisFrame())
+        {
+            EndTilt(hInput);
         }
 
 
@@ -165,9 +249,7 @@ public class PlayerController : MonoBehaviour
             
     }
 
-
-
-    // Fires the specific weapon called, also takes in the argument if it's a charged attack or not
+    // Fires the specific weapon called, also takes in the argument if it's a charged attack or not.
     void Attack(int weaponSlot, bool isCharged)
     {
 
@@ -192,9 +274,95 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    // fires a bomb based on what you have equipped (added later). tracks your held bombs and cooldowns.
+    void Bomb()
+    {
+        if (bombDebounce == false && heldBombs > 0)
+        {
+            bombDebounce = true;
+            heldBombs -= 1;
+            print("firing bomb");
+
+            StartCoroutine(ResetBomb(bombCooldown));
+        } else if (heldBombs <= 0) 
+        {
+            print("out of bombs!");
+        }
+    }
+
+
+    // tilts the ship as an action and increases your speed in that direction while lowering your speed in the opposite direction.
+    void Tilt(string side)
+    {
+
+        // debounce to prevent dotween from getting overloaded and from tweens clashing
+        if (tiltTween != null || doingAileron == true)
+            return;
+
+        int dir = side == "left" ? -1 : 1;
+        lastTiltSide = side;
+
+        Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, -dir * tiltLimit);
+
+        // stopping the tween when it's completed to keep the leaning
+        tiltTween = playerModel.DOLocalRotate(tiltAmount, tiltLerpSpeed, RotateMode.Fast).SetEase(Ease.OutQuad).SetAutoKill(false)
+            .OnComplete(() =>
+            {
+                tiltTween.Pause();
+            });
+    }
+
+    // setting the tween for resetting after a tilt/aileron.
+    void EndTilt(float axis)
+    {
+        if (tiltTween != null && !doingAileron)
+        {
+            // calculating what axis the player should be at when the tilt ends
+            float zDest = -axis * leanLimit;
+            Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, zDest);
+
+            // setting the wings back to the proper axis
+            playerModel.DOLocalRotate(tiltAmount, tiltLerpSpeed / 4, RotateMode.Fast).SetEase(Ease.OutQuad)
+                .OnComplete(() => // once this ends you can't do an aileron anymore
+                {
+                    lastTiltSide = null;
+                });
+
+            tiltTween.Kill();
+            tiltTween = null;
+
+        }
+    }
+
+    // performs an aileron roll. currently no function besides looking cool.
+    void Aileron(string side, float axis)
+    {
+        canAileron = false;
+        int dir = side == "left" ? -1 : 1;
+
+        playerModel.DOLocalRotate(new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, 720 * -dir), .4f, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine)
+            .OnComplete(() =>
+            {
+                doingAileron = false;
+                lastTiltSide = null;
+
+                // calculating what axis the player should be at when the aileron ends
+                float zDest = -axis * leanLimit;
+                Vector3 resetAngle = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, zDest);
+                playerModel.transform.localEulerAngles = resetAngle;
+
+                StartCoroutine(ResetAileron(aileronCooldown));
+            });
+    }
 
 
 
+    // resets the aileron's cooldown, modifiable cooldown.
+    IEnumerator ResetAileron(float cooldown)
+    {
+        yield return new WaitForSeconds(cooldown);
+        canAileron = true;
+    }
 
     // resets the weapon's slot after X amount of time. 
     // note: cooldown time should be pulled from the weapon's live data, for now it's a default value
@@ -210,18 +378,49 @@ public class PlayerController : MonoBehaviour
         attackDebounces[weaponSlot] = false;
     }
 
-
+    // resets your bomb cooldown.
+    IEnumerator ResetBomb(float cooldown)
+    {
+        yield return new WaitForSeconds(cooldown);
+        bombDebounce = false;
+    }
 
 
     // ---------------------------------- Player Movement -------------------------------------------- // 
 
 
     // Moves the player locally, vectors are normalized and speed can be variable on X and Y axes
+    // affected by tilting (see above)
     void LocalMove(float x, float y, float xSpeed, float ySpeed)
     {
         Vector3 normalDirection = new Vector3(x, y, 0).normalized;
-        float normalXSpeed = normalDirection.x * xSpeed;
         float normalYSpeed = normalDirection.y * ySpeed;
+
+        // calculating movement boosts when tilting
+        if (x > 0) // moving right
+        {
+            if (lastTiltSide == "right")
+            {
+                xSpeed *= tiltSpeedBuff;
+            } 
+            else if (lastTiltSide == "left")
+            {
+                xSpeed /= tiltSpeedNerf;
+            }
+        } 
+        else if (x < 0) // moving left
+        {
+            if (lastTiltSide == "right")
+            {
+                xSpeed /= tiltSpeedBuff;
+            }
+            else if (lastTiltSide == "left")
+            {
+                xSpeed *= tiltSpeedNerf;
+            }
+        }
+        
+        float normalXSpeed = normalDirection.x * xSpeed;
 
         transform.localPosition += new Vector3(normalXSpeed, normalYSpeed, 0) * Time.deltaTime;
         //Vector3 moveDirection = new Vector3(normalXSpeed, normalYSpeed, 0);
@@ -260,8 +459,13 @@ public class PlayerController : MonoBehaviour
     // realistically leaning the player horizontally when turning 
     void HorizontalLean(Transform target, float axis, float leanLimit, float lerpTime)
     {
-        Vector3 targetEulerAngles = target.localEulerAngles;
-        target.localEulerAngles = new Vector3(targetEulerAngles.x, targetEulerAngles.y, Mathf.LerpAngle(targetEulerAngles.z, -axis * leanLimit, lerpTime));
+        // only applying this if you're not tilting
+        if (lastTiltSide == null)
+        {
+            Vector3 targetEulerAngles = target.localEulerAngles;
+            target.localEulerAngles = new Vector3(targetEulerAngles.x, targetEulerAngles.y, Mathf.LerpAngle(targetEulerAngles.z, -axis * leanLimit, lerpTime));
+        }
+        
     }
 
 
