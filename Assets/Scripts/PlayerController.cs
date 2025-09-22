@@ -34,6 +34,15 @@ public class PlayerController : MonoBehaviour
     public float tiltLimit = 60;
     public float tiltLerpSpeed = 0.5f;
 
+    // Arrays that handle charge times and debounces based on weapon
+    // note: AttackLeft = slot 0
+    //       AttackRight = slot 1
+    private float[] chargeTimes = new float[] { 0f, 0f }; // Tracks the current charge level
+    public float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
+
+    public int heldBombs = 1;
+    public int maxBombs = 3;
+
     [Header("References")]
     public Transform aimTarget;
     public GameObject leftWeaponModel;
@@ -53,11 +62,6 @@ public class PlayerController : MonoBehaviour
     InputAction attackRightAction;
     InputAction bombAction;
 
-    // Arrays that handle charge times and debounces based on weapon
-    // note: AttackLeft = slot 0
-    //       AttackRight = slot 1
-    private float[] chargeTimes = new float[] { 0f, 0f }; // Tracks the current charge level
-    public float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
     GameObject[] weaponModels = new GameObject[2];
 
     bool[] attackDebounces = new bool[] { false, false };
@@ -133,6 +137,7 @@ public class PlayerController : MonoBehaviour
         {
             Bomb();
         }
+
 
         // tilting and aeliron
         // note: for whatever reason there seems to be an anti-spam feature built in?
@@ -269,15 +274,19 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    // fires a bomb based on what you have equipped (added later)
+    // fires a bomb based on what you have equipped (added later). tracks your held bombs and cooldowns.
     void Bomb()
     {
-        if (bombDebounce == false)
+        if (bombDebounce == false && heldBombs > 0)
         {
             bombDebounce = true;
+            heldBombs -= 1;
             print("firing bomb");
 
             StartCoroutine(ResetBomb(bombCooldown));
+        } else if (heldBombs <= 0) 
+        {
+            print("out of bombs!");
         }
     }
 
@@ -369,6 +378,7 @@ public class PlayerController : MonoBehaviour
         attackDebounces[weaponSlot] = false;
     }
 
+    // resets your bomb cooldown.
     IEnumerator ResetBomb(float cooldown)
     {
         yield return new WaitForSeconds(cooldown);
