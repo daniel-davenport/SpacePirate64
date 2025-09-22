@@ -43,6 +43,9 @@ public class LevelDirector : MonoBehaviour
         print("start line");
         playerPlane.GetComponent<ForwardMovement>().moveSpeed = 30;
 
+        // make the start line invisible
+        StartLine.GetComponent<MeshRenderer>().enabled = false;
+
     }
 
 
@@ -52,6 +55,8 @@ public class LevelDirector : MonoBehaviour
         print("finish line");
         playerPlane.GetComponent<ForwardMovement>().moveSpeed = 10;
 
+        // make the finish line invisible
+        FinishLine.GetComponent<MeshRenderer>().enabled = false;
 
         // destroy the level?
     }
@@ -146,6 +151,18 @@ public class LevelDirector : MonoBehaviour
         }
 
         print("level finished loading.");
+
+        // set the start and finish lines
+        StartLine.transform.position = startPosition.position;
+        FinishLine.transform.position = spawnedBlocks[spawnedBlocks.Count - 1].GetComponent<LevelInformation>().endPosition.position;
+
+        // and make them both visible
+        StartLine.GetComponent<MeshRenderer>().enabled = true;
+        FinishLine.GetComponent<MeshRenderer>().enabled = true;
+
+
+
+
 
     }
 
