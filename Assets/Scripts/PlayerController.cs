@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     public float maxHealth = 3;
     public bool isInvincible = false;
     public float iFrames = 1.5f;
+    public float obstacleKBForce = 5f;
 
     public float xSpeed = 18;
     public float ySpeed = 18;
@@ -588,41 +589,93 @@ public class PlayerController : MonoBehaviour
             // push them away from the obstacle 
 
             // logic:
-            // in order to properly push the player away, you need to get the surface 
+            // get the collision position along with the midpoint of the obstacle
+            // align the collision point with the midpoint's Z axis to ignore the 3rd dimension
+            // get a point further out in the direction away from the midpoint, then raycast on this collider to find the most accurate surface
+            // get the surface normal of that surface and apply knockback in that direction
 
-            // raycasting only on the collider to get the proper direction in 
+            // note: this sometimes gives strange results like when hitting a surface that's offscreen, but there's not much that can be done about that atm.
+            //       im moving on to prevent wasting more time on this, it's good enough for now.
 
             // getting the closest contact point to extrapolate
+            Vector3 otherCenter = other.gameObject.transform.position;
+            Vector3 playerZLess = new Vector3(transform.position.x, transform.position.y, otherCenter.z);
             Vector3 contactPos = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
-            
-            
+            Vector3 zlessContact = new Vector3(contactPos.x, contactPos.y, otherCenter.z);
 
-            Vector3 directionToContact = contactPos - other.transform.position; // pushing you left/right away from the contact point
-            //Vector3 directionToObstacle = transform.position - other.transform.position; // pushing you up/down away from the other's center
-            print(directionToContact);
+            Vector3 directionFromCenter = (zlessContact - otherCenter).normalized * 10000f; // getting a position sufficiently far enough
 
+            Vector3 pointAwayFromCenter = new Vector3(directionFromCenter.x, directionFromCenter.y, otherCenter.z); // get a point away from the center
+            Vector3 directionTowardsContact = zlessContact - pointAwayFromCenter; // get the direction towards the contact point
+
+            Debug.DrawRay(pointAwayFromCenter, directionTowardsContact, Color.blue, 100f);
+
+            Ray toCenter = new Ray(pointAwayFromCenter, directionTowardsContact);
+            RaycastHit hit;
+            Vector3 pushDirection = Vector3.zero;
+
+            if (other.Raycast(toCenter, out hit, Mathf.Infinity))
+            {
+                pushDirection = hit.normal;
+                print(pushDirection);
+            } 
+
+            if (pushDirection != Vector3.zero)
+            {
+                Vector3 destination = transform.position + (pushDirection * obstacleKBForce);
+                Vector3 finalPosition = new Vector3(destination.x, destination.y, 0);
+                print(pushDirection + " " + finalPosition);
+
+                // tweening them to their destination
+                transform.DOLocalMove(finalPosition, 0.75f).SetEase(Ease.OutQuad);
+            }
+
+
+            // old code and attempts
             /*
+
+            //Vector3 directionToContact = contactPos - other.transform.position; // pushing you left/right away from the contact point
+            //Vector3 directionToObstacle = transform.position - other.transform.position; // pushing you up/down away from the other's center
+
+
             float xDotProduct = Vector3.Dot(directionToContact, transform.right);
             float yDotProduct = Vector3.Dot(directionToObstacle, transform.up);
             int xDir, yDir = 0;
 
             xDir = (xDotProduct > 0) ? 1 : -1;
             yDir = (yDotProduct > 0) ? 1 : -1;
-            */
 
-            Vector3 pushDirection = new Vector3(directionToContact.x, directionToContact.y, 0).normalized;
-            Vector3 newLocation = transform.position + (pushDirection * 10f);
-            Vector3 finalPosition = new Vector3(newLocation.x, newLocation.y, 0);
-            //print(pushDirection + " " + finalPosition);
+            //Vector3 pushDirection = new Vector3(directionToContact.x, directionToContact.y, 0).normalized;
+            //Vector3 newLocation = transform.position + (pushDirection * 10f);
 
-            // tweening them to their destination
-            transform.DOLocalMove(finalPosition, 0.75f).SetEase(Ease.OutQuad);
 
             //transform.localPosition += pushDirection.normalized * 10f;
 
             //Vector3 zless = new Vector3(oppositeDirection.x, oppositeDirection.y, 0);
 
             //transform.localPosition += zless.normalized * 100f * Time.deltaTime;
+
+
+            // if they're above the object, then raycast straight down, if they're blow the object, raycast straight up
+            // if they're to the left of the object then raycast right, if they're to the left, raycast right
+            Vector3 playerToOther = (zlessContact - playerZLess);
+            float upDot = Vector3.Dot(playerToOther, transform.up);
+            float rightDot = Vector3.Dot(playerToOther, transform.right);
+
+            int isAbove = (upDot > 0) ? 1 : -1;
+            int isRight = (rightDot > 0) ? 1 : -1;
+
+            if (isAbove == -1)
+                print("player above contact");
+            else
+                print("player below contact");
+
+            if (isRight == 1)
+                print("player right contact");
+            else
+                print("player left contact");
+
+            */
 
         }
 

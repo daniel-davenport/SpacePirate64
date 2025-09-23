@@ -30,8 +30,8 @@ public class LevelDirector : MonoBehaviour
         spawnableBlocks = new List<GameObject>(levelBlocks); // resetting the spawnable blocks list
 
         
-        StartCoroutine(DelayGeneration(3f)); 
-        //StartGeneration();
+        //StartCoroutine(DelayGeneration(3f)); 
+        StartGeneration();
     }
 
     // Update is called once per frame
