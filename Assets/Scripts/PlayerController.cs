@@ -1,4 +1,5 @@
 using DG.Tweening;
+using NUnit.Framework.Constraints;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -11,6 +12,7 @@ using static UnityEngine.GraphicsBuffer;
 public class PlayerController : MonoBehaviour
 {
     private Transform playerHolder;
+    private Rigidbody playerRigidbody;
 
     [Header("Settings")]
     public bool usesRawInput = false;
@@ -82,6 +84,9 @@ public class PlayerController : MonoBehaviour
     {
         // gets the player's model under the hitbox
         playerHolder = transform.GetChild(0);
+
+        // getting the player's rigidbody
+        playerRigidbody = transform.GetComponent<Rigidbody>();
 
         // getting the player's keybinds
         attackLeftAction = InputSystem.actions.FindAction("AttackLeft");
@@ -577,14 +582,47 @@ public class PlayerController : MonoBehaviour
         // colliding with an obstacle
         if (LayerMask.LayerToName(otherLayer) == "Obstacle")
         {
-            // deal damage to the player if they aren't invincible
+            // deal damage to the player
             TakeDamage(1);
 
-            // push them away from the obstacle
+            // push them away from the obstacle 
+
+            // logic:
+            // in order to properly push the player away, you need to get the surface 
+
+            // raycasting only on the collider to get the proper direction in 
+
+            // getting the closest contact point to extrapolate
             Vector3 contactPos = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
-            Vector3 oppositeDirection = transform.position - contactPos;
+            
+            
 
+            Vector3 directionToContact = contactPos - other.transform.position; // pushing you left/right away from the contact point
+            //Vector3 directionToObstacle = transform.position - other.transform.position; // pushing you up/down away from the other's center
+            print(directionToContact);
 
+            /*
+            float xDotProduct = Vector3.Dot(directionToContact, transform.right);
+            float yDotProduct = Vector3.Dot(directionToObstacle, transform.up);
+            int xDir, yDir = 0;
+
+            xDir = (xDotProduct > 0) ? 1 : -1;
+            yDir = (yDotProduct > 0) ? 1 : -1;
+            */
+
+            Vector3 pushDirection = new Vector3(directionToContact.x, directionToContact.y, 0).normalized;
+            Vector3 newLocation = transform.position + (pushDirection * 10f);
+            Vector3 finalPosition = new Vector3(newLocation.x, newLocation.y, 0);
+            //print(pushDirection + " " + finalPosition);
+
+            // tweening them to their destination
+            transform.DOLocalMove(finalPosition, 0.75f).SetEase(Ease.OutQuad);
+
+            //transform.localPosition += pushDirection.normalized * 10f;
+
+            //Vector3 zless = new Vector3(oppositeDirection.x, oppositeDirection.y, 0);
+
+            //transform.localPosition += zless.normalized * 100f * Time.deltaTime;
 
         }
 
