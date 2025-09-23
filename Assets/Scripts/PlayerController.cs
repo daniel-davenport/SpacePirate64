@@ -1,19 +1,29 @@
 using DG.Tweening;
+using NUnit.Framework.Constraints;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.HID;
 using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
 public class PlayerController : MonoBehaviour
 {
-    private Transform playerModel;
+    private Transform playerHolder;
+    private Rigidbody playerRigidbody;
 
     [Header("Settings")]
     public bool usesRawInput = false;
 
     [Header("Parameters")]
+    public float playerHealth = 3;
+    public float maxHealth = 3;
+    public bool isInvincible = false;
+    public float iFrames = 1.5f;
+    public float obstacleKBForce = 5f;
+
     public float xSpeed = 18;
     public float ySpeed = 18;
     public float lookSpeed = 320;
@@ -47,6 +57,7 @@ public class PlayerController : MonoBehaviour
     public Transform aimTarget;
     public GameObject leftWeaponModel;
     public GameObject rightWeaponModel;
+    public GameObject playerModel;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -73,7 +84,10 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         // gets the player's model under the hitbox
-        playerModel = transform.GetChild(0);
+        playerHolder = transform.GetChild(0);
+
+        // getting the player's rigidbody
+        playerRigidbody = transform.GetComponent<Rigidbody>();
 
         // getting the player's keybinds
         attackLeftAction = InputSystem.actions.FindAction("AttackLeft");
@@ -110,7 +124,7 @@ public class PlayerController : MonoBehaviour
 
         LocalMove(hInput, vInput, xSpeed, ySpeed);
         AimLook(hInput, vInput, lookSpeed);
-        HorizontalLean(playerModel, hInput, leanLimit, leanLerpSpeed);
+        HorizontalLean(playerHolder, hInput, leanLimit, leanLerpSpeed);
 
 
         // Attacking with slot 0
@@ -202,6 +216,54 @@ public class PlayerController : MonoBehaviour
 
     // ---------------------------------- Player Actions -------------------------------------------- // 
 
+    // handles taking damage, handles lose states and max health.
+    public void TakeDamage(int damage)
+    {
+        // ignore this function if the player is invincible
+        if (isInvincible)
+            return;
+
+        // otherwise make them take damage
+        playerHealth -= damage;
+
+        // make them briefly invincible
+        StartCoroutine(PlayerInvincibility());
+
+        if (playerHealth < 0)
+        {
+            playerHealth = 0;
+
+            print("player dead");
+            // end the game, the player has died.
+        }
+    }
+
+    // makes the player invisible recursively
+    // false = invisible, true = visible
+    private void PlayerVisibility(Transform transform, bool state)
+    {
+        // check the base transform first
+        MeshRenderer transMR = transform.GetComponent<MeshRenderer>();
+        if (transMR)
+            transMR.enabled = state;
+
+        // check the children
+        foreach (Transform child in transform)
+        {
+            MeshRenderer mr = child.GetComponent<MeshRenderer>();
+            if (mr)
+                mr.enabled = state;
+
+            if (child.childCount > 0)
+            {
+                foreach (Transform descendant in child)
+                {
+                    PlayerVisibility(descendant, state);
+                }
+                   
+            }
+        }
+    }
 
     // handles code relating to individual weapon slot debounces and charged attacks
     void AttackStart(int weaponSlot, float chargeTime = 0f)
@@ -302,10 +364,10 @@ public class PlayerController : MonoBehaviour
         int dir = side == "left" ? -1 : 1;
         lastTiltSide = side;
 
-        Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, -dir * tiltLimit);
+        Vector3 tiltAmount = new Vector3(playerHolder.localEulerAngles.x, playerHolder.localEulerAngles.y, -dir * tiltLimit);
 
         // stopping the tween when it's completed to keep the leaning
-        tiltTween = playerModel.DOLocalRotate(tiltAmount, tiltLerpSpeed, RotateMode.Fast).SetEase(Ease.OutQuad).SetAutoKill(false)
+        tiltTween = playerHolder.DOLocalRotate(tiltAmount, tiltLerpSpeed, RotateMode.Fast).SetEase(Ease.OutQuad).SetAutoKill(false)
             .OnComplete(() =>
             {
                 tiltTween.Pause();
@@ -319,10 +381,10 @@ public class PlayerController : MonoBehaviour
         {
             // calculating what axis the player should be at when the tilt ends
             float zDest = -axis * leanLimit;
-            Vector3 tiltAmount = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, zDest);
+            Vector3 tiltAmount = new Vector3(playerHolder.localEulerAngles.x, playerHolder.localEulerAngles.y, zDest);
 
             // setting the wings back to the proper axis
-            playerModel.DOLocalRotate(tiltAmount, tiltLerpSpeed / 4, RotateMode.Fast).SetEase(Ease.OutQuad)
+            playerHolder.DOLocalRotate(tiltAmount, tiltLerpSpeed / 4, RotateMode.Fast).SetEase(Ease.OutQuad)
                 .OnComplete(() => // once this ends you can't do an aileron anymore
                 {
                     lastTiltSide = null;
@@ -340,7 +402,7 @@ public class PlayerController : MonoBehaviour
         canAileron = false;
         int dir = side == "left" ? -1 : 1;
 
-        playerModel.DOLocalRotate(new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, 720 * -dir), .4f, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine)
+        playerHolder.DOLocalRotate(new Vector3(playerHolder.localEulerAngles.x, playerHolder.localEulerAngles.y, 720 * -dir), .4f, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine)
             .OnComplete(() =>
             {
                 doingAileron = false;
@@ -348,8 +410,8 @@ public class PlayerController : MonoBehaviour
 
                 // calculating what axis the player should be at when the aileron ends
                 float zDest = -axis * leanLimit;
-                Vector3 resetAngle = new Vector3(playerModel.localEulerAngles.x, playerModel.localEulerAngles.y, zDest);
-                playerModel.transform.localEulerAngles = resetAngle;
+                Vector3 resetAngle = new Vector3(playerHolder.localEulerAngles.x, playerHolder.localEulerAngles.y, zDest);
+                playerHolder.transform.localEulerAngles = resetAngle;
 
                 StartCoroutine(ResetAileron(aileronCooldown));
             });
@@ -385,6 +447,36 @@ public class PlayerController : MonoBehaviour
         bombDebounce = false;
     }
 
+    // makes the player blink while invincible
+    IEnumerator InvincibleBlink()
+    {
+        bool visible = true;
+        int totalBlinks = 12; // divide this by two
+        float timeBetweenBlinks = iFrames / totalBlinks;
+
+        for (int i = 0; i < totalBlinks; i++)
+        {
+            yield return new WaitForSeconds(timeBetweenBlinks);
+            PlayerVisibility(playerModel.transform, !visible);
+            visible = !visible;
+        }
+    }
+
+    // makes the player invincible for their iFrame time
+    IEnumerator PlayerInvincibility()
+    {
+        isInvincible = true;
+
+        // make them blink
+        StartCoroutine(InvincibleBlink());
+
+        yield return new WaitForSeconds(iFrames);
+        isInvincible = false;
+
+        // make them visible
+        PlayerVisibility(playerModel.transform, true);
+
+    }
 
     // ---------------------------------- Player Movement -------------------------------------------- // 
 
@@ -476,6 +568,121 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawWireSphere(aimTarget.position, 0.5f);
         Gizmos.DrawSphere(aimTarget.position, 0.15f);
     }
+
+
+
+    // ---------------------------------- Player Collision -------------------------------------------- // 
+
+    // colliding with different things
+    // note: they have to have IsTrigger set to true
+    private void OnTriggerEnter(Collider other)
+    {
+        // checking the layer
+        int otherLayer = other.gameObject.layer;
+
+        // colliding with an obstacle
+        if (LayerMask.LayerToName(otherLayer) == "Obstacle")
+        {
+            // deal damage to the player
+            TakeDamage(1);
+
+            // push them away from the obstacle 
+
+            // logic:
+            // get the collision position along with the midpoint of the obstacle
+            // align the collision point with the midpoint's Z axis to ignore the 3rd dimension
+            // get a point further out in the direction away from the midpoint, then raycast on this collider to find the most accurate surface
+            // get the surface normal of that surface and apply knockback in that direction
+
+            // note: this sometimes gives strange results like when hitting a surface that's offscreen, but there's not much that can be done about that atm.
+            //       im moving on to prevent wasting more time on this, it's good enough for now.
+
+            // getting the closest contact point to extrapolate
+            Vector3 otherCenter = other.gameObject.transform.position;
+            Vector3 playerZLess = new Vector3(transform.position.x, transform.position.y, otherCenter.z);
+            Vector3 contactPos = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
+            Vector3 zlessContact = new Vector3(contactPos.x, contactPos.y, otherCenter.z);
+
+            Vector3 directionFromCenter = (zlessContact - otherCenter).normalized * 10000f; // getting a position sufficiently far enough
+
+            Vector3 pointAwayFromCenter = new Vector3(directionFromCenter.x, directionFromCenter.y, otherCenter.z); // get a point away from the center
+            Vector3 directionTowardsContact = zlessContact - pointAwayFromCenter; // get the direction towards the contact point
+
+            //Debug.DrawRay(pointAwayFromCenter, directionTowardsContact, Color.blue, 100f);
+
+            Ray toCenter = new Ray(pointAwayFromCenter, directionTowardsContact);
+            RaycastHit hit;
+            Vector3 pushDirection = Vector3.zero;
+
+            if (other.Raycast(toCenter, out hit, Mathf.Infinity))
+            {
+                pushDirection = hit.normal;
+                //print(pushDirection);
+            } 
+
+            if (pushDirection != Vector3.zero)
+            {
+                Vector3 destination = transform.position + (pushDirection * obstacleKBForce);
+                Vector3 finalPosition = new Vector3(destination.x, destination.y, 0);
+                //print(pushDirection + " " + finalPosition);
+
+                // tweening them to their destination
+                transform.DOLocalMove(finalPosition, 0.75f).SetEase(Ease.OutQuint);
+            }
+
+
+            // old code and attempts
+            /*
+
+            //Vector3 directionToContact = contactPos - other.transform.position; // pushing you left/right away from the contact point
+            //Vector3 directionToObstacle = transform.position - other.transform.position; // pushing you up/down away from the other's center
+
+
+            float xDotProduct = Vector3.Dot(directionToContact, transform.right);
+            float yDotProduct = Vector3.Dot(directionToObstacle, transform.up);
+            int xDir, yDir = 0;
+
+            xDir = (xDotProduct > 0) ? 1 : -1;
+            yDir = (yDotProduct > 0) ? 1 : -1;
+
+            //Vector3 pushDirection = new Vector3(directionToContact.x, directionToContact.y, 0).normalized;
+            //Vector3 newLocation = transform.position + (pushDirection * 10f);
+
+
+            //transform.localPosition += pushDirection.normalized * 10f;
+
+            //Vector3 zless = new Vector3(oppositeDirection.x, oppositeDirection.y, 0);
+
+            //transform.localPosition += zless.normalized * 100f * Time.deltaTime;
+
+
+            // if they're above the object, then raycast straight down, if they're blow the object, raycast straight up
+            // if they're to the left of the object then raycast right, if they're to the left, raycast right
+            Vector3 playerToOther = (zlessContact - playerZLess);
+            float upDot = Vector3.Dot(playerToOther, transform.up);
+            float rightDot = Vector3.Dot(playerToOther, transform.right);
+
+            int isAbove = (upDot > 0) ? 1 : -1;
+            int isRight = (rightDot > 0) ? 1 : -1;
+
+            if (isAbove == -1)
+                print("player above contact");
+            else
+                print("player below contact");
+
+            if (isRight == 1)
+                print("player right contact");
+            else
+                print("player left contact");
+
+            */
+
+        }
+
+    }
+
+
+
 
 
 }
