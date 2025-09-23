@@ -608,7 +608,7 @@ public class PlayerController : MonoBehaviour
             Vector3 pointAwayFromCenter = new Vector3(directionFromCenter.x, directionFromCenter.y, otherCenter.z); // get a point away from the center
             Vector3 directionTowardsContact = zlessContact - pointAwayFromCenter; // get the direction towards the contact point
 
-            Debug.DrawRay(pointAwayFromCenter, directionTowardsContact, Color.blue, 100f);
+            //Debug.DrawRay(pointAwayFromCenter, directionTowardsContact, Color.blue, 100f);
 
             Ray toCenter = new Ray(pointAwayFromCenter, directionTowardsContact);
             RaycastHit hit;
@@ -617,17 +617,17 @@ public class PlayerController : MonoBehaviour
             if (other.Raycast(toCenter, out hit, Mathf.Infinity))
             {
                 pushDirection = hit.normal;
-                print(pushDirection);
+                //print(pushDirection);
             } 
 
             if (pushDirection != Vector3.zero)
             {
                 Vector3 destination = transform.position + (pushDirection * obstacleKBForce);
                 Vector3 finalPosition = new Vector3(destination.x, destination.y, 0);
-                print(pushDirection + " " + finalPosition);
+                //print(pushDirection + " " + finalPosition);
 
                 // tweening them to their destination
-                transform.DOLocalMove(finalPosition, 0.75f).SetEase(Ease.OutQuad);
+                transform.DOLocalMove(finalPosition, 0.75f).SetEase(Ease.OutQuint);
             }
 
 
