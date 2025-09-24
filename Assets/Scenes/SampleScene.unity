@@ -2599,6 +2599,24 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1046753012 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3402629191274915030, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+  m_PrefabInstance: {fileID: 7576698105691124297}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1046753015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046753012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83b8261bfe37bc249b20c624829c5448, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentState: 0
 --- !u!43 &1087826328
 Mesh:
   m_ObjectHideFlags: 0
@@ -8381,7 +8399,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7867201299520210625, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
       propertyPath: enemyName
-      value: DroneHeavyScout
+      value: DroneScout
       objectReference: {fileID: 0}
     - target: {fileID: 9152711381046724945, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8426,7 +8444,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3402629191274915030, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1046753015}
   m_SourcePrefab: {fileID: 100100000, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
 --- !u!1001 &7780787107865168796
 PrefabInstance:
