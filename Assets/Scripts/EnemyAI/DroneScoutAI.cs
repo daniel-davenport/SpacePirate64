@@ -4,6 +4,8 @@ public class DroneScoutAI : MonoBehaviour
 {
     public EnemyInit enemyBehavior;
     public StateMachine stateMachine;
+    public GameObject enemyPlane;
+    public GameObject droneGrid;
 
     // drone scouts align themselves in a grid with other drone scouts, similar to space invaders
 
@@ -15,6 +17,16 @@ public class DroneScoutAI : MonoBehaviour
         stateMachine = GetComponent<StateMachine>();
         enemyBehavior = GetComponent<EnemyInit>();
 
+        // get the enemy plane and change its parent to the DroneGrid
+        enemyPlane = GameObject.Find("EnemyPlane");
+        Transform dgTrans = enemyPlane.transform.Find("DroneGrid");
+
+        if (dgTrans)
+        {
+            transform.SetParent(dgTrans);
+        }
+
+
         // run their enemy ai
         EnemyAI();
     }
@@ -24,7 +36,6 @@ public class DroneScoutAI : MonoBehaviour
     {
         //print("the drone scout is currently: " + stateMachine.currentState);
     }
-
 
     public void EnemyAI()
     {
