@@ -29,7 +29,7 @@ public class EnemyBehavior : MonoBehaviour
             Debug.LogWarning("enemy type " + enemyName + " not found.");
         }
 
-        Instantiate(enemyInfo.enemyModel, transform.position, Quaternion.identity);
+        Instantiate(enemyInfo.enemyModel, transform.position, Quaternion.identity, transform);
 
         print("enemy " + enemyName + " loaded successfully.");
     }
