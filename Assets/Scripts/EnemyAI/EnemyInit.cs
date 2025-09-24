@@ -3,12 +3,14 @@ using System.Collections;
 using UnityEditor;
 using UnityEngine;
 
-public class EnemyBehavior : MonoBehaviour
+public class EnemyInit : MonoBehaviour
 {
+    // initialize the enemy, get their model and ai
     private StateMachine stateMachine;
     public string enemyName; // used to define its information
     public EnemyInfo enemyInfo;
 
+    // used to get the enemy AI information from its ScriptableObject
     public string enemyAIName;
     public Type scriptType;
 
@@ -16,15 +18,14 @@ public class EnemyBehavior : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        stateMachine = GetComponent<StateMachine>();
-
-
+        // load enemy information (model, hp, etc)
         //StartCoroutine(DelayEnemyLoad(3));
         LoadEnemyData();
 
+        // get their state machine
+        stateMachine = GetComponent<StateMachine>();
 
-
-        // dynamically adding the enemy ai based on the defined script in the scriptableobject
+        // dynamically adding the enemy ai based on the defined script in the ScriptableObject
         enemyAIName = enemyInfo.enemyAI.name;
         
         scriptType = Type.GetType(enemyAIName);
@@ -33,12 +34,9 @@ public class EnemyBehavior : MonoBehaviour
 
         if (scriptType != null)
         {
+            // add their AI to the enemy gameobject
             gameObject.AddComponent(scriptType);
         }
-
-        
-
-        
 
 
     }
