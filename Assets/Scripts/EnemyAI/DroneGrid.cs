@@ -38,11 +38,12 @@ public class DroneGrid : MonoBehaviour
 
         foreach (GameObject drone in enemyGrid)
         {
-            print(drone);
+            //print(drone);
             if (drone == null)
             {
+                //print("gap at: " + index);
                 gap = index;
-                break;
+                return gap;
             }
 
             index++;
@@ -59,9 +60,6 @@ public class DroneGrid : MonoBehaviour
     private void OnTransformChildrenChanged()
     {
         int childrenCount = transform.childCount;
-
-        // this isn't counted properly and will just reeinsert at the end instead of properly emptying the spaces
-        // it also seems to regard missing as not a null?
 
         if (childrenCount < enemyCount)
         {
