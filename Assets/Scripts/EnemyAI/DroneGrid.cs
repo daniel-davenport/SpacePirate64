@@ -66,7 +66,7 @@ public class DroneGrid : MonoBehaviour
             // an enemy was destroyed
 
             // find the new gap 
-            freeSpace = FindListGap();
+            //freeSpace = FindListGap();
 
         } else
         {
@@ -114,6 +114,10 @@ public class DroneGrid : MonoBehaviour
             float droneXPos = cellSize * dronePlace;
             float droneYPos = cellSize * verticalOffset;
 
+            // TODO:
+            // the drone grid works, it fills in gaps as expected
+            // all that is needed is to properly position it in space in a centered grid
+            
             lastChildTrans.transform.position = new Vector3(droneXPos, droneYPos, transform.position.z);
 
             //print("enemy spawned at: " + freeSpace);
