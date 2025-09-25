@@ -8206,6 +8206,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1396384507436403186, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
+      propertyPath: cellSize
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396384507436403186, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
+      propertyPath: verticalAmnt
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396384507436403186, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
+      propertyPath: horizontalAmnt
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1964713955675179252, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
       propertyPath: playerPlane
       value: 

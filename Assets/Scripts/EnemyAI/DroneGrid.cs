@@ -106,14 +106,15 @@ public class DroneGrid : MonoBehaviour
                 // subtract to get the next row
                 dronePlace -= horizontalAmnt;
                 verticalOffset += 1;
+
             }
 
-            print("drone will be placed at: " + dronePlace + ", " + verticalOffset);
+            //print("drone will be placed at: " + dronePlace + ", " + verticalOffset);
+            
+            float droneXPos = cellSize * dronePlace;
+            float droneYPos = cellSize * verticalOffset;
 
-            //float droneXPos = transform.position.x;
-            //float droneYPos = transform.position.y;
-
-            //lastChildTrans.transform.position = new Vector3(droneXPos, droneYPos, 0);
+            lastChildTrans.transform.position = new Vector3(droneXPos, droneYPos, transform.position.z);
 
             //print("enemy spawned at: " + freeSpace);
 
