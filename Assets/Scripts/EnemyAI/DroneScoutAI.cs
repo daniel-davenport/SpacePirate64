@@ -39,7 +39,7 @@ public class DroneScoutAI : MonoBehaviour
 
     public void EnemyAI()
     {
-        print("drone scout ai");
+        //print("drone scout ai");
     }
 
 }

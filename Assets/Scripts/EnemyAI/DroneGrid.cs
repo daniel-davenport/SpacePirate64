@@ -9,10 +9,12 @@ public class DroneGrid : MonoBehaviour
     [Header("Settings")]
     public int horizontalAmnt;
     public int verticalAmnt;
+    public float cellSize;
 
     [Header("Enemies")]
     public List<GameObject> enemyGrid;
     public int enemyCount = 0;
+    public int freeSpace = 0; // the next free slot for a drone
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -27,24 +29,73 @@ public class DroneGrid : MonoBehaviour
         //AlignGrid();
     }
 
-    // returns the number of children in the grid
-    private void GetChildren()
+    // Iterates through the list of drones and sees if any of them are null
+    // returns an index
+    private int FindListGap()
     {
+        int gap = 0;
+        int index = 0;
+
+        foreach (GameObject drone in enemyGrid)
+        {
+            print(drone);
+            if (drone == null)
+            {
+                gap = index;
+                break;
+            }
+
+            index++;
+        }
+
+        if (enemyGrid.Count > 0)
+            gap = enemyGrid.Count;
+
+        return gap;
 
     }
 
     // get anytime a child is added (spawned) or removed (destroyed)
     private void OnTransformChildrenChanged()
     {
-        int childrenCount = enemyGrid.Count;
+        int childrenCount = transform.childCount;
+
+        // this isn't counted properly and will just reeinsert at the end instead of properly emptying the spaces
+        // it also seems to regard missing as not a null?
 
         if (childrenCount < enemyCount)
         {
             // an enemy was destroyed
 
+            // find the new gap 
+            freeSpace = FindListGap();
+
         } else
         {
             // an enemy was spawned
+
+            // getting the child just added
+            int lastChildIndex = transform.childCount - 1;
+            Transform lastChildTrans = transform.GetChild(lastChildIndex);
+
+            // find if there's a gap in the drones, if there is insert it there
+            freeSpace = FindListGap();
+
+            // otherwise insert it at the end
+            // note: when inserting if you do list.insert it will shove the null value, you should do list[freespace] = newobject to replace the null
+
+            if (freeSpace >= enemyGrid.Count - 1)
+            {
+                // insert it at the end 
+                enemyGrid.Add(lastChildTrans.gameObject);
+            } 
+            else
+            {
+                // insert it at the null point
+                enemyGrid[freeSpace] = lastChildTrans.gameObject;
+            }
+
+            //print("enemy spawned at: " + freeSpace);
 
         }
 
