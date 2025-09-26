@@ -9,6 +9,11 @@ public class DroneGrid : MonoBehaviour
     [Header("Settings")]
     public int horizontalAmnt;
     public int verticalAmnt;
+
+    // centering
+    public float startHorizontal; 
+    public float startVertical;
+
     public float cellSize;
 
     [Header("Enemies")]
@@ -19,7 +24,9 @@ public class DroneGrid : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        // centering the grid
+        startHorizontal = -(((horizontalAmnt / 2) * cellSize) + (cellSize / 2));
+        startVertical = -(((verticalAmnt / 2) * cellSize) + (cellSize / 2));
     }
 
     // Update is called once per frame
@@ -95,7 +102,7 @@ public class DroneGrid : MonoBehaviour
 
             // determining the appropriate position
             int dronePlace = freeSpace + 1; // what X position it's at
-            int verticalOffset = 0; // what Y position it's at
+            int verticalOffset = verticalAmnt; // what Y position it's at
 
             // divide to get its vertical position
             while (dronePlace > horizontalAmnt)
@@ -105,19 +112,19 @@ public class DroneGrid : MonoBehaviour
 
                 // subtract to get the next row
                 dronePlace -= horizontalAmnt;
-                verticalOffset += 1;
-
+                verticalOffset -= 1;
             }
 
             //print("drone will be placed at: " + dronePlace + ", " + verticalOffset);
             
-            float droneXPos = cellSize * dronePlace;
-            float droneYPos = cellSize * verticalOffset;
+            float droneXPos = startHorizontal + (cellSize * dronePlace);
+            float droneYPos = startVertical + (cellSize * verticalOffset);
 
             // TODO:
             // the drone grid works, it fills in gaps as expected
             // all that is needed is to properly position it in space in a centered grid
-            
+            // vertical goes up it should go down
+
             lastChildTrans.transform.position = new Vector3(droneXPos, droneYPos, transform.position.z);
 
             //print("enemy spawned at: " + freeSpace);

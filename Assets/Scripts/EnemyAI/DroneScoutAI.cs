@@ -9,7 +9,6 @@ public class DroneScoutAI : MonoBehaviour
 
     // drone scouts align themselves in a grid with other drone scouts, similar to space invaders
 
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -25,7 +24,6 @@ public class DroneScoutAI : MonoBehaviour
         {
             transform.SetParent(dgTrans);
         }
-
 
         // run their enemy ai
         EnemyAI();

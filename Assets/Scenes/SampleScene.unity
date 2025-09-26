@@ -8212,11 +8212,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1396384507436403186, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
       propertyPath: verticalAmnt
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1396384507436403186, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
       propertyPath: horizontalAmnt
-      value: 4
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1964713955675179252, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
       propertyPath: playerPlane
@@ -9030,7 +9030,7 @@ PrefabInstance:
       objectReference: {fileID: 1535906130}
     - target: {fileID: 2381797552469555759, guid: 61d222fec3b84d3408298f0c52f87a42, type: 3}
       propertyPath: levelTickets
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 2381797552469555759, guid: 61d222fec3b84d3408298f0c52f87a42, type: 3}
       propertyPath: startPosition
@@ -9038,7 +9038,7 @@ PrefabInstance:
       objectReference: {fileID: 1520758712}
     - target: {fileID: 2381797552469555759, guid: 61d222fec3b84d3408298f0c52f87a42, type: 3}
       propertyPath: maxLevelTickets
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 2638221718644246036, guid: 61d222fec3b84d3408298f0c52f87a42, type: 3}
       propertyPath: m_Enabled
@@ -9094,7 +9094,7 @@ PrefabInstance:
       objectReference: {fileID: 1335174983}
     - target: {fileID: 5323057669097288401, guid: 61d222fec3b84d3408298f0c52f87a42, type: 3}
       propertyPath: m_VersionIndex
-      value: 5988
+      value: 5991
       objectReference: {fileID: 0}
     - target: {fileID: 7084834822760764529, guid: 61d222fec3b84d3408298f0c52f87a42, type: 3}
       propertyPath: m_Mesh
@@ -9110,7 +9110,7 @@ PrefabInstance:
       objectReference: {fileID: 1882462227}
     - target: {fileID: 7344161404471624128, guid: 61d222fec3b84d3408298f0c52f87a42, type: 3}
       propertyPath: m_VersionIndex
-      value: 5988
+      value: 5991
       objectReference: {fileID: 0}
     - target: {fileID: 7482089105577558301, guid: 61d222fec3b84d3408298f0c52f87a42, type: 3}
       propertyPath: m_Enabled
