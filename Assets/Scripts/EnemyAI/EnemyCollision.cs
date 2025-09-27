@@ -26,13 +26,9 @@ public class EnemyCollision : MonoBehaviour
         // checking the layer
         int otherLayer = other.gameObject.layer;
 
-        //
-
         // colliding with an obstacle
         if (LayerMask.LayerToName(otherLayer) == "Obstacle")
         {
-
-            print("collision");
             // deal heavy damage
             enemyInitScript.TakeDamage(5);
 
