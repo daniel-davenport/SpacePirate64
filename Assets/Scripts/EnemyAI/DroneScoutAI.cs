@@ -54,7 +54,7 @@ public class DroneScoutAI : MonoBehaviour
         // once the cooldown elapses, prep then shoot towards the player
         if (stateMachine.currentState == StateMachine.EnemyState.Idle)
         {
-            print("preparing attack");
+            //print("preparing attack");
             StartCoroutine(AttackCooldown());
         }
 

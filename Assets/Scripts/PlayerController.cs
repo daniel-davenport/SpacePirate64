@@ -686,12 +686,13 @@ public class PlayerController : MonoBehaviour
 
         } else if (LayerMask.LayerToName(otherLayer) == "EnemyProjectile")
         {
+            GameObject enemyProj = other.gameObject;
+
             if (doingAileron == true)
             {
-                GameObject enemyProj = other.gameObject;
-                
+
                 // deflect/parry the projectile
-                print("parried projectile");
+                //print("parried projectile");
 
                 // set its layer to playerprojectile
                 enemyProj.layer = LayerMask.NameToLayer("PlayerProjectile");
@@ -719,6 +720,7 @@ public class PlayerController : MonoBehaviour
             {
                 // they just take damage, no need to knock them around
                 TakeDamage(1);
+                Destroy(enemyProj);
             }
 
             

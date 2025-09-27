@@ -30,10 +30,4 @@ public class StateMachine : MonoBehaviour
         
     }
 
-
-    public void StartStateMachine()
-    {
-        
-
-    }
 }

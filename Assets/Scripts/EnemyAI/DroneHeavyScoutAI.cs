@@ -62,7 +62,7 @@ public class DroneHeavyScoutAI : MonoBehaviour
         // once at that location, prep then shoot at the player
         if (stateMachine.currentState == StateMachine.EnemyState.Idle)
         {
-            print("moving");
+            //print("moving");
 
             // get a random location and move there
             Vector3 randomPos = GetRandomPosition();

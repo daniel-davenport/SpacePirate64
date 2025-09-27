@@ -38,7 +38,7 @@ public class EnemyInit : MonoBehaviour
         
         scriptType = Type.GetType(enemyAIName);
 
-        print(enemyAIName + " " + scriptType);
+        //print(enemyAIName + " " + scriptType);
 
         if (scriptType != null)
         {
@@ -69,6 +69,10 @@ public class EnemyInit : MonoBehaviour
         // making a collider
         BoxCollider enemyCollider = enemyModel.AddComponent<BoxCollider>();
 
+        // add a kinematic rigidbody
+        Rigidbody rb = enemyModel.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
+
         // adding a collision script
         enemyModel.AddComponent<EnemyCollision>();
 
@@ -86,7 +90,7 @@ public class EnemyInit : MonoBehaviour
         // enemies don't really have iframes so simply deal damage
 
         enemyHealth -= damage;
-        print("enemy take damage");
+        //print("enemy take damage");
 
         if (enemyHealth <= 0)
         {
