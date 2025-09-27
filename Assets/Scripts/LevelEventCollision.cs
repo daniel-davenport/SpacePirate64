@@ -12,6 +12,9 @@ public class LevelEventCollision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (LayerMask.LayerToName(other.gameObject.layer) != "Player")
+            return;
+
         if (transform.gameObject.name == "StartLine")
         {
             levelDirector.GetComponent<LevelDirector>().StartCollided();

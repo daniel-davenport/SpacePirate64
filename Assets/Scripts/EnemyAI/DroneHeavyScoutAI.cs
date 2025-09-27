@@ -8,7 +8,7 @@ using DG.Tweening;
 public class DroneHeavyScoutAI : MonoBehaviour
 {
     [Header("References")]
-    public EnemyInit enemyBehavior;
+    public EnemyInit enemyInit;
     public StateMachine stateMachine;
     public GameObject enemyPlane;
     public GameObject playerShip;
@@ -29,9 +29,9 @@ public class DroneHeavyScoutAI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // get state machine and enemybehavior (HP, attack, etc.) information
+        // get state machine and enemyInit (HP, attack, etc.) information
         stateMachine = GetComponent<StateMachine>();
-        enemyBehavior = GetComponent<EnemyInit>();
+        enemyInit = GetComponent<EnemyInit>();
         playerShip = GetComponent<EnemyInit>().playerShip;
 
         laserProjectile = Resources.Load<GameObject>("Projectiles/laserProjectile");
@@ -113,8 +113,9 @@ public class DroneHeavyScoutAI : MonoBehaviour
         firedLaser.transform.SetParent(enemyPlane.transform);
         firedLaser.transform.LookAt(playerShip.transform.position);
 
-        // setting the owner
+        // setting the owner + damage
         firedLaser.GetComponent<ProjectileInfo>().projectileOwner = transform.gameObject;
+        firedLaser.GetComponent<ProjectileInfo>().projectileDamage = enemyInit.projectileDamage;
 
         // setting its lifetime
         Destroy(firedLaser, projectileLifetime);

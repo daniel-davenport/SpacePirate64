@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 public class DroneScoutAI : MonoBehaviour
 {
     [Header("References")]
-    public EnemyInit enemyBehavior;
+    public EnemyInit enemyInit;
     public StateMachine stateMachine;
     public GameObject enemyPlane;
     public GameObject droneGrid;
@@ -26,9 +26,9 @@ public class DroneScoutAI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // get state machine and enemybehavior (HP, attack, etc.) information
+        // get state machine and enemyInit (HP, attack, etc.) information
         stateMachine = GetComponent<StateMachine>();
-        enemyBehavior = GetComponent<EnemyInit>();
+        enemyInit = GetComponent<EnemyInit>();
         playerShip = GetComponent<EnemyInit>().playerShip;
 
         laserProjectile = Resources.Load<GameObject>("Projectiles/laserProjectile");
@@ -78,6 +78,7 @@ public class DroneScoutAI : MonoBehaviour
 
         // setting the owner
         firedLaser.GetComponent<ProjectileInfo>().projectileOwner = transform.gameObject;
+        firedLaser.GetComponent<ProjectileInfo>().projectileDamage = enemyInit.projectileDamage;
 
         // setting its lifetime
         Destroy(firedLaser, projectileLifetime);

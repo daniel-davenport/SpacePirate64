@@ -17,6 +17,11 @@ public class EnemyInit : MonoBehaviour
     [Header("References")]
     public GameObject playerShip;
 
+    [Header("Stats")]
+    public int enemyHealth;
+    public int enemyMaxHealth;
+    public int projectileDamage;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -41,7 +46,6 @@ public class EnemyInit : MonoBehaviour
             gameObject.AddComponent(scriptType);
         }
 
-
     }
 
     // Update is called once per frame
@@ -60,9 +64,36 @@ public class EnemyInit : MonoBehaviour
             Debug.LogWarning("enemy type " + enemyName + " not found.");
         }
 
-        Instantiate(enemyInfo.enemyModel, transform.position, Quaternion.identity, transform);
+        GameObject enemyModel = Instantiate(enemyInfo.enemyModel, transform.position, Quaternion.identity, transform);
 
-        print("enemy " + enemyName + " loaded successfully.");
+        // making a collider
+        BoxCollider enemyCollider = enemyModel.AddComponent<BoxCollider>();
+
+        // adding a collision script
+        enemyModel.AddComponent<EnemyCollision>();
+
+        // health + stats
+        enemyHealth = enemyInfo.enemyHealth;
+        enemyMaxHealth = enemyInfo.enemyMaxHealth;
+        projectileDamage = enemyInfo.projectileDamage;
+
+        //print("enemy " + enemyName + " loaded successfully.");
+    }
+
+    // handles taking damage outside of script
+    public void TakeDamage(int damage)
+    {
+        // enemies don't really have iframes so simply deal damage
+
+        enemyHealth -= damage;
+        print("enemy take damage");
+
+        if (enemyHealth <= 0)
+        {
+            // destroy the enemy and drop scrap
+            Destroy(gameObject);
+        }
+
     }
 
     IEnumerator DelayEnemyLoad(float delay)

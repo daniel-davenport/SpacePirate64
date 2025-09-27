@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: Drone Heavy Scout
   enemyHealth: 4
-  enemyHealthMax: 4
+  enemyMaxHealth: 4
+  projectileDamage: 1
   enemyModel: {fileID: 919132149155446097, guid: bf8209444e808394aa1b10083999acdc, type: 3}
   enemyAI: {fileID: 11500000, guid: 83ed9659504633144967f6faa81d2146, type: 3}

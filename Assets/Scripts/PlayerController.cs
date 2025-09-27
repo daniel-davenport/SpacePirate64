@@ -704,6 +704,9 @@ public class PlayerController : MonoBehaviour
                 GameObject projOwner = enemyProj.GetComponent<ProjectileInfo>().projectileOwner;
                 enemyProj.transform.LookAt(projOwner.transform.position);
 
+                // doubling the damage
+                enemyProj.GetComponent<ProjectileInfo>().projectileDamage *= 2;
+
                 Rigidbody rb = enemyProj.GetComponent<Rigidbody>();
                 rb.linearVelocity = Vector3.zero; // resetting its velocity
 

@@ -3,6 +3,7 @@ using UnityEngine;
 public class ProjectileInfo : MonoBehaviour
 {
     public GameObject projectileOwner;
+    public int projectileDamage;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
