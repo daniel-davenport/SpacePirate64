@@ -8456,6 +8456,10 @@ PrefabInstance:
       propertyPath: enemyName
       value: DroneScout
       objectReference: {fileID: 0}
+    - target: {fileID: 7867201299520210625, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: playerShip
+      value: 
+      objectReference: {fileID: 1926432405}
     - target: {fileID: 9152711381046724945, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

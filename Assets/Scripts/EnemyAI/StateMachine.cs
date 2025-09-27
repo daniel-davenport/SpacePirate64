@@ -10,8 +10,9 @@ public class StateMachine : MonoBehaviour
     public enum EnemyState
     {
         Idle,
-        Chasing,
+        Preparing,
         Attacking,
+        Cooldown,
         Dead
     }
 

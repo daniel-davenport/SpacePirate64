@@ -14,6 +14,9 @@ public class EnemyInit : MonoBehaviour
     public string enemyAIName;
     public Type scriptType;
 
+    [Header("References")]
+    public GameObject playerShip;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

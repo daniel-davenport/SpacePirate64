@@ -677,6 +677,10 @@ public class PlayerController : MonoBehaviour
 
             */
 
+        } else if (LayerMask.LayerToName(otherLayer) == "EnemyProjectile")
+        {
+            // they just take damage, no need to knock them around
+            TakeDamage(1);
         }
 
     }
