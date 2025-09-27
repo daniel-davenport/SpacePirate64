@@ -1395,6 +1395,71 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1001 &720708903
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3402629191274915030, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: m_Name
+      value: EnemyHolder (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867201299520210625, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: enemyName
+      value: DroneScout
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867201299520210625, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: playerShip
+      value: 
+      objectReference: {fileID: 1926432405}
+    - target: {fileID: 9152711381046724945, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152711381046724945, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152711381046724945, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152711381046724945, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152711381046724945, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152711381046724945, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152711381046724945, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152711381046724945, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152711381046724945, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152711381046724945, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
 --- !u!43 &729920882
 Mesh:
   m_ObjectHideFlags: 0
@@ -5713,6 +5778,11 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &2134388809 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8497067745989322907, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+  m_PrefabInstance: {fileID: 8621119360605480807}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2539855719047028568
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8222,6 +8292,14 @@ PrefabInstance:
       propertyPath: playerPlane
       value: 
       objectReference: {fileID: 1535906130}
+    - target: {fileID: 1964713955675179252, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 2134388809}
+    - target: {fileID: 1964713955675179252, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
+      propertyPath: forwardDistance
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 5608108075939517462, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
       propertyPath: m_Name
       value: EnemyPlane
@@ -8236,7 +8314,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8643422231209797132, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 25
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 8643422231209797132, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -8454,7 +8532,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7867201299520210625, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
       propertyPath: enemyName
-      value: DroneScout
+      value: DroneHeavyScout
       objectReference: {fileID: 0}
     - target: {fileID: 7867201299520210625, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
       propertyPath: playerShip
@@ -9139,3 +9217,4 @@ SceneRoots:
   - {fileID: 6874602816908075660}
   - {fileID: 4879260632291113250}
   - {fileID: 7576698105691124297}
+  - {fileID: 720708903}

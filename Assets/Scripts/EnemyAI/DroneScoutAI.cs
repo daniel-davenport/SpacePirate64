@@ -18,7 +18,7 @@ public class DroneScoutAI : MonoBehaviour
     public float attackPrepTime = 0.5f;
     public float minCooldown = 3f;
     public float maxCooldown = 5f;
-    public float projectileSpeed = 30f;
+    public float projectileSpeed = 35f;
     public float projectileLifetime = 4f;
 
     // drone scouts align themselves in a grid with other drone scouts, similar to space invaders
@@ -42,8 +42,6 @@ public class DroneScoutAI : MonoBehaviour
             transform.SetParent(dgTrans);
         }
 
-        // run their enemy ai
-        EnemyAI();
     }
 
     // Update is called once per frame
@@ -78,6 +76,9 @@ public class DroneScoutAI : MonoBehaviour
         firedLaser.transform.SetParent(enemyPlane.transform);
         firedLaser.transform.LookAt(playerShip.transform.position);
 
+        // setting the owner
+        firedLaser.GetComponent<ProjectileInfo>().projectileOwner = transform.gameObject;
+
         // setting its lifetime
         Destroy(firedLaser, projectileLifetime);
 
@@ -105,11 +106,6 @@ public class DroneScoutAI : MonoBehaviour
         yield return new WaitForSeconds(attackPrepTime);
 
         StartCoroutine(Attack());
-    }
-
-    public void EnemyAI()
-    {
-        //print("drone scout ai");
     }
 
 }

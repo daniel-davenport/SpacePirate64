@@ -32,6 +32,8 @@ public class PlayerController : MonoBehaviour
     public float tiltSpeedBuff = 1.5f; // how much faster you move if tilting in the direction you're moving
     public float tiltSpeedNerf = 2f; // how much slower you move if tilting in the opposite direction you're moving
 
+    public float parrySpeed = 50f; // how fast a parried projectile returns
+
     [Header("Combat Parameters")]
     public float aileronCooldown = 1f;
     public float bombCooldown = 1f;
@@ -78,6 +80,8 @@ public class PlayerController : MonoBehaviour
     bool[] attackDebounces = new bool[] { false, false };
     private bool bombDebounce = false;
 
+    // materials
+    private Material parriedMaterial;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -100,6 +104,9 @@ public class PlayerController : MonoBehaviour
         // getting the player's weapons
         weaponModels[0] = leftWeaponModel;
         weaponModels[1] = rightWeaponModel;
+
+        // getting the player's materials
+        parriedMaterial = Resources.Load<Material>("Materials/ParriedMaterial");
 
         tiltTween.SetAutoKill(false);
     }
@@ -679,8 +686,39 @@ public class PlayerController : MonoBehaviour
 
         } else if (LayerMask.LayerToName(otherLayer) == "EnemyProjectile")
         {
-            // they just take damage, no need to knock them around
-            TakeDamage(1);
+            if (doingAileron == true)
+            {
+                GameObject enemyProj = other.gameObject;
+                
+                // deflect/parry the projectile
+                print("parried projectile");
+
+                // set its layer to playerprojectile
+                enemyProj.layer = LayerMask.NameToLayer("PlayerProjectile");
+
+                // change its color and send it backwards
+                Renderer objectRenderer = other.gameObject.GetComponent<Renderer>();
+                objectRenderer.material = parriedMaterial;
+
+                // get the projectile's owner
+                GameObject projOwner = enemyProj.GetComponent<ProjectileInfo>().projectileOwner;
+                enemyProj.transform.LookAt(projOwner.transform.position);
+
+                Rigidbody rb = enemyProj.GetComponent<Rigidbody>();
+                rb.linearVelocity = Vector3.zero; // resetting its velocity
+
+                // sending it back where it came from
+                if (rb != null)
+                    rb.AddForce(enemyProj.transform.forward * parrySpeed, ForceMode.Impulse);
+
+            }
+            else
+            {
+                // they just take damage, no need to knock them around
+                TakeDamage(1);
+            }
+
+            
         }
 
     }

@@ -5,15 +5,17 @@ public class EnemyPlane : MonoBehaviour
     [Header("Settings")]
     public float forwardDistance;
     public float lerpSpeed;
+    public Vector2 limits;
 
     [Header("References")]
     public GameObject playerPlane;
+    public GameObject playerCamera;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        limits = playerCamera.GetComponent<CameraFollow>().limits;
     }
 
     // Update is called once per frame
