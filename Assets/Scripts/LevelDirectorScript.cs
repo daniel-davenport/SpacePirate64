@@ -20,6 +20,8 @@ public class LevelDirector : MonoBehaviour
     [Header("Level Parameters")]
     public int levelTickets;
     public int maxLevelTickets;
+    public float inLevelSpeed = 40;
+    public float outLevelSpeed = 20;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -44,7 +46,7 @@ public class LevelDirector : MonoBehaviour
     public void StartCollided()
     {
         print("start line");
-        playerPlane.GetComponent<ForwardMovement>().moveSpeed = 30;
+        playerPlane.GetComponent<ForwardMovement>().moveSpeed = inLevelSpeed;
 
         // make the start line invisible
         StartLine.GetComponent<MeshRenderer>().enabled = false;
@@ -56,7 +58,7 @@ public class LevelDirector : MonoBehaviour
     public void FinishCollided()
     {
         print("finish line");
-        playerPlane.GetComponent<ForwardMovement>().moveSpeed = 10;
+        playerPlane.GetComponent<ForwardMovement>().moveSpeed = outLevelSpeed;
 
         // make the finish line invisible
         FinishLine.GetComponent<MeshRenderer>().enabled = false;
@@ -138,6 +140,7 @@ public class LevelDirector : MonoBehaviour
 
                         Vector3 offset = previousEnd.position - spawnedStart.position;
                         spawnedBlock.transform.position += offset;
+                        spawnedBlock.transform.SetParent(transform);
 
                     }
 

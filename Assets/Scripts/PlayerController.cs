@@ -32,6 +32,12 @@ public class PlayerController : MonoBehaviour
     public float tiltSpeedBuff = 1.5f; // how much faster you move if tilting in the direction you're moving
     public float tiltSpeedNerf = 2f; // how much slower you move if tilting in the opposite direction you're moving
 
+    public float aileronTime = 0.4f; // how long you're performing an aileron for
+    public float perfectParryWindow = 0.15f; // how long the perfect parry window is
+    public float parrySpeed = 50f; // how fast a parried projectile returns
+
+    private bool perfectParry = false;
+
     [Header("Combat Parameters")]
     public float aileronCooldown = 1f;
     public float bombCooldown = 1f;
@@ -78,6 +84,8 @@ public class PlayerController : MonoBehaviour
     bool[] attackDebounces = new bool[] { false, false };
     private bool bombDebounce = false;
 
+    // materials
+    private Material parriedMaterial;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -100,6 +108,9 @@ public class PlayerController : MonoBehaviour
         // getting the player's weapons
         weaponModels[0] = leftWeaponModel;
         weaponModels[1] = rightWeaponModel;
+
+        // getting the player's materials
+        parriedMaterial = Resources.Load<Material>("Materials/ParriedMaterial");
 
         tiltTween.SetAutoKill(false);
     }
@@ -396,13 +407,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // performs an aileron roll. currently no function besides looking cool.
+    // performs an aileron roll. timing it exactly when a projectile hits you will perform a perfect parry.
     void Aileron(string side, float axis)
     {
         canAileron = false;
+        perfectParry = true;
         int dir = side == "left" ? -1 : 1;
 
-        playerHolder.DOLocalRotate(new Vector3(playerHolder.localEulerAngles.x, playerHolder.localEulerAngles.y, 720 * -dir), .4f, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine)
+        StartCoroutine(ResetPerfectParry());
+
+        playerHolder.DOLocalRotate(new Vector3(playerHolder.localEulerAngles.x, playerHolder.localEulerAngles.y, 720 * -dir), aileronTime, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine)
             .OnComplete(() =>
             {
                 doingAileron = false;
@@ -417,6 +431,13 @@ public class PlayerController : MonoBehaviour
             });
     }
 
+
+    // removes your perfect parry window
+    IEnumerator ResetPerfectParry()
+    {
+        yield return new WaitForSeconds(perfectParryWindow);
+        perfectParry = false;
+    }
 
 
     // resets the aileron's cooldown, modifiable cooldown.
@@ -677,6 +698,68 @@ public class PlayerController : MonoBehaviour
 
             */
 
+        } else if (LayerMask.LayerToName(otherLayer) == "EnemyProjectile")
+        {
+            GameObject enemyProj = other.gameObject;
+
+            if (doingAileron == true)
+            {
+                // deflect/parry the projectile
+                //print("parried projectile");
+
+                // set its layer to playerprojectile
+                enemyProj.layer = LayerMask.NameToLayer("PlayerProjectile");
+
+                // change its color and send it backwards
+                Renderer objectRenderer = other.gameObject.GetComponent<Renderer>();
+                objectRenderer.material = parriedMaterial;
+
+                // get the projectile's owner
+                GameObject projOwner = enemyProj.GetComponent<ProjectileInfo>().projectileOwner;
+
+                Rigidbody rb = enemyProj.GetComponent<Rigidbody>();
+                rb.linearVelocity = Vector3.zero; // resetting its velocity
+
+                if (perfectParry)
+                {
+                    // send it back to the enemy who hit it
+                    enemyProj.transform.LookAt(projOwner.transform.position);
+
+                    // doubling the damage
+                    enemyProj.GetComponent<ProjectileInfo>().projectileDamage *= 2;
+
+                    // sending it back where it came from
+                    if (rb != null)
+                        rb.AddForce(enemyProj.transform.forward * (parrySpeed * 1.5f), ForceMode.Impulse);
+                }
+                else
+                {
+                    // get a random direction
+                    Vector3 randomDirection = Random.insideUnitCircle.normalized;
+                    randomDirection = new Vector3(randomDirection.x, randomDirection.y, 0);
+
+                    enemyProj.transform.LookAt(randomDirection * parrySpeed);
+
+                    // deflect it in a random direction
+                    if (rb != null)
+                        rb.AddForce(randomDirection * parrySpeed, ForceMode.Impulse);
+
+
+
+                }
+
+
+
+
+            }
+            else
+            {
+                // they just take damage, no need to knock them around
+                TakeDamage(1);
+                Destroy(enemyProj);
+            }
+
+            
         }
 
     }
