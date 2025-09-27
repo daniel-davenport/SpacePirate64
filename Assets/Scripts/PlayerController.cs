@@ -730,7 +730,7 @@ public class PlayerController : MonoBehaviour
 
                     // sending it back where it came from
                     if (rb != null)
-                        rb.AddForce(enemyProj.transform.forward * parrySpeed, ForceMode.Impulse);
+                        rb.AddForce(enemyProj.transform.forward * (parrySpeed * 1.5f), ForceMode.Impulse);
                 }
                 else
                 {
