@@ -125,6 +125,8 @@ GameObject:
   - component: {fileID: 6653078750240335235}
   - component: {fileID: 7657903764301933069}
   - component: {fileID: 334089062770637649}
+  - component: {fileID: 8025418266089119036}
+  - component: {fileID: 7800948338623296920}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -239,12 +241,16 @@ MonoBehaviour:
   maxHealth: 3
   isInvincible: 0
   iFrames: 0.5
+  obstacleKBForce: 5
   xSpeed: 18
   ySpeed: 18
   lookSpeed: 340
   lookIntensity: 1.5
   tiltSpeedBuff: 1.5
   tiltSpeedNerf: 2
+  aileronTime: 0.4
+  perfectParryWindow: 0.15
+  parrySpeed: 50
   aileronCooldown: 1
   bombCooldown: 1
   leanLimit: 80
@@ -260,6 +266,46 @@ MonoBehaviour:
   leftWeaponModel: {fileID: 8204222748499731728}
   rightWeaponModel: {fileID: 150007127898613082}
   playerModel: {fileID: 2485589866479387672}
+  weaponHandler: {fileID: 0}
+--- !u!114 &8025418266089119036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6304848417311388752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a496810c3f5c8441b01652005c21baf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!54 &7800948338623296920
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6304848417311388752}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &6764684166486520411
 GameObject:
   m_ObjectHideFlags: 0

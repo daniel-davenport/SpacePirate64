@@ -64,6 +64,7 @@ public class PlayerController : MonoBehaviour
     public GameObject leftWeaponModel;
     public GameObject rightWeaponModel;
     public GameObject playerModel;
+    public WeaponHandler weaponHandler;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -111,6 +112,9 @@ public class PlayerController : MonoBehaviour
 
         // getting the player's materials
         parriedMaterial = Resources.Load<Material>("Materials/ParriedMaterial");
+
+        // getting references
+        weaponHandler = transform.GetComponent<WeaponHandler>();
 
         tiltTween.SetAutoKill(false);
     }
