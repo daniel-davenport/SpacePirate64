@@ -17,8 +17,8 @@ public class WeaponInfo : ScriptableObject
     }
 
     public Color weaponColor;
-    public MonoScript weaponScript;
 
 
 
 }
+

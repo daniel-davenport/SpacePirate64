@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
 
     public float aileronTime = 0.4f; // how long you're performing an aileron for
     public float perfectParryWindow = 0.15f; // how long the perfect parry window is
-    public float parrySpeed = 50f; // how fast a parried projectile returns
+    public float parrySpeed = 75f; // how fast a parried projectile returns
 
     private bool perfectParry = false;
 
@@ -333,6 +333,8 @@ public class PlayerController : MonoBehaviour
         if (isCharged)
         {
             //print("charged shot: " + weaponSlot);
+
+
         }
         else
         {
@@ -341,12 +343,6 @@ public class PlayerController : MonoBehaviour
             // reset the weapon's cooldown, this can be checked in other ways later.
             StartCoroutine(ResetAttack(weaponSlot));
         }
-
-
-        // weapon's code should go here
-
-
-
 
 
     }
@@ -714,10 +710,6 @@ public class PlayerController : MonoBehaviour
                 // set its layer to playerprojectile
                 enemyProj.layer = LayerMask.NameToLayer("PlayerProjectile");
 
-                // change its color and send it backwards
-                Renderer objectRenderer = other.gameObject.GetComponent<Renderer>();
-                objectRenderer.material = parriedMaterial;
-
                 // get the projectile's owner
                 GameObject projOwner = enemyProj.GetComponent<ProjectileInfo>().projectileOwner;
 
@@ -726,6 +718,10 @@ public class PlayerController : MonoBehaviour
 
                 if (perfectParry)
                 {
+                    // change its color
+                    Renderer objectRenderer = other.gameObject.GetComponent<Renderer>();
+                    objectRenderer.material = parriedMaterial;
+
                     // send it back to the enemy who hit it
                     enemyProj.transform.LookAt(projOwner.transform.position);
 

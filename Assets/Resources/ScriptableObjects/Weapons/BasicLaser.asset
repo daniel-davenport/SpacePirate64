@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75816875ba9ba3442aa05859d57aef4d, type: 3}
   m_Name: BasicLaser
   m_EditorClassIdentifier: 
-  weaponDisplayName: 
-  weaponDamage: 0
-  weaponColor: {r: 0, g: 0, b: 0, a: 0}
+  weaponDisplayName: Basic Laser
+  weaponDamage: 1
+  weaponColor: {r: 0.253471, g: 0.3865187, b: 0.6037736, a: 0}
   weaponScript: {fileID: 0}

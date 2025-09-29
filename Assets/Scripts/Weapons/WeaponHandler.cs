@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Reflection;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -9,8 +10,7 @@ public class WeaponHandler : MonoBehaviour
     // initialize the player's weapons
     [Header("References")]
     public GameObject playerShip;
-    public GameObject leftWeaponModel;
-    public GameObject rightWeaponModel;
+    public PlayerController playerController;
     public GameObject[] weaponModels = new GameObject[2];
 
     [Header("Stats")]
@@ -21,9 +21,12 @@ public class WeaponHandler : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // getting player controller
+        playerController = GetComponent<PlayerController>(); 
+
         // getting the weapon models
-        weaponModels[0] = leftWeaponModel;
-        weaponModels[1] = rightWeaponModel;
+        weaponModels[0] = playerController.leftWeaponModel;
+        weaponModels[1] = playerController.rightWeaponModel;
 
         // get their weapons
         LoadWeaponData();
@@ -66,6 +69,13 @@ public class WeaponHandler : MonoBehaviour
                 Component weaponScript = gameObject.AddComponent(scriptType);
                 weaponComponents[i] = weaponScript;
 
+                // setting the weapon slot (have to do it using reflection since we don't know the type)
+                FieldInfo fi = scriptType.GetField("weaponSlot");
+
+                if (fi != null)
+                    fi.SetValue(weaponScript, i);
+
+
                 //Renderer objectRenderer = weaponModels[i].GetComponent<Renderer>();
                 //objectRenderer.material.color = weaponScript.;
 
@@ -76,5 +86,7 @@ public class WeaponHandler : MonoBehaviour
         }
 
     }
+
+
 
 }
