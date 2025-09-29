@@ -333,12 +333,13 @@ public class PlayerController : MonoBehaviour
         if (isCharged)
         {
             //print("charged shot: " + weaponSlot);
-
+            weaponHandler.FireWeapon(weaponSlot, true);
 
         }
         else
         {
             //print("firing slot: " + weaponSlot);
+            weaponHandler.FireWeapon(weaponSlot, false);
 
             // reset the weapon's cooldown, this can be checked in other ways later.
             StartCoroutine(ResetAttack(weaponSlot));

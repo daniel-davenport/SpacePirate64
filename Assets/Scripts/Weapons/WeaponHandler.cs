@@ -16,7 +16,8 @@ public class WeaponHandler : MonoBehaviour
     [Header("Stats")]
     public WeaponInfo[] weaponInfoArr = new WeaponInfo[2];
     public Component[] weaponComponents = new Component[2];
-    public string[] prevWeaponScripts = new string[2];
+    public Component[] prevWeaponScripts = new Component[2];
+    private MethodInfo[] weaponMethods = new MethodInfo[2];
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -39,6 +40,19 @@ public class WeaponHandler : MonoBehaviour
     void Update()
     {
         
+    }
+
+
+    // calling the script's fire methods via reflection
+    public void FireWeapon(int slot, bool isChargedShot)
+    {
+        //print(slot + " " + isChargedShot);
+        //print(weaponMethods[slot]);
+        if (weaponMethods[slot] != null)
+        {
+            object[] args = { slot, isChargedShot };
+            weaponMethods[slot].Invoke(weaponComponents[slot], args);
+        }
     }
 
 
@@ -75,9 +89,9 @@ public class WeaponHandler : MonoBehaviour
                 if (fi != null)
                     fi.SetValue(weaponScript, i);
 
+                // getting the weapon script's fire method
+                weaponMethods[i] = scriptType.GetMethod("FireWeapon");
 
-                //Renderer objectRenderer = weaponModels[i].GetComponent<Renderer>();
-                //objectRenderer.material.color = weaponScript.;
 
             }
 

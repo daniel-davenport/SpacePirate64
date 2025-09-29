@@ -33,4 +33,22 @@ public class BasicLaserScript : MonoBehaviour
         
     }
 
+    public void FireWeapon(int slot, bool isChargedShot)
+    {
+
+        if (isChargedShot)
+        {
+            print("slot " + slot + " shooting charged shot");
+
+        }
+        else
+        {
+            print("slot " + slot + " shooting normal shot");
+
+
+        }
+
+
+    }
+
 }
