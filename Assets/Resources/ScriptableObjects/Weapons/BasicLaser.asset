@@ -14,5 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponDisplayName: Basic Laser
   weaponDamage: 1
+  projectileSpeed: 100
+  hasChargedShot: 1
+  chargeTime: 0
+  maxChargeTime: 1
   weaponColor: {r: 0.253471, g: 0.3865187, b: 0.6037736, a: 0}
-  weaponScript: {fileID: 0}
+  projectileColor: {r: 0.06132078, g: 1, b: 0.8991501, a: 0}

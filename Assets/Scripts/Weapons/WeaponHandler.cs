@@ -92,6 +92,8 @@ public class WeaponHandler : MonoBehaviour
                 // getting the weapon script's fire method
                 weaponMethods[i] = scriptType.GetMethod("FireWeapon");
 
+                // change the PlayerController's cooldowns to point to here, and have the cooldowns update based on the WeaponInfo
+
 
             }
 

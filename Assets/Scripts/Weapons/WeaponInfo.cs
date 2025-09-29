@@ -6,6 +6,11 @@ public class WeaponInfo : ScriptableObject
 {
     public string weaponDisplayName;
     public int weaponDamage;
+    public float projectileSpeed;
+
+    public bool hasChargedShot;
+    public float chargeTime; // Tracks the current charge level
+    public float maxChargeTime; // The charge time needed to fire a charged shot
 
     public enum WeaponType
     {
@@ -17,7 +22,7 @@ public class WeaponInfo : ScriptableObject
     }
 
     public Color weaponColor;
-
+    public Color projectileColor;
 
 
 }

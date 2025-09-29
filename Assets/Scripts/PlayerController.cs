@@ -289,9 +289,12 @@ public class PlayerController : MonoBehaviour
             Attack(weaponSlot, true);
             chargeTimes[weaponSlot] = 0f;
 
+            return;
+
+            /*
             Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
             objectRenderer.material.color = Color.white;
-            return;
+            */
         }
         else if (chargeTime > 0f && chargeTime < maxChargeTimes[weaponSlot]) // didnt fully charge
         {
@@ -304,20 +307,24 @@ public class PlayerController : MonoBehaviour
             Attack(weaponSlot, false);
             chargeTimes[weaponSlot] = 0f;
 
+            /*
             Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
             objectRenderer.material.color = Color.blue;
-        } 
+            */
+        }
 
 
-        
+
         // charging up that slot's charged shot
         if (chargeTimes[weaponSlot] >= maxChargeTimes[weaponSlot])
         {
             //print(" ----------- fully charged slot " + weaponSlot + " ----------- ");
 
+            /*
             Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
             objectRenderer.material.color = Color.red;
-            
+            */
+
         }
         else
         {
@@ -344,7 +351,6 @@ public class PlayerController : MonoBehaviour
             // reset the weapon's cooldown, this can be checked in other ways later.
             StartCoroutine(ResetAttack(weaponSlot));
         }
-
 
     }
 
@@ -454,12 +460,17 @@ public class PlayerController : MonoBehaviour
     {
         // wait time until it comes back
         yield return new WaitForSeconds(0.1f);
+        attackDebounces[weaponSlot] = false;
+
+
         // print("weapon " + weaponSlot + " reset");
 
+        /*
         Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
         objectRenderer.material.color = Color.white;
+        */
 
-        attackDebounces[weaponSlot] = false;
+
     }
 
     // resets your bomb cooldown.
