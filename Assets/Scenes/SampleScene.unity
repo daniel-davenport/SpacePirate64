@@ -8889,6 +8889,10 @@ PrefabInstance:
       propertyPath: rightWeaponModel
       value: 
       objectReference: {fileID: 8621119360605480808}
+    - target: {fileID: 553300916912171414, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 725797575813728709, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -8973,6 +8977,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2215335825286698169, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2485589866479387672, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -9013,6 +9021,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerPlane
       objectReference: {fileID: 0}
+    - target: {fileID: 5890007784355907949, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6250415391192665422, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: m_Name
       value: 'awingRig '
@@ -9029,9 +9041,13 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 7257698170271195536, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7295563442617481456, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: moveSpeed
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7657903764301933069, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: m_Size.x
