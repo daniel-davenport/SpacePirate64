@@ -8,6 +8,7 @@ public class WeaponInfo : ScriptableObject
     public int weaponDamage;
     public float projectileSpeed;
 
+    public bool chargedLocksOn; // if your charged attack locks on
     public bool hasChargedShot;
     public float chargeTime; // Tracks the current charge level
     public float maxChargeTime; // The charge time needed to fire a charged shot

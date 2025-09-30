@@ -612,8 +612,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a496810c3f5c8441b01652005c21baf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerShip: {fileID: 0}
-  playerController: {fileID: 0}
+  playerShip: {fileID: 4840888438967973127}
+  playerController: {fileID: 334089062770637649}
   weaponModels:
   - {fileID: 0}
   - {fileID: 0}
@@ -624,6 +624,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   prevWeaponScripts:
+  - {fileID: 0}
+  - {fileID: 0}
+  lockedOnEnemies:
   - {fileID: 0}
   - {fileID: 0}
 --- !u!54 &7800948338623296920

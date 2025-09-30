@@ -65,6 +65,7 @@ public class EnemyInit : MonoBehaviour
         }
 
         GameObject enemyModel = Instantiate(enemyInfo.enemyModel, transform.position, Quaternion.identity, transform);
+        enemyModel.layer = LayerMask.NameToLayer("Enemy");
 
         // making a collider
         BoxCollider enemyCollider = enemyModel.AddComponent<BoxCollider>();

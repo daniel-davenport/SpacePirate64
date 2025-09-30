@@ -328,6 +328,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            // start to lock on
+            weaponHandler.LockOn(weaponSlot);
             chargeTimes[weaponSlot] += Time.deltaTime;
         }
             

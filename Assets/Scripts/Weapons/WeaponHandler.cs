@@ -18,6 +18,10 @@ public class WeaponHandler : MonoBehaviour
     public Component[] weaponComponents = new Component[2];
     public Component[] prevWeaponScripts = new Component[2];
     private MethodInfo[] weaponMethods = new MethodInfo[2];
+    public GameObject[] lockedOnEnemies = new GameObject[2];
+
+
+    private float lockOnRadius = 10f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -104,5 +108,24 @@ public class WeaponHandler : MonoBehaviour
     }
 
 
+    // shapecast in front of the player, if it collides with an enemy then add it to a locked on array, then stop
+    public void LockOn(int slot)
+    {
+        // if there's no lock on charging, return
+        if (!weaponInfoArr[slot].chargedLocksOn)
+            return;
+
+        RaycastHit hit;
+        LayerMask enemyMask = LayerMask.NameToLayer("Enemy");
+
+
+        // TODO
+        // draw this on screen to make sure it's going in the right direction
+        if (Physics.SphereCast(playerShip.transform.position, lockOnRadius, playerShip.transform.forward, out hit, 1000f, enemyMask))
+        {
+            print(hit.transform.gameObject);
+        }
+
+    }
 
 }
