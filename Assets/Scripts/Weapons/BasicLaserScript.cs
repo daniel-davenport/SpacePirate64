@@ -75,6 +75,15 @@ public class BasicLaserScript : MonoBehaviour
         {
             print("slot " + slot + " shooting charged shot");
 
+            // charged shot behavior:
+            // while charging, continuously raycast to lock on to an enemy in front of you in a big cone or cylinder
+            // this can be done in the WeaponHandler having an array called "LockedOnTarget" or something that holds 2 enemies, one for each slot
+            // once you release the charged shot, check weaponhandler for a lock on, if there's a lockon then tween it to the enemy's position
+            // otherwise, just shoot it forward and let it do its thing
+
+            // charged shot deals increased damage and locks on to the first enemy you highlight
+
+            // lockon indicator is a spinning diamond inside of a square?
         }
         else
         {
