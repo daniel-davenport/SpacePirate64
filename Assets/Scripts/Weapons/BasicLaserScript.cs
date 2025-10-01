@@ -65,7 +65,7 @@ public class BasicLaserScript : MonoBehaviour
         chargedShot.GetComponent<ProjectileInfo>().projectileDamage = weaponInfo.chargedDamage;
 
         // setting its lifetime
-        Destroy(chargedShot, 100);
+        Destroy(chargedShot, 10);
 
         // change its color
         // Renderer objectRenderer = firedLaser.gameObject.GetComponent<Renderer>();
