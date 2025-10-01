@@ -68,7 +68,7 @@ public class DroneHeavyScoutAI : MonoBehaviour
             Vector3 randomPos = GetRandomPosition();
 
             // tweening to that location
-            transform.DOLocalMove(randomPos, 0.5f);
+            transform.DOLocalMove(randomPos, 0.5f).SetLink(transform.gameObject);
 
             StartCoroutine(AttackCooldown());
         }

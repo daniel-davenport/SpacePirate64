@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
 
     public float aileronTime = 0.4f; // how long you're performing an aileron for
     public float perfectParryWindow = 0.15f; // how long the perfect parry window is
-    public float parrySpeed = 50f; // how fast a parried projectile returns
+    public float parrySpeed = 75f; // how fast a parried projectile returns
 
     private bool perfectParry = false;
 
@@ -64,6 +64,7 @@ public class PlayerController : MonoBehaviour
     public GameObject leftWeaponModel;
     public GameObject rightWeaponModel;
     public GameObject playerModel;
+    public WeaponHandler weaponHandler;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -111,6 +112,9 @@ public class PlayerController : MonoBehaviour
 
         // getting the player's materials
         parriedMaterial = Resources.Load<Material>("Materials/ParriedMaterial");
+
+        // getting references
+        weaponHandler = transform.GetComponent<WeaponHandler>();
 
         tiltTween.SetAutoKill(false);
     }
@@ -285,9 +289,12 @@ public class PlayerController : MonoBehaviour
             Attack(weaponSlot, true);
             chargeTimes[weaponSlot] = 0f;
 
+            return;
+
+            /*
             Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
             objectRenderer.material.color = Color.white;
-            return;
+            */
         }
         else if (chargeTime > 0f && chargeTime < maxChargeTimes[weaponSlot]) // didnt fully charge
         {
@@ -300,20 +307,27 @@ public class PlayerController : MonoBehaviour
             Attack(weaponSlot, false);
             chargeTimes[weaponSlot] = 0f;
 
+            /*
             Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
             objectRenderer.material.color = Color.blue;
-        } 
+            */
+        }
 
 
-        
+
         // charging up that slot's charged shot
         if (chargeTimes[weaponSlot] >= maxChargeTimes[weaponSlot])
         {
             //print(" ----------- fully charged slot " + weaponSlot + " ----------- ");
 
+            /*
             Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
             objectRenderer.material.color = Color.red;
-            
+            */
+
+            // try to lock on when you're fully charged
+            weaponHandler.LockOn(weaponSlot);
+
         }
         else
         {
@@ -329,21 +343,17 @@ public class PlayerController : MonoBehaviour
         if (isCharged)
         {
             //print("charged shot: " + weaponSlot);
+            weaponHandler.FireWeapon(weaponSlot, true);
+
         }
         else
         {
             //print("firing slot: " + weaponSlot);
+            weaponHandler.FireWeapon(weaponSlot, false);
 
             // reset the weapon's cooldown, this can be checked in other ways later.
             StartCoroutine(ResetAttack(weaponSlot));
         }
-
-
-        // weapon's code should go here
-
-
-
-
 
     }
 
@@ -453,12 +463,17 @@ public class PlayerController : MonoBehaviour
     {
         // wait time until it comes back
         yield return new WaitForSeconds(0.1f);
+        attackDebounces[weaponSlot] = false;
+
+
         // print("weapon " + weaponSlot + " reset");
 
+        /*
         Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
         objectRenderer.material.color = Color.white;
+        */
 
-        attackDebounces[weaponSlot] = false;
+
     }
 
     // resets your bomb cooldown.
@@ -710,10 +725,6 @@ public class PlayerController : MonoBehaviour
                 // set its layer to playerprojectile
                 enemyProj.layer = LayerMask.NameToLayer("PlayerProjectile");
 
-                // change its color and send it backwards
-                Renderer objectRenderer = other.gameObject.GetComponent<Renderer>();
-                objectRenderer.material = parriedMaterial;
-
                 // get the projectile's owner
                 GameObject projOwner = enemyProj.GetComponent<ProjectileInfo>().projectileOwner;
 
@@ -722,6 +733,10 @@ public class PlayerController : MonoBehaviour
 
                 if (perfectParry)
                 {
+                    // change its color
+                    Renderer objectRenderer = other.gameObject.GetComponent<Renderer>();
+                    objectRenderer.material = parriedMaterial;
+
                     // send it back to the enemy who hit it
                     enemyProj.transform.LookAt(projOwner.transform.position);
 
