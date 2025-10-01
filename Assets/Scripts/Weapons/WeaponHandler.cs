@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Reflection;
@@ -23,7 +24,7 @@ public class WeaponHandler : MonoBehaviour
     public GameObject[] lockedOnEnemies = new GameObject[2];
 
 
-    private float lockOnRadius = 2f;
+    private float lockOnRadius = 4f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -121,6 +122,22 @@ public class WeaponHandler : MonoBehaviour
     private void ShowLockOn(int slot, GameObject target)
     {
         indicators[slot] = Instantiate(lockOnIndicator, target.transform.parent);
+
+        Transform reticleRef = lockOnIndicator.transform.GetChild(0);
+        GameObject reticle = indicators[slot].transform.GetChild(0).gameObject;
+
+        Vector3 baseRotation = reticleRef.transform.rotation.eulerAngles;
+        reticle.transform.eulerAngles = new Vector3(baseRotation.x * 3, baseRotation.y, baseRotation.z);
+
+        Vector3 baseScale = reticle.transform.localScale;
+        Vector3 targetRotation = baseRotation;
+
+        // make it big
+        reticle.transform.localScale *= 3;
+        //reticle.transform.Rotate(new Vector3(1, 0, 0) * 330, Space.Self);
+
+        reticle.transform.DORotate(targetRotation, 0.25f).SetEase(Ease.OutQuad);
+        reticle.transform.DOScale(baseScale, 0.25f).SetEase(Ease.OutQuad);
 
         StartCoroutine(RemoveIndicator(slot));
     }
