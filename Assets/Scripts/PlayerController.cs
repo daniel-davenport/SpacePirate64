@@ -325,11 +325,12 @@ public class PlayerController : MonoBehaviour
             objectRenderer.material.color = Color.red;
             */
 
+            // try to lock on when you're fully charged
+            weaponHandler.LockOn(weaponSlot);
+
         }
         else
         {
-            // start to lock on
-            weaponHandler.LockOn(weaponSlot);
             chargeTimes[weaponSlot] += Time.deltaTime;
         }
             

@@ -12,6 +12,8 @@ public class WeaponHandler : MonoBehaviour
     public GameObject playerShip;
     public PlayerController playerController;
     public GameObject[] weaponModels = new GameObject[2];
+    private GameObject lockOnIndicator;
+    private GameObject[] indicators = new GameObject[2];
 
     [Header("Stats")]
     public WeaponInfo[] weaponInfoArr = new WeaponInfo[2];
@@ -21,7 +23,7 @@ public class WeaponHandler : MonoBehaviour
     public GameObject[] lockedOnEnemies = new GameObject[2];
 
 
-    private float lockOnRadius = 10f;
+    private float lockOnRadius = 2f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,6 +34,8 @@ public class WeaponHandler : MonoBehaviour
         // getting the weapon models
         weaponModels[0] = playerController.leftWeaponModel;
         weaponModels[1] = playerController.rightWeaponModel;
+
+        lockOnIndicator = Resources.Load<GameObject>("Projectiles/LockOnIndicator");
 
         // get their weapons
         LoadWeaponData();
@@ -54,8 +58,12 @@ public class WeaponHandler : MonoBehaviour
         //print(weaponMethods[slot]);
         if (weaponMethods[slot] != null)
         {
+            // invoke the fire function
             object[] args = { slot, isChargedShot };
             weaponMethods[slot].Invoke(weaponComponents[slot], args);
+
+            // clear the locked on enemy
+            lockedOnEnemies[slot] = null;
         }
     }
 
@@ -96,6 +104,7 @@ public class WeaponHandler : MonoBehaviour
                 // getting the weapon script's fire method
                 weaponMethods[i] = scriptType.GetMethod("FireWeapon");
 
+                // TODO:
                 // change the PlayerController's cooldowns to point to here, and have the cooldowns update based on the WeaponInfo
 
 
@@ -108,22 +117,58 @@ public class WeaponHandler : MonoBehaviour
     }
 
 
+    // create an indicator on the target
+    private void ShowLockOn(int slot, GameObject target)
+    {
+        indicators[slot] = Instantiate(lockOnIndicator, target.transform.parent);
+
+        StartCoroutine(RemoveIndicator(slot));
+    }
+
+
+    IEnumerator RemoveIndicator(int slot)
+    {
+
+        // waits for the lock on to remove, then destroy it after X amount of time
+        yield return new WaitUntil(() => lockedOnEnemies[slot] == null);
+
+        // waits for a bit for the projectile to travel
+        yield return new WaitForSeconds(1);
+
+        // destroy the indicator
+        Destroy(indicators[slot]);
+        indicators[slot] = null;
+
+    }
+
+
     // shapecast in front of the player, if it collides with an enemy then add it to a locked on array, then stop
     public void LockOn(int slot)
     {
         // if there's no lock on charging, return
-        if (!weaponInfoArr[slot].chargedLocksOn)
+        // if there's already a locked on enemy, return
+        if (!weaponInfoArr[slot].chargedLocksOn || lockedOnEnemies[slot] != null)
             return;
 
         RaycastHit hit;
-        LayerMask enemyMask = LayerMask.NameToLayer("Enemy");
+        int layerMask = LayerMask.NameToLayer("Enemy"); // for some reason this ignores that
+        LayerMask enemyMask = (1 << LayerMask.NameToLayer("Enemy")); // BUT IT FUCKING ACCEPTS THIS PIECE OF SHIT
+        //print(layerMask.value);
 
+        Vector3 origin = playerShip.transform.position;
+        Vector3 direction = playerShip.transform.forward;
 
-        // TODO
-        // draw this on screen to make sure it's going in the right direction
-        if (Physics.SphereCast(playerShip.transform.position, lockOnRadius, playerShip.transform.forward, out hit, 1000f, enemyMask))
+        //Debug.DrawRay(origin, direction * 100f, Color.yellow, 100f);
+
+        // the documentation literally says it accepts an integer why the hell does it not work when you pass an integer
+        if (Physics.SphereCast(origin, lockOnRadius, direction, out hit, 100f, enemyMask))
         {
-            print(hit.transform.gameObject);
+            // lock onto the enemy 
+            lockedOnEnemies[slot] = hit.transform.gameObject;
+
+            // show an indicator over them
+            ShowLockOn(slot, lockedOnEnemies[slot]);
+
         }
 
     }

@@ -87,7 +87,7 @@ public class BasicLaserScript : MonoBehaviour
         }
         else
         {
-            print("slot " + slot + " shooting normal shot");
+            //print("slot " + slot + " shooting normal shot");
 
             // create a laser projectile at the fire point and shoot it in the direction the player is facing
             GameObject firedShot = CreateProjectile();
