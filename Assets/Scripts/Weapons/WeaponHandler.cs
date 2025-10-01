@@ -104,9 +104,8 @@ public class WeaponHandler : MonoBehaviour
                 // getting the weapon script's fire method
                 weaponMethods[i] = scriptType.GetMethod("FireWeapon");
 
-                // TODO:
-                // change the PlayerController's cooldowns to point to here, and have the cooldowns update based on the WeaponInfo
-
+                // PlayerController's cooldowns point here
+                playerController.maxChargeTimes[i] = weaponInfoArr[i].maxChargeTime;
 
             }
 
@@ -115,6 +114,7 @@ public class WeaponHandler : MonoBehaviour
         }
 
     }
+
 
 
     // create an indicator on the target
@@ -140,6 +140,11 @@ public class WeaponHandler : MonoBehaviour
         indicators[slot] = null;
 
     }
+
+
+    // later make a MultiLockOn function that instead of locking onto a slot, instead locks on a number, then repeated the lockon
+    // without counting the same enemy (raycasting again behind them)
+    // this'll be useful for some missile weaposn that can fire in salvos
 
 
     // shapecast in front of the player, if it collides with an enemy then add it to a locked on array, then stop
