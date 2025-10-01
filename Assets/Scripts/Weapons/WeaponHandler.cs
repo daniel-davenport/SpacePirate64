@@ -150,7 +150,7 @@ public class WeaponHandler : MonoBehaviour
         yield return new WaitUntil(() => lockedOnEnemies[slot] == null);
 
         // waits for a bit for the projectile to travel
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.33f);
 
         // destroy the indicator
         Destroy(indicators[slot]);
