@@ -57,7 +57,7 @@ public class EnemyInit : MonoBehaviour
     // loads the enemy's data based on the enemyName provided above.
     private void LoadEnemyData()
     {
-        enemyInfo = Resources.Load<EnemyInfo>("ScriptableObjects/" + enemyName + "Info");
+        enemyInfo = Resources.Load<EnemyInfo>("ScriptableObjects/Enemies/" + enemyName + "Info");
 
         if (enemyInfo == null)
         {

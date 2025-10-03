@@ -64,6 +64,9 @@ public class BasicLaserScript : MonoBehaviour
         chargedShot.GetComponent<ProjectileInfo>().projectileOwner = transform.gameObject;
         chargedShot.GetComponent<ProjectileInfo>().projectileDamage = weaponInfo.chargedDamage;
 
+        // todo:
+        // delete the projectile when it reaches its destination
+
         // setting its lifetime
         Destroy(chargedShot, 10);
 

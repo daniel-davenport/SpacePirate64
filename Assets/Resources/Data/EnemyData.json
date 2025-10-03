@@ -1,0 +1,15 @@
+{
+	"enemies" : [
+		{
+			"name": "DroneScout",
+			"cost": 1
+		},
+		
+		{
+			"name": "DroneHeavyScout",
+			"cost": 2
+		}
+		
+	]
+
+}
