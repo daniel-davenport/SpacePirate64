@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 using UnityEngine;
 
 public class SpawnDirector : MonoBehaviour
@@ -18,14 +19,15 @@ public class SpawnDirector : MonoBehaviour
     private int droneCount;
 
     [Header("Spawn Stats")]
-    private float intensity;
-    private float maxIntensity = 50f;
-    private int spawnTickets;
-    private int maxSpawnTickets;
+    public float intensity; // starts at half
+    public float maxIntensity;
+    public int spawnTickets;
+    public int maxSpawnTickets;
 
     [Header("Enemies List")]
     public TextAsset enemyListJson;
     public List<GameObject> spawnedEnemies;
+    public List<GameObject> spawnableEnemies;
 
 
     // setting up enemy .json file
@@ -52,7 +54,6 @@ public class SpawnDirector : MonoBehaviour
     {
         allEnemiesList = JsonUtility.FromJson<EnemyList>(enemyListJson.text);
 
-        intensity = 0;
         spawnTickets = 5;
 
         StartCoroutine(SpawnCoroutine());
@@ -70,9 +71,43 @@ public class SpawnDirector : MonoBehaviour
     }
 
 
-    private void SpawnEnemy()
+    private string FindEnemy(int cost)
+    {
+        string foundEnemy = "";
+
+        // clone the array
+        List<Enemy> randomEnemies = new List<Enemy>(allEnemiesList.enemies);
+
+        while (foundEnemy == "" && randomEnemies.Count > 0)
+        {
+
+            // find a random index
+            int randomIndex = Random.Range(0, randomEnemies.Count);
+
+            // checking the random index's cost
+            if (randomEnemies[randomIndex].cost <= cost)
+            {
+                // this is the enemy to be spawned
+                foundEnemy = randomEnemies[randomIndex].name;
+            }
+            else
+            {
+                // remove this from the list and let the loop take it over
+                randomEnemies.Remove(randomEnemies[randomIndex]);
+            }
+
+        }
+
+        print(foundEnemy);
+
+        return foundEnemy;
+    }
+
+    private void SpawnEnemy(string enemyName)
     {
         // instantiate the enemyHolder and change the enemyName to the spawned enemy name
+
+
     }
 
 
@@ -99,6 +134,35 @@ public class SpawnDirector : MonoBehaviour
             // if intensity is high, increase max spawn tickets, if the intensity is low, do nothing
             // if spawn tickets are zero and intensity is high, set them to max
             // if spawn tickets are zero and intensity is low, set them to half
+
+            if (spawnTickets > 0)
+            {
+                // getting an rng check to see if an enemy will spawn
+                float rng = Random.Range(0, maxIntensity);
+
+                print(rng);
+
+                // less intensity = less spawns
+                if (rng <= intensity)
+                {
+                    // spawn check passed
+
+                    // get a random enemy from the available enemies
+                    string randomEnemy = FindEnemy(spawnTickets);
+
+                    if (randomEnemy != "")
+                        SpawnEnemy(randomEnemy);
+
+                }
+
+
+
+
+
+            }
+
+
+
 
 
 

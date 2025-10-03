@@ -8376,6 +8376,10 @@ PrefabInstance:
       value: EnemyPlane
       objectReference: {fileID: 0}
     - target: {fileID: 6017154546517233610, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
+      propertyPath: enemyHolder
+      value: 
+      objectReference: {fileID: 3402629191274915030, guid: 806b3b64ea0ae8643b05d012ec30c568, type: 3}
+    - target: {fileID: 6017154546517233610, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
       propertyPath: enemyListJson
       value: 
       objectReference: {fileID: 4900000, guid: 58edba8e7d177e845b57b76a08948fd5, type: 3}
