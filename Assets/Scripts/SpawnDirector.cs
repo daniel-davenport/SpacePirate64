@@ -56,7 +56,7 @@ public class SpawnDirector : MonoBehaviour
 
         allEnemiesList = JsonUtility.FromJson<EnemyList>(enemyListJson.text);
 
-        spawnTickets = 5;
+        spawnTickets = Mathf.FloorToInt(maxSpawnTickets / 2);
 
         StartCoroutine(SpawnCoroutine());
     }
@@ -71,7 +71,6 @@ public class SpawnDirector : MonoBehaviour
         if (intensity < 0) 
             intensity = 0;
 
-
     }
 
     // changing the intensity from other scripts
@@ -83,12 +82,12 @@ public class SpawnDirector : MonoBehaviour
         if (increase == true)
         {
             intensity += amount;
-            print("intensity increased");
+            //print("intensity increased");
         }
         else
         {
             intensity -= amount;
-            print("intensity decreased");
+            //print("intensity decreased");
         }
 
     }
@@ -150,7 +149,7 @@ public class SpawnDirector : MonoBehaviour
 
     private IEnumerator SpawnCoroutine()
     {
-        print("coroutine started");
+        // print("coroutine started");
         // only spawn while the game is started
         while (true)
         {
