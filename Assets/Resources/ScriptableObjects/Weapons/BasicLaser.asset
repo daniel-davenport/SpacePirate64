@@ -15,6 +15,7 @@ MonoBehaviour:
   weaponDisplayName: Basic Laser
   weaponDamage: 1
   projectileSpeed: 100
+  firingSpeed: 0.4
   chargedLocksOn: 1
   hasChargedShot: 1
   chargeTime: 0

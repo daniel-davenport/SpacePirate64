@@ -52,6 +52,8 @@ public class SpawnDirector : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        levelDirector = GameObject.FindFirstObjectByType<LevelDirector>();
+
         allEnemiesList = JsonUtility.FromJson<EnemyList>(enemyListJson.text);
 
         spawnTickets = 5;
@@ -62,12 +64,39 @@ public class SpawnDirector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-        // check if the player takes damage, if they do lower intensity
+        // clamping intensity
+        if (intensity > maxIntensity) 
+            intensity = maxIntensity;
 
-        // check if the player has killed an enemy, if they do, increase intensity
+        if (intensity < 0) 
+            intensity = 0;
 
 
+    }
+
+    // changing the intensity from other scripts
+    // taking damage, using bombs, playing poorly should fire this (increase = false)
+    // killing an enemy, perfect parrying, playing well should fire this (increase = true)
+    public void ChangeIntensity(bool increase, int amount)
+    {
+
+        if (increase == true)
+        {
+            intensity += amount;
+            print("intensity increased");
+        }
+        else
+        {
+            intensity -= amount;
+            print("intensity decreased");
+        }
+
+    }
+
+    // simply halves intensity (useful when taking damage, etc)
+    public void HalveIntensity()
+    {
+        intensity = Mathf.FloorToInt(intensity / 2);
     }
 
 
@@ -113,6 +142,7 @@ public class SpawnDirector : MonoBehaviour
         // setting their name and reference to the player
         spawnedEnemy.GetComponent<EnemyInit>().playerShip = weaponHandler.playerShip;
         spawnedEnemy.GetComponent<EnemyInit>().enemyName = enemyName;
+        spawnedEnemy.GetComponent<EnemyInit>().spawnDirector = this;
 
         // their AI should handle the rest.
     }
@@ -158,6 +188,10 @@ public class SpawnDirector : MonoBehaviour
                     if (randomEnemy != "")
                         SpawnEnemy(randomEnemy);
 
+                } else
+                {
+                    // if an enemy doesn't spawn, increase intensity
+                    intensity += 1;
                 }
             }
             else

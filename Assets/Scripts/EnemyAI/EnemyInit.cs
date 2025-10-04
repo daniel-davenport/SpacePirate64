@@ -16,6 +16,7 @@ public class EnemyInit : MonoBehaviour
 
     [Header("References")]
     public GameObject playerShip;
+    public SpawnDirector spawnDirector;
 
     [Header("Stats")]
     public int enemyHealth;
@@ -52,6 +53,13 @@ public class EnemyInit : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void OnDestroy()
+    {
+        // an enemy was destroyed, increase intensity
+        if (spawnDirector != null)
+            spawnDirector.ChangeIntensity(true, 1);
     }
 
     // loads the enemy's data based on the enemyName provided above.
