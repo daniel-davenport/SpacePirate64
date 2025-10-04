@@ -89,6 +89,10 @@ public class SpawnDirector : MonoBehaviour
             {
                 // this is the enemy to be spawned
                 foundEnemy = randomEnemies[randomIndex].name;
+
+                // subtract spawn tickets
+                spawnTickets -= randomEnemies[randomIndex].cost;
+
             }
             else
             {
@@ -98,16 +102,19 @@ public class SpawnDirector : MonoBehaviour
 
         }
 
-        print(foundEnemy);
-
         return foundEnemy;
     }
 
     private void SpawnEnemy(string enemyName)
     {
         // instantiate the enemyHolder and change the enemyName to the spawned enemy name
+        GameObject spawnedEnemy = Instantiate(enemyHolder);
 
+        // setting their name and reference to the player
+        spawnedEnemy.GetComponent<EnemyInit>().playerShip = weaponHandler.playerShip;
+        spawnedEnemy.GetComponent<EnemyInit>().enemyName = enemyName;
 
+        // their AI should handle the rest.
     }
 
 
@@ -122,9 +129,7 @@ public class SpawnDirector : MonoBehaviour
                 yield return new WaitUntil(() => levelDirector.gameStarted == true);
 
             // after this point, game should be started
-            print("game in progress");
-
-
+            //print("game in progress");
 
             // logic:
             // every second check if there are spawn tickets, 
@@ -140,7 +145,7 @@ public class SpawnDirector : MonoBehaviour
                 // getting an rng check to see if an enemy will spawn
                 float rng = Random.Range(0, maxIntensity);
 
-                print(rng);
+                //print(rng);
 
                 // less intensity = less spawns
                 if (rng <= intensity)
@@ -154,17 +159,27 @@ public class SpawnDirector : MonoBehaviour
                         SpawnEnemy(randomEnemy);
 
                 }
+            }
+            else
+            {
+                // out of spawn tickets
+                float intensityRatio = intensity / maxIntensity;
 
-
-
-
+                // adaptive increase/decrease to enemy spawns based on how good/bad the player is doing
+                if (intensityRatio > 0.5f)
+                {
+                    // intensity is high, keep the spawn tickets high by how good they're doing
+                    maxSpawnTickets += Mathf.CeilToInt(10 * intensityRatio);
+                    spawnTickets = maxSpawnTickets;
+                } 
+                else
+                {
+                    // intensity is low, increase spawn tickets by the ratio of intensity
+                    // note: this means the worse you're performing, the less enemies will spawn
+                    spawnTickets = Mathf.FloorToInt(maxSpawnTickets * intensityRatio);
+                }
 
             }
-
-
-
-
-
 
             // spawn controller is polled every second
             yield return new WaitForSeconds(1);

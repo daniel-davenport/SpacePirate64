@@ -29,7 +29,7 @@ public class LevelDirector : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        levelBlocks = Resources.LoadAll<GameObject>("LevelBlocks");
+        levelBlocks = Resources.LoadAll<GameObject>("LevelBlocks/Enabled");
 
         spawnableBlocks = new List<GameObject>(levelBlocks); // resetting the spawnable blocks list
 
