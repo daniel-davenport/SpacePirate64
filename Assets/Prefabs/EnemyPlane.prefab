@@ -115,3 +115,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f98186f06d8cadd46b7431408cbcbd91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 0}
+  weaponHandler: {fileID: 0}
+  levelDirector: {fileID: 0}
+  enemyHolder: {fileID: 0}
+  droneGrid: {fileID: 1396384507436403186}
+  intensity: 0
+  maxIntensity: 0
+  spawnTickets: 0
+  maxSpawnTickets: 0
+  enemyListJson: {fileID: 0}
+  spawnedEnemies: []
+  spawnableEnemies: []
+  allEnemiesList:
+    enemies: []

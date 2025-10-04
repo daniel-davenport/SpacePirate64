@@ -11,6 +11,7 @@ public class SpawnDirector : MonoBehaviour
     public WeaponHandler weaponHandler;
     public LevelDirector levelDirector;
     public GameObject enemyHolder;
+    public DroneGrid droneGrid;
 
     [Header("Player Stats")]
     private float timeSinceDamage;
@@ -36,6 +37,7 @@ public class SpawnDirector : MonoBehaviour
     {
         public string name;
         public int cost;
+        public bool usingGrid;
     }
 
     [System.Serializable]
@@ -108,13 +110,34 @@ public class SpawnDirector : MonoBehaviour
 
         while (foundEnemy == "" && randomEnemies.Count > 0)
         {
-
             // find a random index
             int randomIndex = Random.Range(0, randomEnemies.Count);
+
+            // finding out if it uses the drone grid
+            bool usingDroneGrid = randomEnemies[randomIndex].usingGrid;
+
+            if (usingDroneGrid == true)
+            {
+                int maxDrones = droneGrid.horizontalAmnt * droneGrid.verticalAmnt;
+                int currentDrones = droneGrid.enemyCount;
+
+                
+
+                if (currentDrones >= maxDrones)
+                {
+                    // no more drones can fit, remove it and continue
+                    spawnTickets += 1; // increases spawn tickets to allow a stronger enemy to spawn
+
+                    randomEnemies.Remove(randomEnemies[randomIndex]);
+                    continue;
+                }
+
+            }
 
             // checking the random index's cost
             if (randomEnemies[randomIndex].cost <= cost)
             {
+
                 // this is the enemy to be spawned
                 foundEnemy = randomEnemies[randomIndex].name;
 
