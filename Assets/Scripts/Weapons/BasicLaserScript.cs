@@ -119,6 +119,16 @@ public class BasicLaserScript : MonoBehaviour
             
             yield return new WaitForFixedUpdate();
         }
+
+        if (target == null && projectile != null)
+        {
+            // enemy was killed, just keep going in that direction
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            if (rb != null)
+                rb.AddForce(projectile.transform.forward * weaponInfo.projectileSpeed, ForceMode.Impulse);
+        }
+
     }
 
     public void FireWeapon(int slot, bool isChargedShot)
