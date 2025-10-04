@@ -18,16 +18,18 @@ public class LevelDirector : MonoBehaviour
     public List<GameObject> spawnedBlocks;
 
     [Header("Level Parameters")]
+    public bool gameStarted;
     public int levelTickets;
     public int maxLevelTickets;
     public float inLevelSpeed = 40;
     public float outLevelSpeed = 20;
 
 
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        levelBlocks = Resources.LoadAll<GameObject>("LevelBlocks");
+        levelBlocks = Resources.LoadAll<GameObject>("LevelBlocks/Enabled");
 
         spawnableBlocks = new List<GameObject>(levelBlocks); // resetting the spawnable blocks list
 
@@ -51,6 +53,8 @@ public class LevelDirector : MonoBehaviour
         // make the start line invisible
         StartLine.GetComponent<MeshRenderer>().enabled = false;
 
+        gameStarted = true;
+
     }
 
 
@@ -62,6 +66,8 @@ public class LevelDirector : MonoBehaviour
 
         // make the finish line invisible
         FinishLine.GetComponent<MeshRenderer>().enabled = false;
+
+        gameStarted = false;
 
         // destroy the level?
     }

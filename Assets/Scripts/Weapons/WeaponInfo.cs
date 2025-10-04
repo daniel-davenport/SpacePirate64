@@ -8,6 +8,8 @@ public class WeaponInfo : ScriptableObject
     public string weaponDisplayName;
     public int weaponDamage;
     public float projectileSpeed;
+    public float firingSpeed; // how fast you can fire, lower number = faster firing speed
+
 
     // charged shot settings
     public bool chargedLocksOn; // if your charged attack locks on

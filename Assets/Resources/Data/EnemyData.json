@@ -1,0 +1,17 @@
+{
+	"enemies" : [
+		{
+			"name": "DroneScout",
+			"cost": 1,
+			"usingGrid": true
+		},
+		
+		{
+			"name": "DroneHeavyScout",
+			"cost": 2,
+			"usingGrid": false
+		}
+		
+	]
+
+}

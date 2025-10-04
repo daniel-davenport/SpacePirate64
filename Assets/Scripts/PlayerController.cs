@@ -1,13 +1,7 @@
 using DG.Tweening;
-using NUnit.Framework.Constraints;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.HID;
-using UnityEngine.UIElements;
-using static UnityEngine.GraphicsBuffer;
 
 public class PlayerController : MonoBehaviour
 {
@@ -55,6 +49,7 @@ public class PlayerController : MonoBehaviour
     //       AttackRight = slot 1
     private float[] chargeTimes = new float[] { 0f, 0f }; // Tracks the current charge level
     public float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
+    public float[] firingSpeeds = new float[2];
 
     public int heldBombs = 1;
     public int maxBombs = 3;
@@ -65,6 +60,7 @@ public class PlayerController : MonoBehaviour
     public GameObject rightWeaponModel;
     public GameObject playerModel;
     public WeaponHandler weaponHandler;
+    public SpawnDirector spawnDirector;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -240,6 +236,10 @@ public class PlayerController : MonoBehaviour
 
         // otherwise make them take damage
         playerHealth -= damage;
+
+        // fire to the spawn director that they're playing worse
+        spawnDirector.ChangeIntensity(false, damage);
+        spawnDirector.HalveIntensity();
 
         // make them briefly invincible
         StartCoroutine(PlayerInvincibility());
@@ -461,8 +461,8 @@ public class PlayerController : MonoBehaviour
     // note: cooldown time should be pulled from the weapon's live data, for now it's a default value
     IEnumerator ResetAttack(int weaponSlot)
     {
-        // wait time until it comes back
-        yield return new WaitForSeconds(0.1f);
+        // wait time until it comes back based on the weapon info
+        yield return new WaitForSeconds(firingSpeeds[weaponSlot]);
         attackDebounces[weaponSlot] = false;
 
 
@@ -746,6 +746,10 @@ public class PlayerController : MonoBehaviour
                     // sending it back where it came from
                     if (rb != null)
                         rb.AddForce(enemyProj.transform.forward * (parrySpeed * 1.5f), ForceMode.Impulse);
+
+                    // fire to the spawn director that they're playing better
+                    spawnDirector.ChangeIntensity(true, enemyProj.GetComponent<ProjectileInfo>().projectileDamage);
+
                 }
                 else
                 {

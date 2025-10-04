@@ -105,8 +105,9 @@ public class WeaponHandler : MonoBehaviour
                 // getting the weapon script's fire method
                 weaponMethods[i] = scriptType.GetMethod("FireWeapon");
 
-                // PlayerController's cooldowns point here
+                // PlayerController's cooldowns/firing speeds point here
                 playerController.maxChargeTimes[i] = weaponInfoArr[i].maxChargeTime;
+                playerController.firingSpeeds[i] = weaponInfoArr[i].firingSpeed;
 
             }
 
