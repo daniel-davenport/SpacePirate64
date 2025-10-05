@@ -58,6 +58,7 @@ public class SpawnDirector : MonoBehaviour
 
         allEnemiesList = JsonUtility.FromJson<EnemyList>(enemyListJson.text);
 
+        intensity = Mathf.FloorToInt(maxIntensity / 2); // later change this based on difficulty
         spawnTickets = Mathf.FloorToInt(maxSpawnTickets / 2);
 
         StartCoroutine(SpawnCoroutine());
@@ -156,6 +157,22 @@ public class SpawnDirector : MonoBehaviour
         return foundEnemy;
     }
 
+
+    // destroying all enemies and resetting the list
+    public void DestroyAllEnemies()
+    {
+        for (int i = 0; i < spawnedEnemies.Count; i++)
+        {
+            if (spawnedEnemies[i] != null)
+            {
+                Destroy(spawnedEnemies[i]);
+            }
+        }
+
+        spawnedEnemies = new List<GameObject>();
+    }
+
+
     private void SpawnEnemy(string enemyName)
     {
         // instantiate the enemyHolder and change the enemyName to the spawned enemy name
@@ -166,6 +183,7 @@ public class SpawnDirector : MonoBehaviour
         spawnedEnemy.GetComponent<EnemyInit>().enemyName = enemyName;
         spawnedEnemy.GetComponent<EnemyInit>().spawnDirector = this;
 
+        spawnedEnemies.Add(spawnedEnemy);
         // their AI should handle the rest.
     }
 

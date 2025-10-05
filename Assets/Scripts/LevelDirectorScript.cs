@@ -2,6 +2,8 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System;
+using Random = UnityEngine.Random;
 
 public class LevelDirector : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class LevelDirector : MonoBehaviour
     public GameObject playerPlane;
     public GameObject StartLine;
     public GameObject FinishLine;
+    public SpawnDirector spawnDirector;
     public Transform startPosition;
 
     [Header("Level Objects")]
@@ -69,7 +72,22 @@ public class LevelDirector : MonoBehaviour
 
         gameStarted = false;
 
-        // destroy the level?
+
+        // clear all enemies
+        spawnDirector.DestroyAllEnemies();
+
+        // set intensity back to half
+        spawnDirector.intensity = Mathf.FloorToInt(spawnDirector.maxIntensity / 2);
+
+        // Reset your level tickets
+        levelTickets = maxLevelTickets;
+
+        // restart level generation
+        StartGeneration();
+
+        // set the playerplane's position to 0,0,0
+        playerPlane.transform.position = Vector3.zero;
+
     }
 
     // destroying the spawned level and clearing the list so that it can be used again.
