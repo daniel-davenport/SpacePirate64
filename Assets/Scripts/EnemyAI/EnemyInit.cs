@@ -17,6 +17,7 @@ public class EnemyInit : MonoBehaviour
     [Header("References")]
     public GameObject playerShip;
     public SpawnDirector spawnDirector;
+    public ScoreHandler scoreHandler;
 
     [Header("Stats")]
     public int enemyHealth;
@@ -65,8 +66,8 @@ public class EnemyInit : MonoBehaviour
         // if the player killed them then increase their score + drop loot
         if (tookDamage == true)
         {
-
-
+            // gain score for netting a kill
+            scoreHandler.ChangePlayerScore("kill");
         }
 
     }
@@ -103,7 +104,7 @@ public class EnemyInit : MonoBehaviour
     }
 
     // handles taking damage outside of script
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, string style = null)
     {
         // enemies don't really have iframes so simply deal damage
         tookDamage = true;
@@ -114,6 +115,12 @@ public class EnemyInit : MonoBehaviour
         {
             // destroy the enemy and drop scrap
             Destroy(gameObject);
+        }
+
+        if (style != null)
+        {
+            // gain score for whatever was defined
+            scoreHandler.ChangePlayerScore(style);
         }
 
     }

@@ -14,6 +14,7 @@ public class LevelDirector : MonoBehaviour
     public GameObject FinishLine;
     public SpawnDirector spawnDirector;
     public Transform startPosition;
+    public ScoreHandler scoreHandler;
 
     [Header("Level Objects")]
     public GameObject[] levelBlocks;
@@ -50,7 +51,7 @@ public class LevelDirector : MonoBehaviour
     // when they collide with the starting line
     public void StartCollided()
     {
-        print("start line");
+        //print("start line");
         playerPlane.GetComponent<ForwardMovement>().moveSpeed = inLevelSpeed;
 
         // make the start line invisible
@@ -64,7 +65,7 @@ public class LevelDirector : MonoBehaviour
     // when they collide with the finish line
     public void FinishCollided()
     {
-        print("finish line");
+        //print("finish line");
         playerPlane.GetComponent<ForwardMovement>().moveSpeed = outLevelSpeed;
 
         // make the finish line invisible
@@ -87,6 +88,9 @@ public class LevelDirector : MonoBehaviour
 
         // set the playerplane's position to 0,0,0
         playerPlane.transform.position = Vector3.zero;
+
+        // gain score for finishing a level
+        scoreHandler.ChangePlayerScore("levelFinish");
 
     }
 

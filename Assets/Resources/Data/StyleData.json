@@ -1,0 +1,63 @@
+{
+	"styles" : [
+		{
+			"name": "kill",
+			"displayName": "Kill",
+			"amount": 10
+		},
+
+
+		{
+			"name": "parry",
+			"displayName": "Parry",
+			"amount": 50
+		},
+
+
+		{
+			"name": "deflect",
+			"displayName": "Deflect",
+			"amount": 10
+		},
+
+
+		{
+			"name": "friendlyfire",
+			"displayName": "Friendly Fire",
+			"amount": 30
+		},
+
+
+		{
+			"name": "enemyObstacle",
+			"displayName": "Smashed",
+			"amount": 25
+		},
+		
+
+		{
+			"name": "levelFinish",
+			"displayName": "/// LEVEL CLEARED ///",
+			"amount": 1000
+		},
+
+
+		{
+			"name": "playerObstacle",
+			"displayName": "Crashed",
+			"amount": -25
+		},
+
+
+		{
+			"name": "damage",
+			"displayName": "Damage",
+			"amount": -25
+		}
+
+
+
+		
+	]
+
+}

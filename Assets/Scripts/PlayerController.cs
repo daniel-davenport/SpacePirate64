@@ -61,6 +61,7 @@ public class PlayerController : MonoBehaviour
     public GameObject playerModel;
     public WeaponHandler weaponHandler;
     public SpawnDirector spawnDirector;
+    public ScoreHandler scoreHandler;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -251,6 +252,10 @@ public class PlayerController : MonoBehaviour
             print("player dead");
             // end the game, the player has died.
         }
+        
+        // lose score for taking damage
+        scoreHandler.ChangePlayerScore("damage");
+
     }
 
     // makes the player invisible recursively
@@ -667,6 +672,10 @@ public class PlayerController : MonoBehaviour
             }
 
 
+            // lose score for the collision
+            scoreHandler.ChangePlayerScore("playerObstacle");
+
+
             // old code and attempts
             /*
 
@@ -738,7 +747,13 @@ public class PlayerController : MonoBehaviour
                     objectRenderer.material = parriedMaterial;
 
                     // send it back to the enemy who hit it
-                    enemyProj.transform.LookAt(projOwner.transform.position);
+                    if (projOwner != null)
+                    {
+                        enemyProj.transform.LookAt(projOwner.transform.position);
+                    } else
+                    {
+                        enemyProj.transform.LookAt(-enemyProj.transform.forward);
+                    }
 
                     // doubling the damage
                     enemyProj.GetComponent<ProjectileInfo>().projectileDamage *= 2;
@@ -749,6 +764,9 @@ public class PlayerController : MonoBehaviour
 
                     // fire to the spawn director that they're playing better
                     spawnDirector.ChangeIntensity(true, enemyProj.GetComponent<ProjectileInfo>().projectileDamage);
+
+                    // fire to the score handler that they parried
+                    scoreHandler.ChangePlayerScore("parry");
 
                 }
                 else
@@ -763,7 +781,8 @@ public class PlayerController : MonoBehaviour
                     if (rb != null)
                         rb.AddForce(randomDirection * parrySpeed, ForceMode.Impulse);
 
-
+                    // gain slight score for a deflection
+                    scoreHandler.ChangePlayerScore("deflect");
 
                 }
 
