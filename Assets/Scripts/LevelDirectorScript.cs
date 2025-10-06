@@ -195,9 +195,9 @@ public class LevelDirector : MonoBehaviour
         StartLine.transform.position = startPosition.position;
         FinishLine.transform.position = spawnedBlocks[spawnedBlocks.Count - 1].GetComponent<LevelInformation>().endPosition.position;
 
-        // and make them both visible
-        StartLine.GetComponent<MeshRenderer>().enabled = true;
-        FinishLine.GetComponent<MeshRenderer>().enabled = true;
+        // make start & end lines visible
+        //StartLine.GetComponent<MeshRenderer>().enabled = true;
+        //FinishLine.GetComponent<MeshRenderer>().enabled = true;
 
 
 

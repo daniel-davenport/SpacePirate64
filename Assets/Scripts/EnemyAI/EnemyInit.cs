@@ -22,6 +22,7 @@ public class EnemyInit : MonoBehaviour
     public int enemyHealth;
     public int enemyMaxHealth;
     public int projectileDamage;
+    private bool tookDamage; // tracking if they were killed by taking damage or not
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -60,6 +61,14 @@ public class EnemyInit : MonoBehaviour
         // an enemy was destroyed, increase intensity
         if (spawnDirector != null)
             spawnDirector.ChangeIntensity(true, 1);
+
+        // if the player killed them then increase their score + drop loot
+        if (tookDamage == true)
+        {
+
+
+        }
+
     }
 
     // loads the enemy's data based on the enemyName provided above.
@@ -97,7 +106,7 @@ public class EnemyInit : MonoBehaviour
     public void TakeDamage(int damage)
     {
         // enemies don't really have iframes so simply deal damage
-
+        tookDamage = true;
         enemyHealth -= damage;
         //print("enemy take damage");
 

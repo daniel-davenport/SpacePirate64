@@ -54,7 +54,7 @@ public class SpawnDirector : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        levelDirector = GameObject.FindFirstObjectByType<LevelDirector>();
+        //levelDirector = GameObject.FindFirstObjectByType<LevelDirector>();
 
         allEnemiesList = JsonUtility.FromJson<EnemyList>(enemyListJson.text);
 
