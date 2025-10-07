@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour
     public bool usesRawInput = false;
 
     [Header("Parameters")]
-    public float playerHealth = 3;
-    public float maxHealth = 3;
+    public int playerHealth = 3;
+    public int maxHealth = 3;
     public bool isInvincible = false;
     public float iFrames = 1.5f;
     public float obstacleKBForce = 5f;
@@ -62,6 +62,7 @@ public class PlayerController : MonoBehaviour
     public WeaponHandler weaponHandler;
     public SpawnDirector spawnDirector;
     public ScoreHandler scoreHandler;
+    public PlayerUI playerUI;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -112,6 +113,10 @@ public class PlayerController : MonoBehaviour
 
         // getting references
         weaponHandler = transform.GetComponent<WeaponHandler>();
+        playerUI = transform.GetComponent<PlayerUI>();
+
+        // setting their health
+        playerUI.UpdateHealth(playerHealth);
 
         tiltTween.SetAutoKill(false);
     }
@@ -119,6 +124,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // player death
+        if (playerHealth <= 0)
+            return;
+
         // note: getaxisraw is basically binary with no smoothing
         //       getaxis has smoothing that could be interpreted as delay, acts like a joystick.
         float hInput, vInput;
@@ -255,6 +264,9 @@ public class PlayerController : MonoBehaviour
         
         // lose score for taking damage
         scoreHandler.ChangePlayerScore("damage");
+
+        // update their UI
+        playerUI.UpdateHealth(playerHealth);
 
     }
 

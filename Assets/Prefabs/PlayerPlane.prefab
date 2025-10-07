@@ -460,6 +460,7 @@ GameObject:
   - component: {fileID: 8025418266089119036}
   - component: {fileID: 7800948338623296920}
   - component: {fileID: 4243926663186144682}
+  - component: {fileID: 7004633967340942217}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -605,6 +606,7 @@ MonoBehaviour:
   playerModel: {fileID: 2485589866479387672}
   weaponHandler: {fileID: 0}
   spawnDirector: {fileID: 0}
+  scoreHandler: {fileID: 0}
 --- !u!114 &8025418266089119036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -676,7 +678,24 @@ MonoBehaviour:
   playerController: {fileID: 334089062770637649}
   spawnDirector: {fileID: 0}
   levelDirector: {fileID: 0}
+  playerUI: {fileID: 0}
+  playerScoreText: {fileID: 0}
   playerScore: 0
+  styleListJson: {fileID: 0}
+  allStyleList:
+    styles: []
+--- !u!114 &7004633967340942217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6304848417311388752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7ee6560c7522a0499926d36bfc721b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6764684166486520411
 GameObject:
   m_ObjectHideFlags: 0

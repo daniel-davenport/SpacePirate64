@@ -1,0 +1,52 @@
+using TMPro;
+using UnityEditor.Animations;
+using UnityEngine;
+
+public class PlayerUI : MonoBehaviour
+{
+
+    [Header("References")]
+    public PlayerController playerController;
+    public ScoreHandler scoreHandler;
+    public GameObject playerUI;
+    public Transform healthHolder;
+    public GameObject healthPip;
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        playerController = gameObject.GetComponent<PlayerController>();
+        scoreHandler = gameObject.GetComponent<ScoreHandler>();
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+
+    // clears the health up
+    private void RemoveHealthPip()
+    {
+        foreach(Transform child in healthHolder)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    // sets the health bars based on current health
+    public void UpdateHealth(int health)
+    {
+        RemoveHealthPip();
+
+        if (health > 0)
+        {
+            for (int i = 0; i < health; i++)
+            {
+                GameObject hp = Instantiate(healthPip, healthHolder);
+            }
+        }
+    }
+}
