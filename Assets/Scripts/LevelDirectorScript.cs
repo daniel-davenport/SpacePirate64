@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System;
 using Random = UnityEngine.Random;
+using DG.Tweening;
 
 public class LevelDirector : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class LevelDirector : MonoBehaviour
     public SpawnDirector spawnDirector;
     public Transform startPosition;
     public ScoreHandler scoreHandler;
+    public PlayerController playerController;
 
     [Header("Level Objects")]
     public GameObject[] levelBlocks;
@@ -45,7 +47,18 @@ public class LevelDirector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (playerController.playerHealth <= 0 && gameStarted == true)
+        {
+            // game has ended
+            gameStarted = false;
+
+            // gradually slows the player's ship down to zero
+            float playerSpeed = playerPlane.GetComponent<ForwardMovement>().moveSpeed;
+            DOTween.To(() => playerSpeed, x => playerSpeed = x, 0f, 1.5f).SetEase(Ease.OutQuad).OnUpdate(() =>
+            {
+                playerPlane.GetComponent<ForwardMovement>().moveSpeed = playerSpeed;
+            });
+        }
     }
 
     // when they collide with the starting line

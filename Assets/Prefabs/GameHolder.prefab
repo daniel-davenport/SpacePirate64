@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3016219801866957981}
+  - component: {fileID: 148001180677849925}
   m_Layer: 0
   m_Name: GameHolder
   m_TagString: Untagged
@@ -35,6 +36,19 @@ Transform:
   - {fileID: 2220090499083957003}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &148001180677849925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7266587100229102852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b38d63d83fe80948acc4a8206376b0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 2937767467000985525}
 --- !u!1001 &1153831018591229292
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -252,6 +266,10 @@ PrefabInstance:
       propertyPath: leftWeaponModel
       value: 
       objectReference: {fileID: 6754456981551114740}
+    - target: {fileID: 334089062770637649, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: particleHandler
+      value: 
+      objectReference: {fileID: 148001180677849925}
     - target: {fileID: 334089062770637649, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: rightWeaponModel
       value: 
@@ -699,6 +717,10 @@ PrefabInstance:
       propertyPath: maxLevelTickets
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 2381797552469555759, guid: 61d222fec3b84d3408298f0c52f87a42, type: 3}
+      propertyPath: playerController
+      value: 
+      objectReference: {fileID: 2937767467000985525}
     - target: {fileID: 2638221718644246036, guid: 61d222fec3b84d3408298f0c52f87a42, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -845,6 +867,10 @@ PrefabInstance:
       propertyPath: maxSpawnTickets
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 6017154546517233610, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
+      propertyPath: particleHandler
+      value: 
+      objectReference: {fileID: 148001180677849925}
     - target: {fileID: 6017154546517233610, guid: 9ee1b30ad6b68b243aacb8728cb2c8f1, type: 3}
       propertyPath: playerController
       value: 

@@ -13,6 +13,7 @@ public class SpawnDirector : MonoBehaviour
     public ScoreHandler scoreHandler;
     public GameObject enemyHolder;
     public DroneGrid droneGrid;
+    public ParticleHandler particleHandler;
 
     [Header("Player Stats")]
     private float timeSinceDamage;
@@ -185,6 +186,8 @@ public class SpawnDirector : MonoBehaviour
         spawnedEnemy.GetComponent<EnemyInit>().enemyName = enemyName;
         spawnedEnemy.GetComponent<EnemyInit>().spawnDirector = this;
         spawnedEnemy.GetComponent<EnemyInit>().scoreHandler = scoreHandler;
+        spawnedEnemy.GetComponent<EnemyInit>().particleHandler = particleHandler;
+        spawnedEnemy.GetComponent<EnemyInit>().playerController = playerController;
 
         spawnedEnemies.Add(spawnedEnemy);
         // their AI should handle the rest.

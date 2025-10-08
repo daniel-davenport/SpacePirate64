@@ -18,6 +18,8 @@ public class EnemyInit : MonoBehaviour
     public GameObject playerShip;
     public SpawnDirector spawnDirector;
     public ScoreHandler scoreHandler;
+    public ParticleHandler particleHandler;
+    public PlayerController playerController;
 
     [Header("Stats")]
     public int enemyHealth;
@@ -54,7 +56,9 @@ public class EnemyInit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // cause the enemy's ai to stop when the player dies
+        if (playerController.playerHealth <= 0)
+            stateMachine.currentState = StateMachine.EnemyState.Untarget;
     }
 
     private void OnDestroy()
@@ -69,6 +73,8 @@ public class EnemyInit : MonoBehaviour
             // gain score for netting a kill
             scoreHandler.ChangePlayerScore("kill");
         }
+
+        particleHandler.CreateParticle(transform.position, "explosion");
 
     }
 

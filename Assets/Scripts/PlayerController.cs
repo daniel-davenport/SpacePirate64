@@ -63,6 +63,7 @@ public class PlayerController : MonoBehaviour
     public SpawnDirector spawnDirector;
     public ScoreHandler scoreHandler;
     public PlayerUI playerUI;
+    public ParticleHandler particleHandler;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -254,12 +255,13 @@ public class PlayerController : MonoBehaviour
         // make them briefly invincible
         StartCoroutine(PlayerInvincibility());
 
-        if (playerHealth < 0)
+        if (playerHealth <= 0)
         {
             playerHealth = 0;
 
-            print("player dead");
-            // end the game, the player has died.
+            // making them explode
+            particleHandler.PlayerDeath(playerHolder);
+
         }
         
         // lose score for taking damage
@@ -267,6 +269,7 @@ public class PlayerController : MonoBehaviour
 
         // update their UI
         playerUI.UpdateHealth(playerHealth);
+
 
     }
 
@@ -630,6 +633,9 @@ public class PlayerController : MonoBehaviour
     // note: they have to have IsTrigger set to true
     private void OnTriggerEnter(Collider other)
     {
+        if (playerHealth <= 0)
+            return;
+
         // checking the layer
         int otherLayer = other.gameObject.layer;
 
