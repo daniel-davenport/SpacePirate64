@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
@@ -8,7 +9,11 @@ public class ParticleHandler : MonoBehaviour
 {
 
     [Header("References")]
-    public PlayerController playerController; 
+    public PlayerController playerController;
+    public GameObject FinalScoreHolder;
+    public TextMeshProUGUI finalScoreText;
+    public GameObject ScoreTitle;
+    public GameObject ScoreText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -59,6 +64,32 @@ public class ParticleHandler : MonoBehaviour
         StartCoroutine(ExplosionLoop(player, 3, 10));
     }
 
+    private IEnumerator FinalScore()
+    {
+        // disabling some aspects and enabling others
+        ScoreTitle.SetActive(false);
+        ScoreText.SetActive(false);
+        FinalScoreHolder.SetActive(true);
+
+        yield return new WaitForSeconds(1);
+
+        float finalScore = int.Parse(ScoreText.GetComponent<TextMeshProUGUI>().text);
+        float showingScore = 0;
+
+        while (showingScore < finalScore)
+        {
+            showingScore += 1;
+            showingScore = Mathf.Clamp(showingScore, 0f, finalScore);
+            finalScoreText.text = showingScore + "";
+
+            yield return null;
+        }
+
+        finalScoreText.text = finalScore + "";
+
+        
+    }
+
     private IEnumerator ExplosionLoop(Transform player, float duration, int amount)
     {
         GameObject explosionRef = Resources.Load<GameObject>("Particles/explosion");
@@ -91,6 +122,8 @@ public class ParticleHandler : MonoBehaviour
 
         GibPlayer(player);
 
+        // showing the final stuff
+        StartCoroutine(FinalScore());
 
     }
 

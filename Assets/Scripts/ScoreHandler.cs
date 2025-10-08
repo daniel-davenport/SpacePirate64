@@ -91,7 +91,7 @@ public class ScoreHandler : MonoBehaviour
 
             playerScore += allStyleList.styles[index].amount;
 
-            print(displayText);
+            //print(displayText);
 
             playerScoreText.text = playerScore.ToString();
 

@@ -12,6 +12,7 @@ public class PlayerUI : MonoBehaviour
     public Transform healthHolder;
     public GameObject healthPip;
 
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -47,6 +48,6 @@ public class PlayerUI : MonoBehaviour
             {
                 GameObject hp = Instantiate(healthPip, healthHolder);
             }
-        }
+        } 
     }
 }

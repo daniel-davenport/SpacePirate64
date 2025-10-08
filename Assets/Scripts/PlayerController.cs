@@ -262,6 +262,8 @@ public class PlayerController : MonoBehaviour
             // making them explode
             particleHandler.PlayerDeath(playerHolder);
 
+            // hide the reticle
+
         }
         
         // lose score for taking damage
