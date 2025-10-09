@@ -607,6 +607,8 @@ MonoBehaviour:
   weaponHandler: {fileID: 0}
   spawnDirector: {fileID: 0}
   scoreHandler: {fileID: 0}
+  playerUI: {fileID: 0}
+  particleHandler: {fileID: 0}
 --- !u!114 &8025418266089119036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -696,6 +698,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7ee6560c7522a0499926d36bfc721b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 334089062770637649}
+  scoreHandler: {fileID: 0}
+  playerUI: {fileID: 0}
+  healthHolder: {fileID: 0}
+  healthPip: {fileID: 4449404845622193882, guid: 8224792047fcedb4e8b6e295c7c98182, type: 3}
 --- !u!1 &6764684166486520411
 GameObject:
   m_ObjectHideFlags: 0
