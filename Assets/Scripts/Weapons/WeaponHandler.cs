@@ -137,8 +137,8 @@ public class WeaponHandler : MonoBehaviour
         reticle.transform.localScale *= 3;
         //reticle.transform.Rotate(new Vector3(1, 0, 0) * 330, Space.Self);
 
-        reticle.transform.DORotate(targetRotation, 0.25f).SetEase(Ease.OutQuad);
-        reticle.transform.DOScale(baseScale, 0.25f).SetEase(Ease.OutQuad);
+        reticle.transform.DORotate(targetRotation, 0.25f).SetEase(Ease.OutQuad).SetLink(reticle);
+        reticle.transform.DOScale(baseScale, 0.25f).SetEase(Ease.OutQuad).SetLink(reticle);
 
         StartCoroutine(RemoveIndicator(slot));
     }
@@ -154,8 +154,11 @@ public class WeaponHandler : MonoBehaviour
         yield return new WaitForSeconds(0.33f);
 
         // destroy the indicator
-        Destroy(indicators[slot]);
-        indicators[slot] = null;
+        if (indicators[slot] != null)
+        {
+            Destroy(indicators[slot]);
+            indicators[slot] = null;
+        }
 
     }
 

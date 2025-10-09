@@ -121,10 +121,10 @@ MonoBehaviour:
   enemyHolder: {fileID: 0}
   droneGrid: {fileID: 1396384507436403186}
   intensity: 0
-  maxIntensity: 0
+  maxIntensity: 50
   spawnTickets: 0
-  maxSpawnTickets: 0
-  enemyListJson: {fileID: 0}
+  maxSpawnTickets: 10
+  enemyListJson: {fileID: 4900000, guid: 58edba8e7d177e845b57b76a08948fd5, type: 3}
   spawnedEnemies: []
   spawnableEnemies: []
   allEnemiesList:

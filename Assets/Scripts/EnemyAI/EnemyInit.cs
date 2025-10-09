@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using UnityEditor;
 using UnityEngine;
 
 public class EnemyInit : MonoBehaviour
@@ -17,11 +16,15 @@ public class EnemyInit : MonoBehaviour
     [Header("References")]
     public GameObject playerShip;
     public SpawnDirector spawnDirector;
+    public ScoreHandler scoreHandler;
+    public ParticleHandler particleHandler;
+    public PlayerController playerController;
 
     [Header("Stats")]
     public int enemyHealth;
     public int enemyMaxHealth;
     public int projectileDamage;
+    private bool tookDamage; // tracking if they were killed by taking damage or not
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -34,8 +37,8 @@ public class EnemyInit : MonoBehaviour
         // get their state machine
         stateMachine = GetComponent<StateMachine>();
 
-        // dynamically adding the enemy ai based on the defined script in the ScriptableObject
-        enemyAIName = enemyInfo.enemyAI.name;
+        // dynamically adding the enemy ai based on the defined name in the ScriptableObject
+        enemyAIName = enemyInfo.enemyName + "AI";
         
         scriptType = Type.GetType(enemyAIName);
 
@@ -52,7 +55,9 @@ public class EnemyInit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // cause the enemy's ai to stop when the player dies
+        if (playerController.playerHealth <= 0)
+            stateMachine.currentState = StateMachine.EnemyState.Untarget;
     }
 
     private void OnDestroy()
@@ -60,6 +65,16 @@ public class EnemyInit : MonoBehaviour
         // an enemy was destroyed, increase intensity
         if (spawnDirector != null)
             spawnDirector.ChangeIntensity(true, 1);
+
+        // if the player killed them then increase their score + drop loot
+        if (tookDamage == true)
+        {
+            // gain score for netting a kill
+            scoreHandler.ChangePlayerScore("kill");
+        }
+
+        particleHandler.CreateParticle(transform.position, "explosion");
+
     }
 
     // loads the enemy's data based on the enemyName provided above.
@@ -94,10 +109,10 @@ public class EnemyInit : MonoBehaviour
     }
 
     // handles taking damage outside of script
-    public void TakeDamage(int damage)
+    public void TakeDamage(int damage, string style = null)
     {
         // enemies don't really have iframes so simply deal damage
-
+        tookDamage = true;
         enemyHealth -= damage;
         //print("enemy take damage");
 
@@ -105,6 +120,12 @@ public class EnemyInit : MonoBehaviour
         {
             // destroy the enemy and drop scrap
             Destroy(gameObject);
+        }
+
+        if (style != null)
+        {
+            // gain score for whatever was defined
+            scoreHandler.ChangePlayerScore(style);
         }
 
     }

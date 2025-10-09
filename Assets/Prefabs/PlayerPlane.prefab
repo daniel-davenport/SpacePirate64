@@ -459,6 +459,8 @@ GameObject:
   - component: {fileID: 334089062770637649}
   - component: {fileID: 8025418266089119036}
   - component: {fileID: 7800948338623296920}
+  - component: {fileID: 4243926663186144682}
+  - component: {fileID: 7004633967340942217}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -593,6 +595,9 @@ MonoBehaviour:
   maxChargeTimes:
   - 1
   - 1
+  firingSpeeds:
+  - 0
+  - 0
   heldBombs: 1
   maxBombs: 3
   aimTarget: {fileID: 8999175693336901521}
@@ -600,21 +605,10 @@ MonoBehaviour:
   rightWeaponModel: {fileID: 150007127898613082}
   playerModel: {fileID: 2485589866479387672}
   weaponHandler: {fileID: 0}
-  damageEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11500000, guid: f98186f06d8cadd46b7431408cbcbd91, type: 3}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  spawnDirector: {fileID: 0}
+  scoreHandler: {fileID: 0}
+  playerUI: {fileID: 0}
+  particleHandler: {fileID: 0}
 --- !u!114 &8025418266089119036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -671,6 +665,45 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4243926663186144682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6304848417311388752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4b6faf10b65f24fb9ad69157371a86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 334089062770637649}
+  spawnDirector: {fileID: 0}
+  levelDirector: {fileID: 0}
+  playerUI: {fileID: 0}
+  playerScoreText: {fileID: 0}
+  playerScore: 0
+  styleListJson: {fileID: 0}
+  allStyleList:
+    styles: []
+--- !u!114 &7004633967340942217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6304848417311388752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7ee6560c7522a0499926d36bfc721b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 334089062770637649}
+  scoreHandler: {fileID: 0}
+  playerUI: {fileID: 0}
+  healthHolder: {fileID: 0}
+  healthPip: {fileID: 4449404845622193882, guid: 8224792047fcedb4e8b6e295c7c98182, type: 3}
+  playerReticle: {fileID: 3452556402543908939}
 --- !u!1 &6764684166486520411
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour
     public bool usesRawInput = false;
 
     [Header("Parameters")]
-    public float playerHealth = 3;
-    public float maxHealth = 3;
+    public int playerHealth = 3;
+    public int maxHealth = 3;
     public bool isInvincible = false;
     public float iFrames = 1.5f;
     public float obstacleKBForce = 5f;
@@ -61,6 +61,9 @@ public class PlayerController : MonoBehaviour
     public GameObject playerModel;
     public WeaponHandler weaponHandler;
     public SpawnDirector spawnDirector;
+    public ScoreHandler scoreHandler;
+    public PlayerUI playerUI;
+    public ParticleHandler particleHandler;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -111,6 +114,10 @@ public class PlayerController : MonoBehaviour
 
         // getting references
         weaponHandler = transform.GetComponent<WeaponHandler>();
+        playerUI = transform.GetComponent<PlayerUI>();
+
+        // setting their health
+        playerUI.UpdateHealth(playerHealth);
 
         tiltTween.SetAutoKill(false);
     }
@@ -118,6 +125,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // player death
+        if (playerHealth <= 0)
+            return;
+
         // note: getaxisraw is basically binary with no smoothing
         //       getaxis has smoothing that could be interpreted as delay, acts like a joystick.
         float hInput, vInput;
@@ -244,13 +255,24 @@ public class PlayerController : MonoBehaviour
         // make them briefly invincible
         StartCoroutine(PlayerInvincibility());
 
-        if (playerHealth < 0)
+        if (playerHealth <= 0)
         {
             playerHealth = 0;
 
-            print("player dead");
-            // end the game, the player has died.
+            // making them explode
+            particleHandler.PlayerDeath(playerHolder);
+
+            // hide the reticle
+
         }
+        
+        // lose score for taking damage
+        scoreHandler.ChangePlayerScore("damage");
+
+        // update their UI
+        playerUI.UpdateHealth(playerHealth);
+
+
     }
 
     // makes the player invisible recursively
@@ -613,6 +635,9 @@ public class PlayerController : MonoBehaviour
     // note: they have to have IsTrigger set to true
     private void OnTriggerEnter(Collider other)
     {
+        if (playerHealth <= 0)
+            return;
+
         // checking the layer
         int otherLayer = other.gameObject.layer;
 
@@ -665,6 +690,10 @@ public class PlayerController : MonoBehaviour
                 // tweening them to their destination
                 transform.DOLocalMove(finalPosition, 0.75f).SetEase(Ease.OutQuint);
             }
+
+
+            // lose score for the collision
+            scoreHandler.ChangePlayerScore("playerObstacle");
 
 
             // old code and attempts
@@ -738,7 +767,13 @@ public class PlayerController : MonoBehaviour
                     objectRenderer.material = parriedMaterial;
 
                     // send it back to the enemy who hit it
-                    enemyProj.transform.LookAt(projOwner.transform.position);
+                    if (projOwner != null)
+                    {
+                        enemyProj.transform.LookAt(projOwner.transform.position);
+                    } else
+                    {
+                        enemyProj.transform.LookAt(-enemyProj.transform.forward);
+                    }
 
                     // doubling the damage
                     enemyProj.GetComponent<ProjectileInfo>().projectileDamage *= 2;
@@ -749,6 +784,9 @@ public class PlayerController : MonoBehaviour
 
                     // fire to the spawn director that they're playing better
                     spawnDirector.ChangeIntensity(true, enemyProj.GetComponent<ProjectileInfo>().projectileDamage);
+
+                    // fire to the score handler that they parried
+                    scoreHandler.ChangePlayerScore("parry");
 
                 }
                 else
@@ -763,7 +801,8 @@ public class PlayerController : MonoBehaviour
                     if (rb != null)
                         rb.AddForce(randomDirection * parrySpeed, ForceMode.Impulse);
 
-
+                    // gain slight score for a deflection
+                    scoreHandler.ChangePlayerScore("deflect");
 
                 }
 

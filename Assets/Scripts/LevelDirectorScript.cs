@@ -2,6 +2,9 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System;
+using Random = UnityEngine.Random;
+using DG.Tweening;
 
 public class LevelDirector : MonoBehaviour
 {
@@ -10,7 +13,10 @@ public class LevelDirector : MonoBehaviour
     public GameObject playerPlane;
     public GameObject StartLine;
     public GameObject FinishLine;
+    public SpawnDirector spawnDirector;
     public Transform startPosition;
+    public ScoreHandler scoreHandler;
+    public PlayerController playerController;
 
     [Header("Level Objects")]
     public GameObject[] levelBlocks;
@@ -41,13 +47,24 @@ public class LevelDirector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (playerController.playerHealth <= 0 && gameStarted == true)
+        {
+            // game has ended
+            gameStarted = false;
+
+            // gradually slows the player's ship down to zero
+            float playerSpeed = playerPlane.GetComponent<ForwardMovement>().moveSpeed;
+            DOTween.To(() => playerSpeed, x => playerSpeed = x, 0f, 1.5f).SetEase(Ease.OutQuad).OnUpdate(() =>
+            {
+                playerPlane.GetComponent<ForwardMovement>().moveSpeed = playerSpeed;
+            });
+        }
     }
 
     // when they collide with the starting line
     public void StartCollided()
     {
-        print("start line");
+        //print("start line");
         playerPlane.GetComponent<ForwardMovement>().moveSpeed = inLevelSpeed;
 
         // make the start line invisible
@@ -61,7 +78,7 @@ public class LevelDirector : MonoBehaviour
     // when they collide with the finish line
     public void FinishCollided()
     {
-        print("finish line");
+        //print("finish line");
         playerPlane.GetComponent<ForwardMovement>().moveSpeed = outLevelSpeed;
 
         // make the finish line invisible
@@ -69,7 +86,25 @@ public class LevelDirector : MonoBehaviour
 
         gameStarted = false;
 
-        // destroy the level?
+
+        // clear all enemies
+        spawnDirector.DestroyAllEnemies();
+
+        // set intensity back to half
+        spawnDirector.intensity = Mathf.FloorToInt(spawnDirector.maxIntensity / 2);
+
+        // Reset your level tickets
+        levelTickets = maxLevelTickets;
+
+        // restart level generation
+        StartGeneration();
+
+        // set the playerplane's position to 0,0,0
+        playerPlane.transform.position = Vector3.zero;
+
+        // gain score for finishing a level
+        scoreHandler.ChangePlayerScore("levelFinish");
+
     }
 
     // destroying the spawned level and clearing the list so that it can be used again.
@@ -177,9 +212,9 @@ public class LevelDirector : MonoBehaviour
         StartLine.transform.position = startPosition.position;
         FinishLine.transform.position = spawnedBlocks[spawnedBlocks.Count - 1].GetComponent<LevelInformation>().endPosition.position;
 
-        // and make them both visible
-        StartLine.GetComponent<MeshRenderer>().enabled = true;
-        FinishLine.GetComponent<MeshRenderer>().enabled = true;
+        // make start & end lines visible
+        //StartLine.GetComponent<MeshRenderer>().enabled = true;
+        //FinishLine.GetComponent<MeshRenderer>().enabled = true;
 
 
 

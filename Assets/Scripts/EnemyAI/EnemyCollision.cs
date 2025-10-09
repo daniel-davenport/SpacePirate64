@@ -7,6 +7,7 @@ public class EnemyCollision : MonoBehaviour
     [Header("References")]
     public GameObject enemyHolder;
     public EnemyInit enemyInitScript;
+    public ScoreHandler scoreHandler;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,7 +31,7 @@ public class EnemyCollision : MonoBehaviour
         if (LayerMask.LayerToName(otherLayer) == "Obstacle")
         {
             // deal heavy damage
-            enemyInitScript.TakeDamage(5);
+            enemyInitScript.TakeDamage(5, "enemyObstacle");
 
         }
         else if (LayerMask.LayerToName(otherLayer) == "EnemyProjectile" || LayerMask.LayerToName(otherLayer) == "PlayerProjectile")
@@ -45,9 +46,8 @@ public class EnemyCollision : MonoBehaviour
             if (LayerMask.LayerToName(otherLayer) == "EnemyProjectile" && projOwner != enemyHolder)
             {
                 // came from another enemy, friendly fire bonus
-                enemyInitScript.TakeDamage(projDamage);
+                enemyInitScript.TakeDamage(projDamage, "friendlyfire");
                 Destroy(projectile);
-
             }
             else if (LayerMask.LayerToName(otherLayer) == "PlayerProjectile")
             {
@@ -55,10 +55,15 @@ public class EnemyCollision : MonoBehaviour
                 if (projOwner == enemyHolder)
                 {
                     // friendly fire bonus
+                    enemyInitScript.TakeDamage(projDamage, "friendlyfire");
+                } else
+                {
+                    enemyInitScript.TakeDamage(projDamage);
                 }
 
-                enemyInitScript.TakeDamage(projDamage);
                 Destroy(projectile);
+
+
 
             }
 

@@ -10,8 +10,10 @@ public class SpawnDirector : MonoBehaviour
     public PlayerController playerController;
     public WeaponHandler weaponHandler;
     public LevelDirector levelDirector;
+    public ScoreHandler scoreHandler;
     public GameObject enemyHolder;
     public DroneGrid droneGrid;
+    public ParticleHandler particleHandler;
 
     [Header("Player Stats")]
     private float timeSinceDamage;
@@ -20,6 +22,7 @@ public class SpawnDirector : MonoBehaviour
     private int droneCount;
 
     [Header("Spawn Stats")]
+    private float basePollTime = 1f; // how long between enemy spawn attempts
     public float intensity; // starts at half
     public float maxIntensity;
     public int spawnTickets;
@@ -54,10 +57,11 @@ public class SpawnDirector : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        levelDirector = GameObject.FindFirstObjectByType<LevelDirector>();
+        //levelDirector = GameObject.FindFirstObjectByType<LevelDirector>();
 
         allEnemiesList = JsonUtility.FromJson<EnemyList>(enemyListJson.text);
 
+        intensity = Mathf.FloorToInt(maxIntensity / 2); // later change this based on difficulty
         spawnTickets = Mathf.FloorToInt(maxSpawnTickets / 2);
 
         StartCoroutine(SpawnCoroutine());
@@ -156,6 +160,22 @@ public class SpawnDirector : MonoBehaviour
         return foundEnemy;
     }
 
+
+    // destroying all enemies and resetting the list
+    public void DestroyAllEnemies()
+    {
+        for (int i = 0; i < spawnedEnemies.Count; i++)
+        {
+            if (spawnedEnemies[i] != null)
+            {
+                Destroy(spawnedEnemies[i]);
+            }
+        }
+
+        spawnedEnemies = new List<GameObject>();
+    }
+
+
     private void SpawnEnemy(string enemyName)
     {
         // instantiate the enemyHolder and change the enemyName to the spawned enemy name
@@ -165,7 +185,11 @@ public class SpawnDirector : MonoBehaviour
         spawnedEnemy.GetComponent<EnemyInit>().playerShip = weaponHandler.playerShip;
         spawnedEnemy.GetComponent<EnemyInit>().enemyName = enemyName;
         spawnedEnemy.GetComponent<EnemyInit>().spawnDirector = this;
+        spawnedEnemy.GetComponent<EnemyInit>().scoreHandler = scoreHandler;
+        spawnedEnemy.GetComponent<EnemyInit>().particleHandler = particleHandler;
+        spawnedEnemy.GetComponent<EnemyInit>().playerController = playerController;
 
+        spawnedEnemies.Add(spawnedEnemy);
         // their AI should handle the rest.
     }
 
@@ -191,6 +215,8 @@ public class SpawnDirector : MonoBehaviour
             // if intensity is high, increase max spawn tickets, if the intensity is low, do nothing
             // if spawn tickets are zero and intensity is high, set them to max
             // if spawn tickets are zero and intensity is low, set them to half
+            float pollTime = basePollTime;
+
 
             if (spawnTickets > 0)
             {
@@ -237,8 +263,20 @@ public class SpawnDirector : MonoBehaviour
 
             }
 
-            // spawn controller is polled every second
-            yield return new WaitForSeconds(1);
+
+            // playing at higher intensities will ramp the spawn timer
+            if (intensity >= maxIntensity / 1.75)
+            {
+                // spawn time will approach 0.5 the better you do
+                pollTime = basePollTime / ((intensity / maxIntensity) + 0.75f);
+            }
+            else
+            {
+                pollTime = basePollTime;
+            }
+            
+            // spawn controller is polled every second, unless the player is preforming exceptional.
+            yield return new WaitForSeconds(pollTime);
 
         }
 

@@ -13,7 +13,7 @@ public class StateMachine : MonoBehaviour
         Preparing,
         Attacking,
         Cooldown,
-        Dead
+        Untarget
     }
 
 

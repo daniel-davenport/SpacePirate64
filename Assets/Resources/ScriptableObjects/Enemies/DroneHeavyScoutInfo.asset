@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b86274126ac6bc4487f8384d6c92e33, type: 3}
   m_Name: DroneHeavyScoutInfo
   m_EditorClassIdentifier: 
-  enemyName: Drone Heavy Scout
+  enemyName: DroneHeavyScout
+  enemyDisplayName: Drone Heavy Scout
   enemyHealth: 4
   enemyMaxHealth: 4
   projectileDamage: 1
   enemyModel: {fileID: 919132149155446097, guid: bf8209444e808394aa1b10083999acdc, type: 3}
-  enemyAI: {fileID: 11500000, guid: 83ed9659504633144967f6faa81d2146, type: 3}
