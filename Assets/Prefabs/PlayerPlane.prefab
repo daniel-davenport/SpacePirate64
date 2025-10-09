@@ -703,6 +703,7 @@ MonoBehaviour:
   playerUI: {fileID: 0}
   healthHolder: {fileID: 0}
   healthPip: {fileID: 4449404845622193882, guid: 8224792047fcedb4e8b6e295c7c98182, type: 3}
+  playerReticle: {fileID: 3452556402543908939}
 --- !u!1 &6764684166486520411
 GameObject:
   m_ObjectHideFlags: 0

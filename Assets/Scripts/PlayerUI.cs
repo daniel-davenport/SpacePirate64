@@ -9,6 +9,7 @@ public class PlayerUI : MonoBehaviour
     public GameObject playerUI;
     public Transform healthHolder;
     public GameObject healthPip;
+    public GameObject playerReticle;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -46,6 +47,10 @@ public class PlayerUI : MonoBehaviour
             {
                 GameObject hp = Instantiate(healthPip, healthHolder);
             }
-        } 
+        } else
+        {
+            // hiding the reticle when you die
+            playerReticle.SetActive(false);
+        }
     }
 }
