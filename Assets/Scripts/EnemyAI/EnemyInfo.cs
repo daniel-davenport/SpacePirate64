@@ -1,4 +1,3 @@
-using UnityEditor;
 using UnityEngine;
 
 
@@ -6,13 +5,13 @@ using UnityEngine;
 public class EnemyInfo : ScriptableObject
 {
     public string enemyName;
+    public string enemyDisplayName;
     public int enemyHealth;
     public int enemyMaxHealth;
 
     public int projectileDamage;
 
     public GameObject enemyModel;
-    public MonoScript enemyAI;
 
 
     

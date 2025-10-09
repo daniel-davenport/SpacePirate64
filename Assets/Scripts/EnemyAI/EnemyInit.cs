@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using UnityEditor;
 using UnityEngine;
 
 public class EnemyInit : MonoBehaviour
@@ -38,8 +37,8 @@ public class EnemyInit : MonoBehaviour
         // get their state machine
         stateMachine = GetComponent<StateMachine>();
 
-        // dynamically adding the enemy ai based on the defined script in the ScriptableObject
-        enemyAIName = enemyInfo.enemyAI.name;
+        // dynamically adding the enemy ai based on the defined name in the ScriptableObject
+        enemyAIName = enemyInfo.enemyName + "AI";
         
         scriptType = Type.GetType(enemyAIName);
 
