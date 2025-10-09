@@ -1,9 +1,7 @@
 using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class ParticleHandler : MonoBehaviour
 {
