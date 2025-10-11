@@ -118,8 +118,10 @@ MonoBehaviour:
   playerController: {fileID: 0}
   weaponHandler: {fileID: 0}
   levelDirector: {fileID: 0}
+  scoreHandler: {fileID: 0}
   enemyHolder: {fileID: 0}
   droneGrid: {fileID: 1396384507436403186}
+  particleHandler: {fileID: 0}
   intensity: 0
   maxIntensity: 50
   spawnTickets: 0

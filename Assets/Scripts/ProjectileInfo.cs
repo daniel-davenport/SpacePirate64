@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ProjectileInfo : MonoBehaviour
 {
+    public Transform projectileHolder;
     public GameObject projectileOwner;
     public int projectileDamage;
 
@@ -15,5 +16,12 @@ public class ProjectileInfo : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+    
+
+    // destroy all projectiles when a level ends
+    public void LevelEnded()
+    {
+        Destroy(gameObject);
     }
 }
