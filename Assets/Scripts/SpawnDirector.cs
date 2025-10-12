@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
 using UnityEngine;
+using System.IO;
 
 public class SpawnDirector : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class SpawnDirector : MonoBehaviour
     public int maxSpawnTickets;
 
     [Header("Enemies List")]
-    public TextAsset enemyListJson;
+    private TextAsset enemyListJson;
     public List<GameObject> spawnedEnemies;
     public List<GameObject> spawnableEnemies;
 
@@ -59,7 +60,18 @@ public class SpawnDirector : MonoBehaviour
     {
         //levelDirector = GameObject.FindFirstObjectByType<LevelDirector>();
 
-        allEnemiesList = JsonUtility.FromJson<EnemyList>(enemyListJson.text);
+        // reading enemy info from the physical json instead of a compiled one
+        string enemyFilePath = Path.Combine(Application.streamingAssetsPath, "EnemyData.json");
+        if (File.Exists(enemyFilePath)) {
+            string fileContent = File.ReadAllText(enemyFilePath);
+            enemyListJson = new TextAsset(fileContent);
+
+            allEnemiesList = JsonUtility.FromJson<EnemyList>(enemyListJson.text);
+        } else
+        {
+            print("ERROR: ENEMY DATA FILE NOT FOUND.");
+        }
+            
 
         intensity = Mathf.FloorToInt(maxIntensity / 2); // later change this based on difficulty
         spawnTickets = Mathf.FloorToInt(maxSpawnTickets / 2);
