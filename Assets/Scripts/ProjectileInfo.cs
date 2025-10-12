@@ -22,6 +22,7 @@ public class ProjectileInfo : MonoBehaviour
     // destroy all projectiles when a level ends
     public void LevelEnded()
     {
+        print("level ended projectile destroyed");
         Destroy(gameObject);
     }
 }
