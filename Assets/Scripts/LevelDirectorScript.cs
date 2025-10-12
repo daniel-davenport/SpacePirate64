@@ -1,8 +1,7 @@
-using NUnit.Framework;
+using UnityEngine.Events;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using System;
 using Random = UnityEngine.Random;
 using DG.Tweening;
 
@@ -30,6 +29,8 @@ public class LevelDirector : MonoBehaviour
     public float inLevelSpeed = 40;
     public float outLevelSpeed = 20;
 
+    [Header("Events")]
+    public UnityEvent levelEndEvent;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -84,7 +85,9 @@ public class LevelDirector : MonoBehaviour
         // make the finish line invisible
         FinishLine.GetComponent<MeshRenderer>().enabled = false;
 
+        // ending the game
         gameStarted = false;
+        levelEndEvent.Invoke();
 
 
         // clear all enemies
