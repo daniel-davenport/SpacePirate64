@@ -336,6 +336,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 1
   player: {fileID: 6304848417311388752}
+  levelDirector: {fileID: 0}
 --- !u!1 &6286552290513826529
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,6 +602,7 @@ MonoBehaviour:
   - 0
   heldBombs: 1
   maxBombs: 3
+  mainCamera: {fileID: 2961590559325638884}
   aimTarget: {fileID: 8999175693336901521}
   leftWeaponModel: {fileID: 8204222748499731728}
   rightWeaponModel: {fileID: 150007127898613082}
@@ -610,6 +612,7 @@ MonoBehaviour:
   scoreHandler: {fileID: 0}
   playerUI: {fileID: 0}
   particleHandler: {fileID: 0}
+  cameraFollow: {fileID: 4602668987470335176}
 --- !u!114 &8025418266089119036
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14458,8 +14458,16 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 395834242938100736, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: orthographic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 395834242938100736, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: field of view
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 395834242938100736, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: m_FocalLength
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 395834242938100736, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_BackGroundColor.b
@@ -14472,6 +14480,14 @@ PrefabInstance:
     - target: {fileID: 395834242938100736, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_BackGroundColor.r
       value: 0.5377358
+      objectReference: {fileID: 0}
+    - target: {fileID: 395834242938100736, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: m_projectionMatrixMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 395834242938100736, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: m_NormalizedViewPortRect.width
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 473204981038690652, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_LocalScale.x
@@ -14641,6 +14657,10 @@ PrefabInstance:
       propertyPath: m_ClearDepth
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4239633482333317983, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: m_AllowXRRendering
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4395291324793655086, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -14731,7 +14751,7 @@ PrefabInstance:
       objectReference: {fileID: 636765935}
     - target: {fileID: 6706859261981600912, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_VersionIndex
-      value: 7236
+      value: 7251
       objectReference: {fileID: 0}
     - target: {fileID: 6890879712864759951, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_CellSize.x
@@ -14755,11 +14775,15 @@ PrefabInstance:
       objectReference: {fileID: 802648827}
     - target: {fileID: 8153612830653783937, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_VersionIndex
-      value: 7236
+      value: 7251
       objectReference: {fileID: 0}
     - target: {fileID: 8166887997357711169, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: field of view
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8166887997357711169, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: m_NormalizedViewPortRect.width
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8222748473693937499, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_LocalPosition.z

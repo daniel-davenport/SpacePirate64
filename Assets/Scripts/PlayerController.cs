@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour
     public int maxBombs = 3;
 
     [Header("References")]
+    public Camera mainCamera;
     public Transform aimTarget;
     public GameObject leftWeaponModel;
     public GameObject rightWeaponModel;
@@ -64,6 +65,7 @@ public class PlayerController : MonoBehaviour
     public ScoreHandler scoreHandler;
     public PlayerUI playerUI;
     public ParticleHandler particleHandler;
+    public CameraFollow cameraFollow;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -580,16 +582,27 @@ public class PlayerController : MonoBehaviour
     // Clamps the player's position to the camera viewport, they wont ever be able to exceed the viewport's bounds.
     void ClampPosition()
     {
-        Vector3 position = Camera.main.WorldToViewportPoint(transform.position);
+        // for some reason the worldtoviewportpoint doesnt work in the final build
+        //Vector3 position = mainCamera.WorldToViewportPoint(transform.position);
+        Vector3 position = transform.position;
+
+        int screenWidth = Screen.width;
+        int screenHeight = Screen.height;
+
+        // hardcoded limits, works enough ig, revisit later down the line
+        float xLimit = cameraFollow.limits.x * 4;
+        float yLimit = cameraFollow.limits.y * 3;
 
         //position.x = Mathf.Clamp01(position.x);
         //position.y = Mathf.Clamp01(position.y);
 
         // slightly less forgiving clamp bounds so that the player always fully remains on screen
-        position.x = Mathf.Clamp(position.x, 0.1f, 0.9f);
-        position.y = Mathf.Clamp(position.y, 0.1f, 0.9f);
+        position.x = Mathf.Clamp(position.x, -xLimit, xLimit);
+        position.y = Mathf.Clamp(position.y, -yLimit, yLimit);
 
-        transform.position = Camera.main.ViewportToWorldPoint(position);
+        //transform.position = mainCamera.ViewportToWorldPoint(position);
+        transform.position = new Vector3(position.x, position.y, transform.position.z);
+
     }
 
     // Makes the player look in the direction they're currently flying
