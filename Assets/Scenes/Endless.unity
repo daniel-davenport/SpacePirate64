@@ -8108,6 +8108,10 @@ PrefabInstance:
       propertyPath: m_ClearDepth
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1165094037968719035, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 250
+      objectReference: {fileID: 0}
     - target: {fileID: 1549564559715692642, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -8136,6 +8140,10 @@ PrefabInstance:
       propertyPath: playerUI
       value: 
       objectReference: {fileID: 2020062622}
+    - target: {fileID: 1870655572694423423, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: outLevelSpeed
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 1870655572694423423, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: levelEndEvent.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -8276,6 +8284,10 @@ PrefabInstance:
       propertyPath: m_fontStyle
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5285233121649357844, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: moveSpeed
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 5327998617452175595, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_SizeDelta.x
       value: 300
@@ -8314,7 +8326,7 @@ PrefabInstance:
       objectReference: {fileID: 636765935}
     - target: {fileID: 6706859261981600912, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_VersionIndex
-      value: 7191
+      value: 7212
       objectReference: {fileID: 0}
     - target: {fileID: 6890879712864759951, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_CellSize.x
@@ -8338,7 +8350,7 @@ PrefabInstance:
       objectReference: {fileID: 802648827}
     - target: {fileID: 8153612830653783937, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_VersionIndex
-      value: 7191
+      value: 7212
       objectReference: {fileID: 0}
     - target: {fileID: 8166887997357711169, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: field of view

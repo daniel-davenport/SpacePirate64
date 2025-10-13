@@ -319,7 +319,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 70917563762302416, guid: fc9db9c414945ed4cbca8a94a0433d02, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 46
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 70917563762302416, guid: fc9db9c414945ed4cbca8a94a0433d02, type: 3}
       propertyPath: m_LocalRotation.w
@@ -357,6 +357,10 @@ PrefabInstance:
       propertyPath: scoreHandler
       value: 
       objectReference: {fileID: 1622020552036667726}
+    - target: {fileID: 658979829187610132, guid: fc9db9c414945ed4cbca8a94a0433d02, type: 3}
+      propertyPath: outLevelSpeed
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 658979829187610132, guid: fc9db9c414945ed4cbca8a94a0433d02, type: 3}
       propertyPath: spawnDirector
       value: 

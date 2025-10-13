@@ -27,7 +27,7 @@ public class LevelDirector : MonoBehaviour
     public int levelTickets;
     public int maxLevelTickets;
     public float inLevelSpeed = 40;
-    public float outLevelSpeed = 20;
+    public float outLevelSpeed = 100;
 
     [Header("Events")]
     public UnityEvent levelEndEvent;
@@ -103,7 +103,7 @@ public class LevelDirector : MonoBehaviour
         StartGeneration();
 
         // set the playerplane's position to 0,0,0
-        playerPlane.transform.position = Vector3.zero;
+        playerPlane.transform.position = new Vector3(0, 0, 0);
 
         // gain score for finishing a level
         scoreHandler.ChangePlayerScore("levelFinish");
