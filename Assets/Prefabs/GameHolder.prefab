@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6131872295375167121
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 573070020233302163}
+  m_Layer: 0
+  m_Name: ProjectileHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &573070020233302163
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6131872295375167121}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3016219801866957981}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7266587100229102852
 GameObject:
   m_ObjectHideFlags: 0
@@ -34,6 +65,7 @@ Transform:
   - {fileID: 1165094037968719035}
   - {fileID: 4545048480269069688}
   - {fileID: 2220090499083957003}
+  - {fileID: 573070020233302163}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &148001180677849925
@@ -249,6 +281,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4013324380785921415, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
   m_PrefabInstance: {fileID: 1153831018591229292}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4375422147260481400 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3223350761205492244, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
+  m_PrefabInstance: {fileID: 1153831018591229292}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5152856216770735318 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6305501681807096250, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
@@ -282,7 +319,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 70917563762302416, guid: fc9db9c414945ed4cbca8a94a0433d02, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 46
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 70917563762302416, guid: fc9db9c414945ed4cbca8a94a0433d02, type: 3}
       propertyPath: m_LocalRotation.w
@@ -320,6 +357,10 @@ PrefabInstance:
       propertyPath: scoreHandler
       value: 
       objectReference: {fileID: 1622020552036667726}
+    - target: {fileID: 658979829187610132, guid: fc9db9c414945ed4cbca8a94a0433d02, type: 3}
+      propertyPath: outLevelSpeed
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 658979829187610132, guid: fc9db9c414945ed4cbca8a94a0433d02, type: 3}
       propertyPath: spawnDirector
       value: 
@@ -542,6 +583,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5152856216770735318}
     - target: {fileID: 4243926663186144682, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: styleGrid
+      value: 
+      objectReference: {fileID: 4375422147260481400}
+    - target: {fileID: 4243926663186144682, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: levelDirector
       value: 
       objectReference: {fileID: 1870655572694423423}
@@ -637,6 +682,10 @@ PrefabInstance:
       propertyPath: moveSpeed
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 7295563442617481456, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: levelDirector
+      value: 
+      objectReference: {fileID: 1870655572694423423}
     - target: {fileID: 7657903764301933069, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: m_Size.x
       value: 1.5631187

@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using static SpawnDirector;
@@ -11,6 +12,8 @@ public class ScoreHandler : MonoBehaviour
     public LevelDirector levelDirector;
     public GameObject playerUI;
     public TextMeshProUGUI playerScoreText;
+    public GameObject styleGrid;
+    public GameObject scoreText;
 
     [Header("Scoring")]
     public int playerScore;
@@ -39,7 +42,19 @@ public class ScoreHandler : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        allStyleList = JsonUtility.FromJson<StyleList>(styleListJson.text);
+        // reading style info from the physical json instead of a compiled one
+        string styleFilePath = Path.Combine(Application.streamingAssetsPath, "StyleData.json");
+        if (File.Exists(styleFilePath))
+        {
+            string fileContent = File.ReadAllText(styleFilePath);
+            styleListJson = new TextAsset(fileContent);
+
+            allStyleList = JsonUtility.FromJson<StyleList>(styleListJson.text);
+        }
+        else
+        {
+            print("ERROR: STYLE DATA FILE NOT FOUND.");
+        }
 
         GameObject scoreObject = playerUI.transform.Find("ScoreText").gameObject;
 
@@ -95,7 +110,14 @@ public class ScoreHandler : MonoBehaviour
 
             playerScoreText.text = playerScore.ToString();
 
-            
+
+            // instantiate ScoreText and change the text to match displayText
+            GameObject newScore = Instantiate(scoreText, styleGrid.transform);
+
+            newScore.GetComponent<TextMeshProUGUI>().text = displayText;
+
+            // then distroy it after 3 seconds or so
+            Destroy(newScore, 1.5f);
 
         }
 

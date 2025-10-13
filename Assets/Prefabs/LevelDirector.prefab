@@ -841,7 +841,22 @@ MonoBehaviour:
   levelTickets: 30
   maxLevelTickets: 30
   inLevelSpeed: 40
-  outLevelSpeed: 20
+  outLevelSpeed: 50
+  levelEndEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8795107218121368450, guid: 6cb04cb46d1b4e442a5d639bd7ff5581, type: 3}
+        m_TargetAssemblyTypeName: ProjectileInfo, Assembly-CSharp
+        m_MethodName: LevelEnded
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7725644296886138593
 GameObject:
   m_ObjectHideFlags: 0
