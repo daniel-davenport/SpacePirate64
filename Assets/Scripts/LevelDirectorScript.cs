@@ -29,9 +29,6 @@ public class LevelDirector : MonoBehaviour
     public float inLevelSpeed = 40;
     public float outLevelSpeed = 50;
 
-    [Header("Events")]
-    public UnityEvent levelEndEvent;
-
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -87,7 +84,6 @@ public class LevelDirector : MonoBehaviour
 
         // ending the game
         gameStarted = false;
-        levelEndEvent.Invoke();
 
 
         // clear all enemies
