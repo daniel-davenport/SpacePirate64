@@ -841,7 +841,7 @@ MonoBehaviour:
   levelTickets: 30
   maxLevelTickets: 30
   inLevelSpeed: 40
-  outLevelSpeed: 20
+  outLevelSpeed: 50
   levelEndEvent:
     m_PersistentCalls:
       m_Calls:

@@ -27,7 +27,7 @@ public class LevelDirector : MonoBehaviour
     public int levelTickets;
     public int maxLevelTickets;
     public float inLevelSpeed = 40;
-    public float outLevelSpeed = 100;
+    public float outLevelSpeed = 50;
 
     [Header("Events")]
     public UnityEvent levelEndEvent;

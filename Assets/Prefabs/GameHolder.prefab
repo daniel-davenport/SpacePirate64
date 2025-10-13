@@ -359,7 +359,7 @@ PrefabInstance:
       objectReference: {fileID: 1622020552036667726}
     - target: {fileID: 658979829187610132, guid: fc9db9c414945ed4cbca8a94a0433d02, type: 3}
       propertyPath: outLevelSpeed
-      value: 100
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 658979829187610132, guid: fc9db9c414945ed4cbca8a94a0433d02, type: 3}
       propertyPath: spawnDirector
@@ -682,6 +682,10 @@ PrefabInstance:
       propertyPath: moveSpeed
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 7295563442617481456, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: levelDirector
+      value: 
+      objectReference: {fileID: 1870655572694423423}
     - target: {fileID: 7657903764301933069, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: m_Size.x
       value: 1.5631187
