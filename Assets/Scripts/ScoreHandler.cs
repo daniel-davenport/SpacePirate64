@@ -12,6 +12,8 @@ public class ScoreHandler : MonoBehaviour
     public LevelDirector levelDirector;
     public GameObject playerUI;
     public TextMeshProUGUI playerScoreText;
+    public GameObject styleGrid;
+    public GameObject scoreText;
 
     [Header("Scoring")]
     public int playerScore;
@@ -108,7 +110,14 @@ public class ScoreHandler : MonoBehaviour
 
             playerScoreText.text = playerScore.ToString();
 
-            
+
+            // instantiate ScoreText and change the text to match displayText
+            GameObject newScore = Instantiate(scoreText, styleGrid.transform);
+
+            newScore.GetComponent<TextMeshProUGUI>().text = displayText;
+
+            // then distroy it after 3 seconds or so
+            Destroy(newScore, 1.5f);
 
         }
 

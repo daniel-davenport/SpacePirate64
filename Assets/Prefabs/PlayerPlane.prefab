@@ -587,7 +587,7 @@ MonoBehaviour:
   aileronTime: 0.4
   perfectParryWindow: 0.15
   parrySpeed: 50
-  aileronCooldown: 1
+  aileronCooldown: 0.75
   bombCooldown: 1
   leanLimit: 80
   leanLerpSpeed: 0.1
@@ -683,6 +683,8 @@ MonoBehaviour:
   levelDirector: {fileID: 0}
   playerUI: {fileID: 0}
   playerScoreText: {fileID: 0}
+  styleGrid: {fileID: 0}
+  scoreText: {fileID: 346854227850443294, guid: 530d74fdd729da84baba6201c6e6e315, type: 3}
   playerScore: 0
   styleListJson: {fileID: 0}
   allStyleList:

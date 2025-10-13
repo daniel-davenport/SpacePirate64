@@ -8276,6 +8276,10 @@ PrefabInstance:
       propertyPath: m_fontStyle
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5327998617452175595, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 300
+      objectReference: {fileID: 0}
     - target: {fileID: 5918098722360960564, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_LocalScale.x
       value: 46.62184
@@ -8310,7 +8314,11 @@ PrefabInstance:
       objectReference: {fileID: 636765935}
     - target: {fileID: 6706859261981600912, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_VersionIndex
-      value: 6903
+      value: 7191
+      objectReference: {fileID: 0}
+    - target: {fileID: 6890879712864759951, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: m_CellSize.x
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 7050240795878503700, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_IsActive
@@ -8330,7 +8338,7 @@ PrefabInstance:
       objectReference: {fileID: 802648827}
     - target: {fileID: 8153612830653783937, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_VersionIndex
-      value: 6903
+      value: 7191
       objectReference: {fileID: 0}
     - target: {fileID: 8166887997357711169, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: field of view

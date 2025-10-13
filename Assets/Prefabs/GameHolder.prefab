@@ -281,6 +281,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4013324380785921415, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
   m_PrefabInstance: {fileID: 1153831018591229292}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4375422147260481400 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3223350761205492244, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
+  m_PrefabInstance: {fileID: 1153831018591229292}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5152856216770735318 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6305501681807096250, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
@@ -573,6 +578,10 @@ PrefabInstance:
       propertyPath: playerUI
       value: 
       objectReference: {fileID: 5152856216770735318}
+    - target: {fileID: 4243926663186144682, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: styleGrid
+      value: 
+      objectReference: {fileID: 4375422147260481400}
     - target: {fileID: 4243926663186144682, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: levelDirector
       value: 
