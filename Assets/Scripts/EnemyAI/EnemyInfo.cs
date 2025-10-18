@@ -9,7 +9,11 @@ public class EnemyInfo : ScriptableObject
     public int enemyHealth;
     public int enemyMaxHealth;
 
+    // how much damage their projectile deals
     public int projectileDamage;
+
+    // how much scrap they drop on kill
+    public int scrapDropped;
 
     public GameObject enemyModel;
 

@@ -49,9 +49,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: e3ba87b5db8a3c84c9df5dd133f97d5f, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: e3ba87b5db8a3c84c9df5dd133f97d5f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 2b94c9270c1864147a8ed395a8745611, type: 2}
+    - target: {fileID: -7511558181221131132, guid: e3ba87b5db8a3c84c9df5dd133f97d5f, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 955107f43dd7501449054b4cee138174, type: 2}
     - target: {fileID: 919132149155446097, guid: e3ba87b5db8a3c84c9df5dd133f97d5f, type: 3}
       propertyPath: m_Name
       value: laserProjectile
@@ -140,4 +148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1096eecb75368241bc4ffebbaa25237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  projectileHolder: {fileID: 0}
   projectileOwner: {fileID: 0}
+  projectileDamage: 0
