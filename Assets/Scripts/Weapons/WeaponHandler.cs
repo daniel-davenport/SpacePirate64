@@ -19,10 +19,14 @@ public class WeaponHandler : MonoBehaviour
     [Header("Stats")]
     public WeaponInfo[] weaponInfoArr = new WeaponInfo[2];
     public Component[] weaponComponents = new Component[2];
-    public Component[] prevWeaponScripts = new Component[2];
-    public String[] prevWeaponNames = new String[2];
+    public Component[] equippedWeaponScripts = new Component[2];
+    public String[] equippedWeaponNames = new String[2];
     private MethodInfo[] weaponMethods = new MethodInfo[2];
     public GameObject[] lockedOnEnemies = new GameObject[2];
+
+    // stuff modified by weapon levels
+    public float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
+    public float[] firingSpeeds = new float[2];
 
     // weapon levels
     public int[] weaponLevels = new int[2]; 
@@ -49,7 +53,7 @@ public class WeaponHandler : MonoBehaviour
         LoadWeaponData();
 
         // testing weapon changing
-        StartCoroutine(ChangeWeapons());
+        //StartCoroutine(TestWeaponSwap());
 
     }
 
@@ -90,16 +94,16 @@ public class WeaponHandler : MonoBehaviour
             string weaponScriptName = weaponInfoArr[i].name + "Script";
 
             // check if this slot's weapon name matches the previous weapon name
-            if (prevWeaponNames[i] == weaponInfoArr[i].name)
+            if (equippedWeaponNames[i] == weaponInfoArr[i].name)
             {
                 // if it does then no need to do much of anything, go next.
-                print("same weapon already equipped");
+                //print("same weapon already equipped");
                 continue;
             }
             else 
             {
                 // otherwise, remove the script so the new one can be added later
-                Destroy(prevWeaponScripts[i]);
+                Destroy(equippedWeaponScripts[i]);
             }
                 
             Type scriptType = Type.GetType(weaponScriptName);
@@ -122,13 +126,13 @@ public class WeaponHandler : MonoBehaviour
                 // getting the weapon script's fire method
                 weaponMethods[i] = scriptType.GetMethod("FireWeapon");
 
-                // PlayerController's cooldowns/firing speeds point here
-                playerController.maxChargeTimes[i] = weaponInfoArr[i].maxChargeTime;
-                playerController.firingSpeeds[i] = weaponInfoArr[i].firingSpeed;
+                // setting default cooldowns/firing speeds, PlayerController looks at this
+                maxChargeTimes[i] = weaponInfoArr[i].maxChargeTime;
+                firingSpeeds[i] = weaponInfoArr[i].firingSpeed;
 
                 // saving the weapon's name and script
-                prevWeaponNames[i] = weaponInfoArr[i].name;
-                prevWeaponScripts[i] = weaponScript;
+                equippedWeaponNames[i] = weaponInfoArr[i].name;
+                equippedWeaponScripts[i] = weaponScript;
             } else
             {
                 Debug.Log("WARNING: WEAPON SCRIPT NOT FOUND - " +  weaponScriptName);
@@ -140,7 +144,8 @@ public class WeaponHandler : MonoBehaviour
     }
 
 
-    IEnumerator ChangeWeapons()
+    // testing function for checking weapon swap errors
+    IEnumerator TestWeaponSwap()
     {
         yield return new WaitForSeconds(3);
         LoadWeaponData();
@@ -269,10 +274,16 @@ public class WeaponHandler : MonoBehaviour
                             weaponLevels[i] += 1;
 
                             print("slot " + i + " level up");
+
+                            // show some effect
+
+
                         } else
                         {
                             // weapon max level
                             weaponEXP[i] = 0;
+
+                            // plus whatever EXP goes to score for being level max
 
                         }
 

@@ -48,8 +48,7 @@ public class PlayerController : MonoBehaviour
     // note: AttackLeft = slot 0
     //       AttackRight = slot 1
     private float[] chargeTimes = new float[] { 0f, 0f }; // Tracks the current charge level
-    public float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
-    public float[] firingSpeeds = new float[2];
+    
 
     public int heldBombs = 1;
     public int maxBombs = 3;
@@ -308,7 +307,7 @@ public class PlayerController : MonoBehaviour
     void AttackStart(int weaponSlot, float chargeTime = 0f)
     {
 
-        if (chargeTime > 0f && chargeTime >= maxChargeTimes[weaponSlot]) // firing a charged shot (ignores debounces)
+        if (chargeTime > 0f && chargeTime >= weaponHandler.maxChargeTimes[weaponSlot]) // firing a charged shot (ignores debounces)
         {
             Attack(weaponSlot, true);
             chargeTimes[weaponSlot] = 0f;
@@ -320,7 +319,7 @@ public class PlayerController : MonoBehaviour
             objectRenderer.material.color = Color.white;
             */
         }
-        else if (chargeTime > 0f && chargeTime < maxChargeTimes[weaponSlot]) // didnt fully charge
+        else if (chargeTime > 0f && chargeTime < weaponHandler.maxChargeTimes[weaponSlot]) // didnt fully charge
         {
             chargeTimes[weaponSlot] = 0f;
             return;
@@ -340,7 +339,7 @@ public class PlayerController : MonoBehaviour
 
 
         // charging up that slot's charged shot
-        if (chargeTimes[weaponSlot] >= maxChargeTimes[weaponSlot])
+        if (chargeTimes[weaponSlot] >= weaponHandler.maxChargeTimes[weaponSlot])
         {
             //print(" ----------- fully charged slot " + weaponSlot + " ----------- ");
 
@@ -486,7 +485,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator ResetAttack(int weaponSlot)
     {
         // wait time until it comes back based on the weapon info
-        yield return new WaitForSeconds(firingSpeeds[weaponSlot]);
+        yield return new WaitForSeconds(weaponHandler.firingSpeeds[weaponSlot]);
         attackDebounces[weaponSlot] = false;
 
 
