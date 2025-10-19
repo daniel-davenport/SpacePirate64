@@ -20,6 +20,7 @@ public class WeaponHandler : MonoBehaviour
     public WeaponInfo[] weaponInfoArr = new WeaponInfo[2];
     public Component[] weaponComponents = new Component[2];
     public Component[] prevWeaponScripts = new Component[2];
+    public String[] prevWeaponNames = new String[2];
     private MethodInfo[] weaponMethods = new MethodInfo[2];
     public GameObject[] lockedOnEnemies = new GameObject[2];
 
@@ -47,7 +48,8 @@ public class WeaponHandler : MonoBehaviour
         // get their weapons
         LoadWeaponData();
 
-
+        // testing weapon changing
+        StartCoroutine(ChangeWeapons());
 
     }
 
@@ -83,21 +85,30 @@ public class WeaponHandler : MonoBehaviour
         // note: this for loop does it twice, once per weapon slot.
         for (int i = 0; i <= 1; i++)
         {
-            /*
-            // remove the previous weapon scripts
-            // note: take some consideration here, it should only be removed if you're replacing the slot.
-            Component prevScript = gameObject.GetComponent(prevWeaponScripts[i]);
-            if (prevScript)
-                Destroy(prevScript);
-            */
 
-            // dynamically adding weapon scripts based on the defined script in the ScriptableObject
-            string weaponName = weaponInfoArr[i].name + "Script";
+            // dynamically adding weapon scripts based on the name of the script assigned by the shop
+            string weaponScriptName = weaponInfoArr[i].name + "Script";
 
-            Type scriptType = Type.GetType(weaponName);
+            // check if this slot's weapon name matches the previous weapon name
+            if (prevWeaponNames[i] == weaponInfoArr[i].name)
+            {
+                // if it does then no need to do much of anything, go next.
+                print("same weapon already equipped");
+                continue;
+            }
+            else 
+            {
+                // otherwise, remove the script so the new one can be added later
+                Destroy(prevWeaponScripts[i]);
+            }
+                
+            Type scriptType = Type.GetType(weaponScriptName);
 
             if (scriptType != null)
             {
+                // resetting the weapon level
+                weaponLevels[i] = 1;
+
                 // add their weapon script 
                 Component weaponScript = gameObject.AddComponent(scriptType);
                 weaponComponents[i] = weaponScript;
@@ -115,14 +126,25 @@ public class WeaponHandler : MonoBehaviour
                 playerController.maxChargeTimes[i] = weaponInfoArr[i].maxChargeTime;
                 playerController.firingSpeeds[i] = weaponInfoArr[i].firingSpeed;
 
+                // saving the weapon's name and script
+                prevWeaponNames[i] = weaponInfoArr[i].name;
+                prevWeaponScripts[i] = weaponScript;
+            } else
+            {
+                Debug.Log("WARNING: WEAPON SCRIPT NOT FOUND - " +  weaponScriptName);
             }
-
 
 
         }
 
     }
 
+
+    IEnumerator ChangeWeapons()
+    {
+        yield return new WaitForSeconds(3);
+        LoadWeaponData();
+    }
 
 
     // create an indicator on the target
