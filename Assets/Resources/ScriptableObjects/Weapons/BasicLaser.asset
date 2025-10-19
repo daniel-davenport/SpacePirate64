@@ -16,6 +16,8 @@ MonoBehaviour:
   weaponDamage: 1
   projectileSpeed: 100
   firingSpeed: 0.4
+  maxEXP: 5
+  maxLevel: 3
   chargedLocksOn: 1
   hasChargedShot: 1
   chargeTime: 0

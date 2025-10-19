@@ -49,6 +49,11 @@ MonoBehaviour:
   enemyInfo: {fileID: 0}
   enemyAIName: 
   playerShip: {fileID: 0}
+  spawnDirector: {fileID: 0}
+  scoreHandler: {fileID: 0}
+  particleHandler: {fileID: 0}
+  playerController: {fileID: 0}
+  expDrop: {fileID: 6598241217165729882, guid: a5384d81bb3aaaa4fb8ef3ff89a6612a, type: 3}
   enemyHealth: 0
   enemyMaxHealth: 0
   projectileDamage: 0

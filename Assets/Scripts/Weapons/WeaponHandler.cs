@@ -23,6 +23,9 @@ public class WeaponHandler : MonoBehaviour
     private MethodInfo[] weaponMethods = new MethodInfo[2];
     public GameObject[] lockedOnEnemies = new GameObject[2];
 
+    // weapon levels
+    public int[] weaponLevels = new int[2]; 
+    public int[] weaponEXP = new int[2];
 
     private float lockOnRadius = 4f;
 
@@ -37,6 +40,9 @@ public class WeaponHandler : MonoBehaviour
         weaponModels[1] = playerController.rightWeaponModel;
 
         lockOnIndicator = Resources.Load<GameObject>("Projectiles/LockOnIndicator");
+
+        weaponLevels[0] = 1;
+        weaponLevels[1] = 1;
 
         // get their weapons
         LoadWeaponData();
@@ -197,6 +203,67 @@ public class WeaponHandler : MonoBehaviour
 
         }
 
+    }
+
+
+
+    // colliding with weapon EXP
+    // note: they have to have IsTrigger set to true
+    private void OnTriggerEnter(Collider other)
+    {
+        if (playerController.playerHealth <= 0)
+            return;
+
+        // checking the layer
+        int otherLayer = other.gameObject.layer;
+
+        // colliding with an obstacle
+        if (LayerMask.LayerToName(otherLayer) == "Pickup")
+        {
+            // gaining exp
+            if (other.gameObject.CompareTag("EXP"))
+            {
+                EXPScript expScript = other.transform.GetComponent<EXPScript>();
+                // it's exp
+                //print("picked up " + expScript.expValue +" exp");
+
+                // add the value to both weapons
+                for (int i = 0; i <= 1; i++)
+                {
+                    // stopping if you're max level
+                    if (weaponLevels[i] >= weaponInfoArr[i].maxLevel)
+                        continue;
+
+                    weaponEXP[i] += expScript.expValue;
+
+                    if (weaponEXP[i] >= weaponInfoArr[i].maxEXP)
+                    {
+                        // overflow
+                        weaponEXP[i] -= weaponInfoArr[i].maxEXP;
+
+                        // checking if there's another level above this one
+                        if ((weaponLevels[i] + 1) <= weaponInfoArr[i].maxLevel)
+                        {
+                            weaponLevels[i] += 1;
+
+                            print("slot " + i + " level up");
+                        } else
+                        {
+                            // weapon max level
+                            weaponEXP[i] = 0;
+
+                        }
+
+                    }
+
+                }
+
+                // destroying it
+                Destroy(other.gameObject);
+            }
+
+
+        }
     }
 
 }

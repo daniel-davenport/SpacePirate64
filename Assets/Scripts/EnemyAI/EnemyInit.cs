@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnemyInit : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class EnemyInit : MonoBehaviour
     public ScoreHandler scoreHandler;
     public ParticleHandler particleHandler;
     public PlayerController playerController;
+    public GameObject expDrop;
 
     [Header("Stats")]
     public int enemyHealth;
@@ -62,6 +64,9 @@ public class EnemyInit : MonoBehaviour
 
     private void OnDestroy()
     {
+        // getting the enemy's location
+        Vector3 enemyPos = transform.position;  
+
         // an enemy was destroyed, increase intensity
         if (spawnDirector != null)
             spawnDirector.ChangeIntensity(true, 1);
@@ -71,6 +76,45 @@ public class EnemyInit : MonoBehaviour
         {
             // gain score for netting a kill
             scoreHandler.ChangePlayerScore("kill");
+
+            // also drop exp.
+            // exp drop is similar to cave story where all enemies can drop 1-3 experience crystals.
+            int rng = Random.Range(1, 3);
+
+            for (int i = 0; i < rng; i++)
+            {
+                // create an exp drop and give it a random rotation
+                GameObject droppedEXP = Instantiate(expDrop);
+                droppedEXP.transform.position = enemyPos;
+
+                // clamp it within the player's bounds
+
+                
+                // setting the exp value
+                droppedEXP.GetComponent<EXPScript>().expValue = 1;
+
+                Rigidbody rb = droppedEXP.GetComponent<Rigidbody>();
+
+                // add force in positive Z so that it can fly in front of the player briefly and let them know it exists
+                float kbForce = 250f;
+                rb.AddForce(new Vector3(0, 0, 1) * kbForce, ForceMode.Impulse);
+
+                // spinning it in a random direction
+                float maxAngularVelocity = 10f;
+
+                Vector3 randomAngularVelocity = new Vector3(
+                    Random.Range(-maxAngularVelocity, maxAngularVelocity),
+                    Random.Range(-maxAngularVelocity, maxAngularVelocity),
+                    Random.Range(-maxAngularVelocity, maxAngularVelocity)
+                );
+
+                rb.angularVelocity = randomAngularVelocity;
+
+                Destroy(droppedEXP, 5);
+
+            }
+
+
         }
 
         particleHandler.CreateParticle(transform.position, "explosion");

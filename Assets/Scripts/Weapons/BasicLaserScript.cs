@@ -14,6 +14,8 @@ public class BasicLaserScript : MonoBehaviour
 
     [Header("Stats")]
     public int weaponSlot;
+    public int weaponLevel;
+
     public WeaponInfo weaponInfo;
     public WeaponHandler weaponHandler;
     public Transform firePoint;
@@ -136,7 +138,7 @@ public class BasicLaserScript : MonoBehaviour
 
         if (isChargedShot)
         {
-            print("slot " + slot + " shooting charged shot");
+            //print("slot " + slot + " shooting charged shot");
 
             // charged shot behavior:
             // while charging, continuously raycast to lock on to an enemy in front of you in a big cone or cylinder
