@@ -133,6 +133,7 @@ public class WeaponHandler : MonoBehaviour
                 // saving the weapon's name and script
                 equippedWeaponNames[i] = weaponInfoArr[i].name;
                 equippedWeaponScripts[i] = weaponScript;
+
             } else
             {
                 Debug.Log("WARNING: WEAPON SCRIPT NOT FOUND - " +  weaponScriptName);
@@ -233,6 +234,30 @@ public class WeaponHandler : MonoBehaviour
     }
 
 
+    // setting the charge visual in the PlayerController
+    public void SetChargeVisual(int slot, GameObject visualRef)
+    {
+        GameObject chargeVisual = Instantiate(visualRef);
+
+        // setting the visual to firepoint
+        chargeVisual.transform.SetParent(weaponModels[slot].transform.GetChild(0).transform);
+
+        // centering it
+        chargeVisual.transform.localPosition = Vector3.zero;
+
+        // destroying its collider and rb
+        if (chargeVisual.GetComponent<Rigidbody>())
+            Destroy(chargeVisual.GetComponent<Rigidbody>());
+
+        if (chargeVisual.GetComponent<Collider>())
+            Destroy(chargeVisual.GetComponent<Collider>());
+
+
+        chargeVisual.transform.localScale = Vector3.zero;
+
+        // setting it in the playercontroller
+        playerController.chargeVisuals[slot] = chargeVisual;
+    }
 
     // colliding with weapon EXP
     // note: they have to have IsTrigger set to true
@@ -284,6 +309,7 @@ public class WeaponHandler : MonoBehaviour
                             weaponEXP[i] = 0;
 
                             // plus whatever EXP goes to score for being level max
+
 
                         }
 

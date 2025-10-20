@@ -11,6 +11,7 @@ public class BasicLaserScript : MonoBehaviour
     public GameObject laserProjectile;
     public GameObject chargedShotProjectile;
     public GameObject playerShip;
+    public GameObject chargeVisual;
 
     [Header("Stats")]
     public int weaponSlot;
@@ -62,6 +63,10 @@ public class BasicLaserScript : MonoBehaviour
         // setting the damage vars
         projectileDamage = weaponInfo.weaponDamage;
         chargedDamage = weaponInfo.chargedDamage;
+
+        // setting the charge visual
+        chargeVisual = chargedShotProjectile;
+        weaponHandler.SetChargeVisual(weaponSlot, chargeVisual);
 
     }
 

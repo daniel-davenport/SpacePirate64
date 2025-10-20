@@ -48,7 +48,8 @@ public class PlayerController : MonoBehaviour
     // note: AttackLeft = slot 0
     //       AttackRight = slot 1
     private float[] chargeTimes = new float[] { 0f, 0f }; // Tracks the current charge level
-    
+    public GameObject[] chargeVisuals = new GameObject[2]; // used to represent how charged the weapons are
+    public float chargeVisualSize = 3; // how much the size is multiplied by to change its scale
 
     public int heldBombs = 1;
     public int maxBombs = 3;
@@ -148,7 +149,7 @@ public class PlayerController : MonoBehaviour
         LocalMove(hInput, vInput, xSpeed, ySpeed);
         AimLook(hInput, vInput, lookSpeed);
         HorizontalLean(playerHolder, hInput, leanLimit, leanLerpSpeed);
-
+        ChargeVisual();
 
         // Attacking with slot 0
         if (attackLeftAction.IsPressed())
@@ -357,6 +358,20 @@ public class PlayerController : MonoBehaviour
             chargeTimes[weaponSlot] += Time.deltaTime;
         }
             
+    }
+
+    void ChargeVisual()
+    {
+        for (int i = 0; i <= 1; i++)
+        {
+            // updating the visual
+            if (chargeVisuals[i] != null)
+            {
+                float ratio = chargeTimes[i] / weaponHandler.maxChargeTimes[i];
+                Vector3 size = new Vector3(ratio, ratio, ratio);
+                chargeVisuals[i].transform.localScale = size * chargeVisualSize;
+            }
+        }
     }
 
     // Fires the specific weapon called, also takes in the argument if it's a charged attack or not.
