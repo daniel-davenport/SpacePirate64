@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 public class EnemyInit : MonoBehaviour
@@ -87,11 +88,32 @@ public class EnemyInit : MonoBehaviour
                 GameObject droppedEXP = Instantiate(expDrop);
                 droppedEXP.transform.position = enemyPos;
 
-                // clamp it within the player's bounds
 
+
+                // clamp it within the player's bounds so they can pick it up
+                Vector3 position = droppedEXP.transform.position;
                 
+                float cameraLimX = playerController.cameraFollow.limits.x;
+                float cameraLimY = playerController.cameraFollow.limits.y;
+
+                float limitMultX = playerController.cameraFollow.limitMult.x;
+                float limitMultY = playerController.cameraFollow.limitMult.y;
+
+                // hardcoded limits mimicked from the playercontroller
+                float xLimit = cameraLimX * limitMultX;
+                float yLimit = cameraLimY * limitMultY;
+
+                position.x = Mathf.Clamp(position.x, -xLimit, xLimit);
+                position.y = Mathf.Clamp(position.y, -yLimit, yLimit);
+
+                // setting the clamp
+                droppedEXP.transform.position = new Vector3(position.x, position.y, droppedEXP.transform.position.z);
+
+
+
+
                 // setting the exp value
-                droppedEXP.GetComponent<EXPScript>().expValue = 1;
+                droppedEXP.GetComponent<PickupScript>().expValue = 1;
 
                 Rigidbody rb = droppedEXP.GetComponent<Rigidbody>();
 
@@ -111,6 +133,8 @@ public class EnemyInit : MonoBehaviour
                 rb.angularVelocity = randomAngularVelocity;
 
                 Destroy(droppedEXP, 5);
+
+
 
             }
 

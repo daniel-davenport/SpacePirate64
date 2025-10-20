@@ -35,7 +35,7 @@ public class BasicLaserScript : MonoBehaviour
     weapon levels:
     1 - projectile has a somewhat lengthy cooldown, charge time is long
     2 - projectile cooldown greatly reduced, damage increased by 1
-    3 - projectile cooldown removed, damage further increased by 1, projectile size increased
+    3 - projectile cooldown removed, damage further increased by 1
 
      */
 
@@ -64,7 +64,7 @@ public class BasicLaserScript : MonoBehaviour
         projectileDamage = weaponInfo.weaponDamage;
         chargedDamage = weaponInfo.chargedDamage;
 
-        // setting the charge visual
+        // setting the charge visual (optional)
         chargeVisual = chargedShotProjectile;
         weaponHandler.SetChargeVisual(weaponSlot, chargeVisual);
 

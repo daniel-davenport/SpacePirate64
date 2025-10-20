@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     public bool isInvincible = false;
     public float iFrames = 1.5f;
     public float obstacleKBForce = 5f;
+    public int heldScrap = 0;
+    public int startingScrapAmount = 10;
 
     public float xSpeed = 18;
     public float ySpeed = 18;
@@ -120,6 +122,10 @@ public class PlayerController : MonoBehaviour
 
         // setting their health
         playerUI.UpdateHealth(playerHealth);
+
+        // setting scrap
+        heldScrap = startingScrapAmount;
+
 
         tiltTween.SetAutoKill(false);
     }
@@ -604,8 +610,8 @@ public class PlayerController : MonoBehaviour
         int screenHeight = Screen.height;
 
         // hardcoded limits, works enough ig, revisit later down the line
-        float xLimit = cameraFollow.limits.x * 4;
-        float yLimit = cameraFollow.limits.y * 3;
+        float xLimit = cameraFollow.limits.x * cameraFollow.limitMult.x;
+        float yLimit = cameraFollow.limits.y * cameraFollow.limitMult.y;
 
         //position.x = Mathf.Clamp01(position.x);
         //position.y = Mathf.Clamp01(position.y);
@@ -769,7 +775,8 @@ public class PlayerController : MonoBehaviour
 
             */
 
-        } else if (LayerMask.LayerToName(otherLayer) == "EnemyProjectile")
+        } 
+        else if (LayerMask.LayerToName(otherLayer) == "EnemyProjectile")
         {
             GameObject enemyProj = other.gameObject;
 
@@ -845,6 +852,16 @@ public class PlayerController : MonoBehaviour
             }
 
             
+        }
+        else if (LayerMask.LayerToName(otherLayer) == "Pickup")
+        {
+            // gaining scrap
+            if (other.gameObject.CompareTag("Scrap"))
+            {
+                
+
+
+            }
         }
 
     }

@@ -1,10 +1,11 @@
 using System.Collections;
 using UnityEngine;
 
-public class EXPScript : MonoBehaviour
+public class PickupScript : MonoBehaviour
 {
     [Header("Info")]
     public int expValue;
+    public int scrapValue;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -19,7 +20,6 @@ public class EXPScript : MonoBehaviour
     }
 
     // on collision, destroy it, the weaponhandler can handle the rest
-
 
     // make it a trigger so that it can't hit anything anymore
     private IEnumerator RemoveCollision()

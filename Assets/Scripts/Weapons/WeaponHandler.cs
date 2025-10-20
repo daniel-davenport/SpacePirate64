@@ -275,7 +275,7 @@ public class WeaponHandler : MonoBehaviour
             // gaining exp
             if (other.gameObject.CompareTag("EXP"))
             {
-                EXPScript expScript = other.transform.GetComponent<EXPScript>();
+                PickupScript expScript = other.transform.GetComponent<PickupScript>();
                 // it's exp
                 //print("picked up " + expScript.expValue +" exp");
 

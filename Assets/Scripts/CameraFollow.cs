@@ -9,6 +9,7 @@ public class CameraFollow : MonoBehaviour
     public Vector3 offset = Vector3.zero;
 
     public Vector2 limits = new Vector2(4, 3);
+    public Vector2 limitMult = new Vector2(4, 3);
 
     [Header("Smooth Damp Time")]
     [Range(0, 1)]
