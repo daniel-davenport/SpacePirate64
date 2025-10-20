@@ -858,8 +858,12 @@ public class PlayerController : MonoBehaviour
             // gaining scrap
             if (other.gameObject.CompareTag("Scrap"))
             {
-                
+                PickupScript pickupScript = other.transform.GetComponent<PickupScript>();
 
+                heldScrap += pickupScript.heldValue;
+
+                // move it to the player then destroy it
+                Destroy(other.gameObject);
 
             }
         }

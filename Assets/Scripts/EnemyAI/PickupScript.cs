@@ -4,8 +4,7 @@ using UnityEngine;
 public class PickupScript : MonoBehaviour
 {
     [Header("Info")]
-    public int expValue;
-    public int scrapValue;
+    public int heldValue;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

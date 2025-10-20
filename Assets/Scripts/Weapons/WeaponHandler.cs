@@ -286,7 +286,7 @@ public class WeaponHandler : MonoBehaviour
                     if (weaponLevels[i] >= weaponInfoArr[i].maxLevel)
                         continue;
 
-                    weaponEXP[i] += expScript.expValue;
+                    weaponEXP[i] += expScript.heldValue;
 
                     if (weaponEXP[i] >= weaponInfoArr[i].maxEXP)
                     {
