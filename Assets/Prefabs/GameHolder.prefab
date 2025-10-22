@@ -301,6 +301,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 9115420724885508531, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
   m_PrefabInstance: {fileID: 1153831018591229292}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8733496776517115024 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7579740938397239804, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
+  m_PrefabInstance: {fileID: 1153831018591229292}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1211694785256903019
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -654,6 +665,10 @@ PrefabInstance:
       propertyPath: healthPip
       value: 
       objectReference: {fileID: 4449404845622193882, guid: 8224792047fcedb4e8b6e295c7c98182, type: 3}
+    - target: {fileID: 7004633967340942217, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: scrapText
+      value: 
+      objectReference: {fileID: 8733496776517115024}
     - target: {fileID: 7004633967340942217, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: ScoreTitle
       value: 

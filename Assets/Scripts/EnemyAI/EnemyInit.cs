@@ -170,8 +170,10 @@ public class EnemyInit : MonoBehaviour
         // setting the clamp
         droppedObject.transform.position = new Vector3(position.x, position.y, droppedObject.transform.position.z);
 
-        // setting the value of the pickup
+        // setting the value of the pickup + passing limits
         droppedObject.GetComponent<PickupScript>().heldValue = value;
+        droppedObject.GetComponent<PickupScript>().limits = new Vector2(cameraLimX, cameraLimY);
+        droppedObject.GetComponent<PickupScript>().limitsMult = new Vector2(limitMultX, limitMultY);
 
         Rigidbody rb = droppedObject.GetComponent<Rigidbody>();
 

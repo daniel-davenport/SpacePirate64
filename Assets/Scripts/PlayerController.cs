@@ -366,6 +366,7 @@ public class PlayerController : MonoBehaviour
             
     }
 
+    // charging your weapons visually
     void ChargeVisual()
     {
         for (int i = 0; i <= 1; i++)
@@ -862,8 +863,8 @@ public class PlayerController : MonoBehaviour
 
                 heldScrap += pickupScript.heldValue;
 
-                // move it to the player then destroy it
-                Destroy(other.gameObject);
+                // move it to the player
+                pickupScript.CollectItem(gameObject);
 
             }
         }

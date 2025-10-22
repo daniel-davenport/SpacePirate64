@@ -275,7 +275,7 @@ public class WeaponHandler : MonoBehaviour
             // gaining exp
             if (other.gameObject.CompareTag("EXP"))
             {
-                PickupScript expScript = other.transform.GetComponent<PickupScript>();
+                PickupScript pickupScript = other.transform.GetComponent<PickupScript>();
                 // it's exp
                 //print("picked up " + expScript.expValue +" exp");
 
@@ -286,7 +286,7 @@ public class WeaponHandler : MonoBehaviour
                     if (weaponLevels[i] >= weaponInfoArr[i].maxLevel)
                         continue;
 
-                    weaponEXP[i] += expScript.heldValue;
+                    weaponEXP[i] += pickupScript.heldValue;
 
                     if (weaponEXP[i] >= weaponInfoArr[i].maxEXP)
                     {
@@ -317,10 +317,10 @@ public class WeaponHandler : MonoBehaviour
 
                 }
 
-                // destroying it
-                Destroy(other.gameObject);
-            }
+                // move it to the player
+                pickupScript.CollectItem(gameObject);
 
+            }
 
         }
     }
