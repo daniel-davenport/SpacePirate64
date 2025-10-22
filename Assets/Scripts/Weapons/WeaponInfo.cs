@@ -10,6 +10,9 @@ public class WeaponInfo : ScriptableObject
     public float projectileSpeed;
     public float firingSpeed; // how fast you can fire, lower number = faster firing speed
 
+    // weapon exp
+    public int maxEXP; // how much exp you need to level it up
+    public int maxLevel; // how many levels
 
     // charged shot settings
     public bool chargedLocksOn; // if your charged attack locks on

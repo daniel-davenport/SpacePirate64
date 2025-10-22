@@ -19,10 +19,18 @@ public class WeaponHandler : MonoBehaviour
     [Header("Stats")]
     public WeaponInfo[] weaponInfoArr = new WeaponInfo[2];
     public Component[] weaponComponents = new Component[2];
-    public Component[] prevWeaponScripts = new Component[2];
+    public Component[] equippedWeaponScripts = new Component[2];
+    public String[] equippedWeaponNames = new String[2];
     private MethodInfo[] weaponMethods = new MethodInfo[2];
     public GameObject[] lockedOnEnemies = new GameObject[2];
 
+    // stuff modified by weapon levels
+    public float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
+    public float[] firingSpeeds = new float[2];
+
+    // weapon levels
+    public int[] weaponLevels = new int[2]; 
+    public int[] weaponEXP = new int[2];
 
     private float lockOnRadius = 4f;
 
@@ -38,10 +46,14 @@ public class WeaponHandler : MonoBehaviour
 
         lockOnIndicator = Resources.Load<GameObject>("Projectiles/LockOnIndicator");
 
+        weaponLevels[0] = 1;
+        weaponLevels[1] = 1;
+
         // get their weapons
         LoadWeaponData();
 
-
+        // testing weapon changing
+        //StartCoroutine(TestWeaponSwap());
 
     }
 
@@ -77,21 +89,30 @@ public class WeaponHandler : MonoBehaviour
         // note: this for loop does it twice, once per weapon slot.
         for (int i = 0; i <= 1; i++)
         {
-            /*
-            // remove the previous weapon scripts
-            // note: take some consideration here, it should only be removed if you're replacing the slot.
-            Component prevScript = gameObject.GetComponent(prevWeaponScripts[i]);
-            if (prevScript)
-                Destroy(prevScript);
-            */
 
-            // dynamically adding weapon scripts based on the defined script in the ScriptableObject
-            string weaponName = weaponInfoArr[i].name + "Script";
+            // dynamically adding weapon scripts based on the name of the script assigned by the shop
+            string weaponScriptName = weaponInfoArr[i].name + "Script";
 
-            Type scriptType = Type.GetType(weaponName);
+            // check if this slot's weapon name matches the previous weapon name
+            if (equippedWeaponNames[i] == weaponInfoArr[i].name)
+            {
+                // if it does then no need to do much of anything, go next.
+                //print("same weapon already equipped");
+                continue;
+            }
+            else 
+            {
+                // otherwise, remove the script so the new one can be added later
+                Destroy(equippedWeaponScripts[i]);
+            }
+                
+            Type scriptType = Type.GetType(weaponScriptName);
 
             if (scriptType != null)
             {
+                // resetting the weapon level
+                weaponLevels[i] = 1;
+
                 // add their weapon script 
                 Component weaponScript = gameObject.AddComponent(scriptType);
                 weaponComponents[i] = weaponScript;
@@ -105,18 +126,31 @@ public class WeaponHandler : MonoBehaviour
                 // getting the weapon script's fire method
                 weaponMethods[i] = scriptType.GetMethod("FireWeapon");
 
-                // PlayerController's cooldowns/firing speeds point here
-                playerController.maxChargeTimes[i] = weaponInfoArr[i].maxChargeTime;
-                playerController.firingSpeeds[i] = weaponInfoArr[i].firingSpeed;
+                // setting default cooldowns/firing speeds, PlayerController looks at this
+                maxChargeTimes[i] = weaponInfoArr[i].maxChargeTime;
+                firingSpeeds[i] = weaponInfoArr[i].firingSpeed;
 
+                // saving the weapon's name and script
+                equippedWeaponNames[i] = weaponInfoArr[i].name;
+                equippedWeaponScripts[i] = weaponScript;
+
+            } else
+            {
+                Debug.Log("WARNING: WEAPON SCRIPT NOT FOUND - " +  weaponScriptName);
             }
-
 
 
         }
 
     }
 
+
+    // testing function for checking weapon swap errors
+    IEnumerator TestWeaponSwap()
+    {
+        yield return new WaitForSeconds(3);
+        LoadWeaponData();
+    }
 
 
     // create an indicator on the target
@@ -197,6 +231,98 @@ public class WeaponHandler : MonoBehaviour
 
         }
 
+    }
+
+
+    // setting the charge visual in the PlayerController
+    public void SetChargeVisual(int slot, GameObject visualRef)
+    {
+        GameObject chargeVisual = Instantiate(visualRef);
+
+        // setting the visual to firepoint
+        chargeVisual.transform.SetParent(weaponModels[slot].transform.GetChild(0).transform);
+
+        // centering it
+        chargeVisual.transform.localPosition = Vector3.zero;
+
+        // destroying its collider and rb
+        if (chargeVisual.GetComponent<Rigidbody>())
+            Destroy(chargeVisual.GetComponent<Rigidbody>());
+
+        if (chargeVisual.GetComponent<Collider>())
+            Destroy(chargeVisual.GetComponent<Collider>());
+
+
+        chargeVisual.transform.localScale = Vector3.zero;
+
+        // setting it in the playercontroller
+        playerController.chargeVisuals[slot] = chargeVisual;
+    }
+
+    // colliding with weapon EXP
+    // note: they have to have IsTrigger set to true
+    private void OnTriggerEnter(Collider other)
+    {
+        if (playerController.playerHealth <= 0)
+            return;
+
+        // checking the layer
+        int otherLayer = other.gameObject.layer;
+
+        // colliding with an obstacle
+        if (LayerMask.LayerToName(otherLayer) == "Pickup")
+        {
+            // gaining exp
+            if (other.gameObject.CompareTag("EXP"))
+            {
+                PickupScript pickupScript = other.transform.GetComponent<PickupScript>();
+                // it's exp
+                //print("picked up " + expScript.expValue +" exp");
+
+                // add the value to both weapons
+                for (int i = 0; i <= 1; i++)
+                {
+                    // stopping if you're max level
+                    if (weaponLevels[i] >= weaponInfoArr[i].maxLevel)
+                        continue;
+
+                    weaponEXP[i] += pickupScript.heldValue;
+
+                    if (weaponEXP[i] >= weaponInfoArr[i].maxEXP)
+                    {
+                        // overflow
+                        weaponEXP[i] -= weaponInfoArr[i].maxEXP;
+
+                        // checking if there's another level above this one
+                        if ((weaponLevels[i] + 1) <= weaponInfoArr[i].maxLevel)
+                        {
+                            weaponLevels[i] += 1;
+
+                            print("slot " + i + " level up");
+
+                            // show some effect
+
+
+                        } else
+                        {
+                            // weapon max level
+                            weaponEXP[i] = 0;
+
+                            // plus whatever EXP goes to score for being level max
+
+
+                        }
+
+                    }
+
+                }
+
+                // move it to the player
+                pickupScript.CollectItem(gameObject);
+
+            }
+
+        }
     }
 
 }

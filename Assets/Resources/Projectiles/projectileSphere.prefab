@@ -22,15 +22,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f009d5ad808fa6148af1e5b41e4aa9b5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.6353378
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f009d5ad808fa6148af1e5b41e4aa9b5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -16.468615
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f009d5ad808fa6148af1e5b41e4aa9b5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 47.095566
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f009d5ad808fa6148af1e5b41e4aa9b5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -147,5 +147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1096eecb75368241bc4ffebbaa25237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  projectileHolder: {fileID: 0}
   projectileOwner: {fileID: 0}
   projectileDamage: 0

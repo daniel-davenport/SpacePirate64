@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 public class EnemyInit : MonoBehaviour
 {
@@ -19,6 +21,8 @@ public class EnemyInit : MonoBehaviour
     public ScoreHandler scoreHandler;
     public ParticleHandler particleHandler;
     public PlayerController playerController;
+    public GameObject expDrop;
+    public GameObject scrapDrop;
 
     [Header("Stats")]
     public int enemyHealth;
@@ -62,6 +66,9 @@ public class EnemyInit : MonoBehaviour
 
     private void OnDestroy()
     {
+        // getting the enemy's location
+        Vector3 enemyPos = transform.position;  
+
         // an enemy was destroyed, increase intensity
         if (spawnDirector != null)
             spawnDirector.ChangeIntensity(true, 1);
@@ -71,9 +78,113 @@ public class EnemyInit : MonoBehaviour
         {
             // gain score for netting a kill
             scoreHandler.ChangePlayerScore("kill");
+
+            // also drop exp.
+            // exp drop is similar to cave story where all enemies can drop 1-3 experience crystals.
+            int rng = Random.Range(1, 3);
+
+            for (int i = 0; i < rng; i++)
+            {
+                CreatePickup("exp", enemyPos, 1);
+            }
+
+
+            // drop some scrap based on the scrap value of the enemy
+            CreatePickup("scrap", enemyPos, enemyInfo.scrapDropped);
+
+
         }
 
         particleHandler.CreateParticle(transform.position, "explosion");
+
+    }
+
+    // creating a pickup, either exp or scrap
+    private void CreatePickup(string dropType, Vector3 enemyPos, int value)
+    {
+        GameObject dropObject;
+        Vector3 randomAngularVelocity;
+        float maxAngularVelocity = 10f;
+
+        // selecting the drop
+        switch (dropType)
+        {
+            // dropping exp
+            case "exp":
+                dropObject = expDrop;
+
+                randomAngularVelocity = new Vector3(
+                    Random.Range(-maxAngularVelocity, maxAngularVelocity),
+                    Random.Range(-maxAngularVelocity, maxAngularVelocity),
+                    Random.Range(-maxAngularVelocity, maxAngularVelocity)
+                );
+
+            break;
+
+
+            // dropping scrap
+            case "scrap":
+                dropObject = scrapDrop;
+
+                randomAngularVelocity = new Vector3(
+                    0,
+                    0,
+                    Random.Range(-maxAngularVelocity, maxAngularVelocity)
+                );
+
+            break;
+
+
+
+            default:
+                dropObject = null;
+
+                randomAngularVelocity = Vector3.zero;
+            break;
+        }
+
+        // base case
+        if (dropObject == null)
+            return;
+
+        // create an exp drop and give it a random rotation
+        GameObject droppedObject = Instantiate(dropObject);
+        droppedObject.transform.position = enemyPos;
+
+        // clamp it within the player's bounds so they can pick it up
+        Vector3 position = droppedObject.transform.position;
+
+        float cameraLimX = playerController.cameraFollow.limits.x;
+        float cameraLimY = playerController.cameraFollow.limits.y;
+
+        float limitMultX = playerController.cameraFollow.limitMult.x;
+        float limitMultY = playerController.cameraFollow.limitMult.y;
+
+        // hardcoded limits mimicked from the playercontroller
+        float xLimit = cameraLimX * limitMultX;
+        float yLimit = cameraLimY * limitMultY;
+
+        position.x = Mathf.Clamp(position.x, -xLimit, xLimit);
+        position.y = Mathf.Clamp(position.y, -yLimit, yLimit);
+
+        // setting the clamp
+        droppedObject.transform.position = new Vector3(position.x, position.y, droppedObject.transform.position.z);
+
+        // setting the value of the pickup + passing limits
+        droppedObject.GetComponent<PickupScript>().heldValue = value;
+        droppedObject.GetComponent<PickupScript>().limits = new Vector2(cameraLimX, cameraLimY);
+        droppedObject.GetComponent<PickupScript>().limitsMult = new Vector2(limitMultX, limitMultY);
+
+        Rigidbody rb = droppedObject.GetComponent<Rigidbody>();
+
+        // add force in positive Z so that it can fly in front of the player briefly and let them know it exists
+        float kbForce = Random.Range(200f, 300f);
+        rb.AddForce(new Vector3(0, 0, 1) * kbForce, ForceMode.Impulse);
+
+        // spinning it in a random direction
+        rb.angularVelocity = randomAngularVelocity;
+
+        Destroy(droppedObject, 5);
 
     }
 

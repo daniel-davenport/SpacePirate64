@@ -11,14 +11,34 @@ public class BasicLaserScript : MonoBehaviour
     public GameObject laserProjectile;
     public GameObject chargedShotProjectile;
     public GameObject playerShip;
+    public GameObject chargeVisual;
 
     [Header("Stats")]
     public int weaponSlot;
+    public int weaponLevel;
+
+    private int currentLevel;
+    public int projectileDamage;
+    public int chargedDamage;
+
     public WeaponInfo weaponInfo;
     public WeaponHandler weaponHandler;
     public Transform firePoint;
     public float projectileLifetime = 4f;
-    
+
+    /*
+
+    weapon behavior:
+    - fires a basic projectile that deals meager damage
+    - charged shot locks on and homes into enemies, dealing increased damage
+
+    weapon levels:
+    1 - projectile has a somewhat lengthy cooldown, charge time is long
+    2 - projectile cooldown greatly reduced, damage increased by 1
+    3 - projectile cooldown removed, damage further increased by 1
+
+     */
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -40,12 +60,44 @@ public class BasicLaserScript : MonoBehaviour
         chargedShotProjectile = Resources.Load<GameObject>("Projectiles/projectileSphere");
         playerShip = transform.gameObject;
 
+        // setting the damage vars
+        projectileDamage = weaponInfo.weaponDamage;
+        chargedDamage = weaponInfo.chargedDamage;
+
+        // setting the charge visual (optional)
+        chargeVisual = chargedShotProjectile;
+        weaponHandler.SetChargeVisual(weaponSlot, chargeVisual);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (weaponHandler.weaponLevels[weaponSlot] != currentLevel)
+            LevelChange(weaponHandler.weaponLevels[weaponSlot]);
+    }
+
+    // used to set the damage and stuff
+    private void LevelChange(int level)
+    {
+        currentLevel = level;
+
+        // update the WeaponHandler's cooldown and charge time levels here
+        float firingSpeed = weaponInfo.firingSpeed / level;// reducing the firing speed
+
+        // rapid fire once fully levelled up
+        if (level > 2)
+            firingSpeed = 0;
+
+        float maxChargeTime = weaponInfo.maxChargeTime / level; // reducing the charge time
+
+        // damage increases linearly
+        projectileDamage = weaponInfo.weaponDamage * currentLevel;
+        chargedDamage = projectileDamage * 2;
+
+        weaponHandler.firingSpeeds[weaponSlot] = firingSpeed;
+        weaponHandler.maxChargeTimes[weaponSlot] = maxChargeTime;
+    
     }
 
     private GameObject ChargedShot()
@@ -62,7 +114,7 @@ public class BasicLaserScript : MonoBehaviour
 
         // setting the owner + damage
         chargedShot.GetComponent<ProjectileInfo>().projectileOwner = transform.gameObject;
-        chargedShot.GetComponent<ProjectileInfo>().projectileDamage = weaponInfo.chargedDamage;
+        chargedShot.GetComponent<ProjectileInfo>().projectileDamage = chargedDamage;
 
         // todo:
         // delete the projectile when it reaches its destination
@@ -91,7 +143,7 @@ public class BasicLaserScript : MonoBehaviour
 
         // setting the owner + damage
         firedLaser.GetComponent<ProjectileInfo>().projectileOwner = transform.gameObject;
-        firedLaser.GetComponent<ProjectileInfo>().projectileDamage = weaponInfo.weaponDamage;
+        firedLaser.GetComponent<ProjectileInfo>().projectileDamage = projectileDamage;
 
         // setting its lifetime
         Destroy(firedLaser, projectileLifetime);
@@ -131,12 +183,14 @@ public class BasicLaserScript : MonoBehaviour
 
     }
 
+
+    // shoot the weapon based on the weapon's level
     public void FireWeapon(int slot, bool isChargedShot)
     {
 
         if (isChargedShot)
         {
-            print("slot " + slot + " shooting charged shot");
+            //print("slot " + slot + " shooting charged shot");
 
             // charged shot behavior:
             // while charging, continuously raycast to lock on to an enemy in front of you in a big cone or cylinder
@@ -147,8 +201,6 @@ public class BasicLaserScript : MonoBehaviour
             // charged shot deals increased damage and locks on to the first enemy you highlight
 
             // lockon indicator is a spinning diamond inside of a square?
-
-            
 
             // create the shot
             GameObject firedShot = ChargedShot();
@@ -183,7 +235,7 @@ public class BasicLaserScript : MonoBehaviour
             // create a laser projectile at the fire point and shoot it in the direction the player is facing
             GameObject firedShot = CreateProjectile();
 
-            // moving it towards the player
+            // moving it forwards
             Rigidbody rb = firedShot.GetComponent<Rigidbody>();
 
             if (rb != null)

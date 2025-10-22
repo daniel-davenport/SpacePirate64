@@ -17,4 +17,5 @@ MonoBehaviour:
   enemyHealth: 4
   enemyMaxHealth: 4
   projectileDamage: 1
+  scrapDropped: 10
   enemyModel: {fileID: 919132149155446097, guid: bf8209444e808394aa1b10083999acdc, type: 3}

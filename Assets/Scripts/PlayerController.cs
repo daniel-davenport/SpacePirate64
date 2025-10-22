@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     public bool isInvincible = false;
     public float iFrames = 1.5f;
     public float obstacleKBForce = 5f;
+    public int heldScrap = 0;
+    public int startingScrapAmount = 10;
 
     public float xSpeed = 18;
     public float ySpeed = 18;
@@ -48,8 +50,8 @@ public class PlayerController : MonoBehaviour
     // note: AttackLeft = slot 0
     //       AttackRight = slot 1
     private float[] chargeTimes = new float[] { 0f, 0f }; // Tracks the current charge level
-    public float[] maxChargeTimes = new float[] { 1f, 1f }; // The charge time needed to fire a charged shot
-    public float[] firingSpeeds = new float[2];
+    public GameObject[] chargeVisuals = new GameObject[2]; // used to represent how charged the weapons are
+    public float chargeVisualSize = 3; // how much the size is multiplied by to change its scale
 
     public int heldBombs = 1;
     public int maxBombs = 3;
@@ -121,6 +123,10 @@ public class PlayerController : MonoBehaviour
         // setting their health
         playerUI.UpdateHealth(playerHealth);
 
+        // setting scrap
+        heldScrap = startingScrapAmount;
+
+
         tiltTween.SetAutoKill(false);
     }
 
@@ -149,7 +155,7 @@ public class PlayerController : MonoBehaviour
         LocalMove(hInput, vInput, xSpeed, ySpeed);
         AimLook(hInput, vInput, lookSpeed);
         HorizontalLean(playerHolder, hInput, leanLimit, leanLerpSpeed);
-
+        ChargeVisual();
 
         // Attacking with slot 0
         if (attackLeftAction.IsPressed())
@@ -308,7 +314,7 @@ public class PlayerController : MonoBehaviour
     void AttackStart(int weaponSlot, float chargeTime = 0f)
     {
 
-        if (chargeTime > 0f && chargeTime >= maxChargeTimes[weaponSlot]) // firing a charged shot (ignores debounces)
+        if (chargeTime > 0f && chargeTime >= weaponHandler.maxChargeTimes[weaponSlot]) // firing a charged shot (ignores debounces)
         {
             Attack(weaponSlot, true);
             chargeTimes[weaponSlot] = 0f;
@@ -320,7 +326,7 @@ public class PlayerController : MonoBehaviour
             objectRenderer.material.color = Color.white;
             */
         }
-        else if (chargeTime > 0f && chargeTime < maxChargeTimes[weaponSlot]) // didnt fully charge
+        else if (chargeTime > 0f && chargeTime < weaponHandler.maxChargeTimes[weaponSlot]) // didnt fully charge
         {
             chargeTimes[weaponSlot] = 0f;
             return;
@@ -340,7 +346,7 @@ public class PlayerController : MonoBehaviour
 
 
         // charging up that slot's charged shot
-        if (chargeTimes[weaponSlot] >= maxChargeTimes[weaponSlot])
+        if (chargeTimes[weaponSlot] >= weaponHandler.maxChargeTimes[weaponSlot])
         {
             //print(" ----------- fully charged slot " + weaponSlot + " ----------- ");
 
@@ -358,6 +364,21 @@ public class PlayerController : MonoBehaviour
             chargeTimes[weaponSlot] += Time.deltaTime;
         }
             
+    }
+
+    // charging your weapons visually
+    void ChargeVisual()
+    {
+        for (int i = 0; i <= 1; i++)
+        {
+            // updating the visual
+            if (chargeVisuals[i] != null)
+            {
+                float ratio = chargeTimes[i] / weaponHandler.maxChargeTimes[i];
+                Vector3 size = new Vector3(ratio, ratio, ratio);
+                chargeVisuals[i].transform.localScale = size * chargeVisualSize;
+            }
+        }
     }
 
     // Fires the specific weapon called, also takes in the argument if it's a charged attack or not.
@@ -486,7 +507,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator ResetAttack(int weaponSlot)
     {
         // wait time until it comes back based on the weapon info
-        yield return new WaitForSeconds(firingSpeeds[weaponSlot]);
+        yield return new WaitForSeconds(weaponHandler.firingSpeeds[weaponSlot]);
         attackDebounces[weaponSlot] = false;
 
 
@@ -590,8 +611,8 @@ public class PlayerController : MonoBehaviour
         int screenHeight = Screen.height;
 
         // hardcoded limits, works enough ig, revisit later down the line
-        float xLimit = cameraFollow.limits.x * 4;
-        float yLimit = cameraFollow.limits.y * 3;
+        float xLimit = cameraFollow.limits.x * cameraFollow.limitMult.x;
+        float yLimit = cameraFollow.limits.y * cameraFollow.limitMult.y;
 
         //position.x = Mathf.Clamp01(position.x);
         //position.y = Mathf.Clamp01(position.y);
@@ -755,7 +776,8 @@ public class PlayerController : MonoBehaviour
 
             */
 
-        } else if (LayerMask.LayerToName(otherLayer) == "EnemyProjectile")
+        } 
+        else if (LayerMask.LayerToName(otherLayer) == "EnemyProjectile")
         {
             GameObject enemyProj = other.gameObject;
 
@@ -831,6 +853,20 @@ public class PlayerController : MonoBehaviour
             }
 
             
+        }
+        else if (LayerMask.LayerToName(otherLayer) == "Pickup")
+        {
+            // gaining scrap
+            if (other.gameObject.CompareTag("Scrap"))
+            {
+                PickupScript pickupScript = other.transform.GetComponent<PickupScript>();
+
+                heldScrap += pickupScript.heldValue;
+
+                // move it to the player
+                pickupScript.CollectItem(gameObject);
+
+            }
         }
 
     }

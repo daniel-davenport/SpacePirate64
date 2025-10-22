@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class PlayerUI : MonoBehaviour
@@ -10,6 +11,7 @@ public class PlayerUI : MonoBehaviour
     public Transform healthHolder;
     public GameObject healthPip;
     public GameObject playerReticle;
+    public TextMeshProUGUI scrapText;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -23,7 +25,8 @@ public class PlayerUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // updating the scrap every frame
+        UpdateScrap();
     }
 
 
@@ -53,4 +56,12 @@ public class PlayerUI : MonoBehaviour
             playerReticle.SetActive(false);
         }
     }
+
+
+    // updating the scrap UI
+    public void UpdateScrap()
+    {
+        scrapText.text = playerController.heldScrap.ToString();
+    }
+
 }
