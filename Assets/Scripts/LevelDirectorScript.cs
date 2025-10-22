@@ -16,6 +16,7 @@ public class LevelDirector : MonoBehaviour
     public Transform startPosition;
     public ScoreHandler scoreHandler;
     public PlayerController playerController;
+    public ShopScript shopScript;
 
     [Header("Level Objects")]
     public GameObject[] levelBlocks;
@@ -95,12 +96,17 @@ public class LevelDirector : MonoBehaviour
         // gain score for finishing a level
         scoreHandler.ChangePlayerScore("levelFinish");
 
-        
+
+
         // show the shop and do transition
+        shopScript.RefreshShop();
+
+    }
 
 
-
-
+    // the shop was closed, the game should continue now
+    public void ShopClosed()
+    {
         // Reset your level tickets
         levelTickets = maxLevelTickets;
 
@@ -109,10 +115,8 @@ public class LevelDirector : MonoBehaviour
 
         // set the playerplane's position to 0,0,0
         playerPlane.transform.position = new Vector3(0, 0, 0);
-
-
-
     }
+
 
     // destroying the spawned level and clearing the list so that it can be used again.
     public void ClearSpawnedBlocks()

@@ -41,7 +41,7 @@ public class ShopUIEvents : MonoBehaviour
         }
 
         // disabling the shop so it doesnt appear
-        //gameObject.SetActive(false);
+        HideDocument();
 
     }
 
@@ -71,13 +71,27 @@ public class ShopUIEvents : MonoBehaviour
 
     private void OnRepairClick(ClickEvent ce)
     {
-        Debug.Log("clicked repair");
+        shopScript.RepairShip();
     }
 
     private void OnCloseClick(ClickEvent ce)
     {
-        Debug.Log("clicked close");
+        shopScript.CloseShop();
     }
+
+
+    // showing/hiding the document to avoid using enable/disable
+    public void ShowDocument()
+    {
+        document.rootVisualElement.style.display = DisplayStyle.Flex;
+    }
+
+    
+    public void HideDocument()
+    {
+        document.rootVisualElement.style.display = DisplayStyle.None;
+    }
+
 
     // try to buy the item that's held in the slot
     private void TryItemBuy(int slotNum)
@@ -88,6 +102,6 @@ public class ShopUIEvents : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        gameObject.SetActive(true);
+        
     }
 }
