@@ -92,6 +92,15 @@ public class LevelDirector : MonoBehaviour
         // set intensity back to half
         spawnDirector.intensity = Mathf.FloorToInt(spawnDirector.maxIntensity / 2);
 
+        // gain score for finishing a level
+        scoreHandler.ChangePlayerScore("levelFinish");
+
+        
+        // show the shop and do transition
+
+
+
+
         // Reset your level tickets
         levelTickets = maxLevelTickets;
 
@@ -101,8 +110,7 @@ public class LevelDirector : MonoBehaviour
         // set the playerplane's position to 0,0,0
         playerPlane.transform.position = new Vector3(0, 0, 0);
 
-        // gain score for finishing a level
-        scoreHandler.ChangePlayerScore("levelFinish");
+
 
     }
 

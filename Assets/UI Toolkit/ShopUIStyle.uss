@@ -1,0 +1,18 @@
+.header {
+    font-size: 48px;
+    -unity-text-align: middle-center;
+    -unity-font-definition: url("project://database/Assets/Fonts/VCR_OSD_MONO_1.001.ttf?fileID=12800000&guid=ecb0fbdead74fa543810aebc587fec7b&type=3#VCR_OSD_MONO_1.001");
+    -unity-text-outline-width: 3px;
+    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    color: rgb(255, 255, 255);
+    -unity-text-outline-color: rgb(0, 0, 0);
+    height: 10%;
+    width: 100%;
+}
+
+.button {
+    font-size: 50%;
+    width: 220px;
+    height: 60px;
+    -unity-text-align: middle-center;
+}
