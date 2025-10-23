@@ -15,4 +15,10 @@
     width: 220px;
     height: 60px;
     -unity-text-align: middle-center;
+    position: relative;
+    top: 362%;
+    left: 10%;
+}
+
+.itemText {
 }

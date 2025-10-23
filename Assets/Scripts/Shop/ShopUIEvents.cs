@@ -8,6 +8,7 @@ public class ShopUIEvents : MonoBehaviour
     [Header("References")]
     public ShopScript shopScript;
     public List<Button> shopButtons = new List<Button>();
+    
 
     private UIDocument document;
     private Button repairButton;
