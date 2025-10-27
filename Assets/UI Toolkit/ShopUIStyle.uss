@@ -12,13 +12,20 @@
 
 .button {
     font-size: 50%;
-    width: 220px;
-    height: 60px;
+    width: 20%;
+    height: 10%;
     -unity-text-align: middle-center;
     position: relative;
-    top: 362%;
-    left: 10%;
+    top: 10%;
+    left: 45%;
 }
 
 .itemText {
+    top: -21%;
+    left: 5%;
+    width: 36%;
+    height: 10%;
+    -unity-text-align: middle-right;
+    -unity-font-definition: url("project://database/Assets/Fonts/VCR_OSD_MONO_1.001.ttf?fileID=12800000&guid=ecb0fbdead74fa543810aebc587fec7b&type=3#VCR_OSD_MONO_1.001");
+    font-size: 550%;
 }

@@ -145,6 +145,10 @@ PrefabInstance:
       propertyPath: levelDirector
       value: 
       objectReference: {fileID: 1870655572694423423}
+    - target: {fileID: 437582500119606461, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
+      propertyPath: playerController
+      value: 
+      objectReference: {fileID: 2937767467000985525}
     - target: {fileID: 3241480256638130754, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

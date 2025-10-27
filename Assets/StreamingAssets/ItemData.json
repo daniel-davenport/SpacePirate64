@@ -1,0 +1,26 @@
+{
+	"items" : [
+		{
+			"name": "BasicLaser",
+			"displayName": "Basic Laser",
+			"rarity": 1,
+			"cost": 100
+		},
+
+
+		
+
+
+		{
+			"name": "AdvLaser",
+			"displayName": "Advanced Laser",
+			"rarity": 1,
+			"cost": 1000
+		}
+
+
+
+		
+	]
+
+}
