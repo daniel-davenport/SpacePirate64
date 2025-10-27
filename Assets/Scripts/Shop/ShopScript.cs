@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 using System.IO;
+using System.Security.Cryptography;
 
 public class ShopScript : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class ShopScript : MonoBehaviour
     [Header("Stats")]
     public int repairCost;
     private TextAsset itemListJson;
+    
+    public int maxItems = 3;
 
     // setting up loot table .json file
     [System.Serializable]
@@ -21,23 +24,32 @@ public class ShopScript : MonoBehaviour
     {
         public string name;
         public string displayName;
-        public int rarity; // lower number = less rare
+        public int tier; // lower number = less rare
         public int cost;
     }
 
     [System.Serializable]
     public class ItemList
     {
-        public Item[] items;
+        // dynamic, has to be a list.
+        public List<Item> items;
     }
 
     [SerializeField]
-    public ItemList allItemsList = new ItemList();
 
+    // item list
+    public ItemList allItemsList = new ItemList();
+    public Item[] sellingItems = new Item[3];
+    public string[] sellingItemDisplayNames = new string[3];
+
+    // item tiers
+    public ItemList[] tierTables = new ItemList[3];
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        sellingItems = new Item[maxItems];
+
         shopUIEvents = shopUI.GetComponent<ShopUIEvents>();
         shopUIEvents.playerController = playerController;
 
@@ -68,22 +80,92 @@ public class ShopScript : MonoBehaviour
         }
 
 
+        // adding each item to its item loot table
+        for (int i = 0; i < allItemsList.items.Count; i++)
+        {
+            // making sure it's 0-index
+            int itemTier = allItemsList.items[i].tier - 1;
+
+            // add it to the end
+            tierTables[itemTier].items.Add(allItemsList.items[i]);
+        }
+
         // manually printing every item at the end
         /*
-        for (int i = 0; i < allItemsList.items.Length; i++) { 
+        for (int i = 0; i < allItemsList.items.Count; i++) { 
             print(allItemsList.items[i].name);
         }
         */
 
     }
 
+
+    // getting a random item in the tiered list
+    private void GetRandomItemByTier(int slot, int tier)
+    {
+        // making sure it's 0-index
+        tier = tier - 1;
+
+        // getting a random item in the list
+        int randomIndex = Random.Range(0, tierTables[tier].items.Count);
+
+        // adding it to the list
+        sellingItems[slot] = tierTables[tier].items[randomIndex];
+        sellingItemDisplayNames[slot] = tierTables[tier].items[randomIndex].displayName;
+
+
+        // note: later maybe consider when there's more content to exclude same-type weapons?
+        // or keep them since you got 2
+
+    }
+
+    // generates the stock based on tiers
+    private void GenerateStock()
+    {
+        // rng logic:
+        // weapons are tiered levels 1-3
+        // level 1 chance: 70%
+        // level 2 chance: 20%
+        // level 3 chance: 10%
+        print("generating shop");
+
+        // generating an item for each slot
+        for (int i = 0; i < maxItems; i++)
+        {
+            int itemTier = 0;
+            int rng = Random.Range(0, 100);
+
+            if (rng < 70)
+            {
+                itemTier = 1;
+            }
+            else if (rng < 90)
+            {
+                itemTier = 2;
+            }
+            else if (rng <= 100)
+            {
+                itemTier = 3;
+            }
+
+
+            // find a random item of that tier
+            GetRandomItemByTier(i, itemTier);
+
+
+        }
+
+    }
+
+
     // called at a level end, creates the shop's stock and shows the shop hud.
     public void RefreshShop()
     {
         // generate the shop's stock using RNG to determine the rarity of each item
+        GenerateStock();
 
         // fire it to the shopui so it can display the text for every slot
-
+        shopUIEvents.UpdateDisplayItems(sellingItemDisplayNames);
 
         // at the end, show the shop ui
         shopUIEvents.ShowDocument();
@@ -103,7 +185,6 @@ public class ShopScript : MonoBehaviour
 
     public void RepairShip()
     {
-        print("clicked repair");
         int playerHP = playerController.playerHealth;
         int playerMaxHP = playerController.maxHealth;
         int playerHeldScrap = playerController.heldScrap;
@@ -140,7 +221,25 @@ public class ShopScript : MonoBehaviour
     // otherwise do nothing.
     public void BuyItem(int slot)
     {
-        print("buying item in slot " + slot);
+        // making sure it's 0-indexed
+        slot = slot - 1;
+        print("buying item in slot " + (slot + 1) + ", which is a: " + sellingItems[slot].displayName);
+
+        // get the item stored in the slot
+        Item slotItem = sellingItems[slot];
+        int itemCost = slotItem.cost;
+
+        if (playerController.heldScrap >= itemCost) { 
+            // you can afford it
+            playerController.heldScrap -= itemCost;
+
+            // figure out what slot to add it to
+        
+        }
+
+
+        // note: make sure to have a way to specify what slot it'll be equipping to
+        // either a selector or a drag n drop or smth
 
     }
 

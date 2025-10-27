@@ -125,6 +125,18 @@ public class ShopUIEvents : MonoBehaviour
     }
 
 
+    // updating the visual display names
+    public void UpdateDisplayItems(string[] displayNames)
+    {
+        for (int i = 0; i < displayNames.Length; i++) {
+            if (itemTexts[i] != null)
+            {
+                itemTexts[i].text = displayNames[i];
+            }
+        }
+
+    }
+
     // try to buy the item that's held in the slot
     private void TryItemBuy(int slotNum)
     {

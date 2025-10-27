@@ -96,6 +96,8 @@ public class LevelDirector : MonoBehaviour
         // gain score for finishing a level
         scoreHandler.ChangePlayerScore("levelFinish");
 
+        // set their speed to 0
+        playerPlane.GetComponent<ForwardMovement>().moveSpeed = 0;
 
 
         // show the shop and do transition
