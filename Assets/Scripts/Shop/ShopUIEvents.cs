@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -47,10 +48,13 @@ public class ShopUIEvents : MonoBehaviour
 
         // getting the confirmation window
         confirmationWindow = document.rootVisualElement.Q("ConfirmationWindow") as VisualElement;
+
         slot1ConfirmButton = document.rootVisualElement.Q("Slot1Button") as Button;
         slot1Equipped = slot1ConfirmButton.Q("EquippedLabel") as Label;
+
         slot2ConfirmButton = document.rootVisualElement.Q("Slot2Button") as Button;
         slot2Equipped = slot2ConfirmButton.Q("EquippedLabel") as Label;
+
         cancelConfirmButton = document.rootVisualElement.Q("CancelConfirmButton") as Button;
         equippingTitle = document.rootVisualElement.Q("EquippingTitle") as Label;
 
@@ -72,6 +76,21 @@ public class ShopUIEvents : MonoBehaviour
                 int index = slot;
                 button.clicked += () => TryItemBuy(index);
                 slot++;
+            }
+
+
+            // counting the slot confirmation buttons
+            if (button.name == "Slot1Button")
+            {
+                button.clicked += () => OnConfirmClick(0);
+            }
+            else if (button.name == "Slot2Button")
+            {
+                button.clicked += () => OnConfirmClick(1);
+            }
+            else if (button.name == "CancelConfirmButton")
+            {
+                button.clicked += () => OnCancelClick();
             }
 
         }
@@ -102,9 +121,9 @@ public class ShopUIEvents : MonoBehaviour
 
         if (repairButton != null && closeButton != null)
         {
+            // registering repair and close callbacks
             repairButton.RegisterCallback<ClickEvent>(OnRepairClick);
             closeButton.RegisterCallback<ClickEvent>(OnCloseClick);
-            cancelConfirmButton.RegisterCallback<ClickEvent>(OnCancelClick);
         }
         
     }
@@ -117,7 +136,6 @@ public class ShopUIEvents : MonoBehaviour
         {
             repairButton.UnregisterCallback<ClickEvent>(OnRepairClick);
             closeButton.UnregisterCallback<ClickEvent>(OnCloseClick);
-            cancelConfirmButton.UnregisterCallback<ClickEvent>(OnCancelClick);
         }
             
     }
@@ -132,11 +150,16 @@ public class ShopUIEvents : MonoBehaviour
         shopScript.CloseShop();
     }
 
-    private void OnCancelClick(ClickEvent ce)
+    private void OnCancelClick()
     {
         HideConfirmationWindow();
     }
 
+    private void OnConfirmClick(int slot)
+    {
+        shopScript.confirmed = true;
+        shopScript.changedSlot = slot;
+    }
 
     // showing/hiding the document to avoid using enable/disable
     public void ShowDocument()
@@ -155,6 +178,9 @@ public class ShopUIEvents : MonoBehaviour
     // updating the visual display names
     public void UpdateDisplayItems(string[] displayNames)
     {
+        // TODO:
+        // update this to show the price of the weapon along with the name
+
         for (int i = 0; i < displayNames.Length; i++) {
             if (itemTexts[i] != null)
             {
@@ -165,27 +191,18 @@ public class ShopUIEvents : MonoBehaviour
     }
 
     // show/hiding the confirm window
-    public void ShowConfirmationWindow()
+    public void ShowConfirmationWindow(string buyingName)
     {
         confirmationWindow.style.display = DisplayStyle.Flex;
+        equippingTitle.text = "BUYING: [" + buyingName + "]";
 
     }
 
     public void HideConfirmationWindow()
     {
         confirmationWindow.style.display = DisplayStyle.None;
-
+        shopScript.cancelled = true;
     }
-
-    // TODO:
-    /*
-     * function for when you click confirm slot 1 or 2 that fires to the shop script that it was confirmed 
-     * plugs similarly to the cancel/close buttons n stuff 
-     * 
-     * 
-     */
-
-
 
     // try to buy the item that's held in the slot
     private void TryItemBuy(int slotNum)
@@ -204,6 +221,9 @@ public class ShopUIEvents : MonoBehaviour
             // player stats
             hullHealthLabel.text = "HULL: " + playerController.playerHealth + "/" + playerController.maxHealth;
             scrapAmount.text = playerController.heldScrap.ToString();
+
+            // TODO:
+            // change this to be the weapon display name rather than internal name
 
             // player's weapons
             slot1Equipped.text = playerController.weaponHandler.equippedWeaponNames[0];

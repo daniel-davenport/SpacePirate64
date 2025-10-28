@@ -81,6 +81,22 @@ public class WeaponHandler : MonoBehaviour
     }
 
 
+    // function for loading from name
+    private void LoadWeaponFromName(int slot)
+    {
+        // add the new weapon ScriptableObject type
+        WeaponInfo loadedWeaponInfo = Resources.Load<WeaponInfo>("ScriptableObjects/Weapons/" + equippedWeaponNames[slot]);
+
+        if (loadedWeaponInfo != null)
+        {
+            weaponInfoArr[slot] = loadedWeaponInfo;
+        }
+        else
+        {
+            Debug.LogWarning("ERROR: WEAPON INFO NOT FOUND FOR NAME: " + equippedWeaponNames[slot]);
+        }
+    }
+
     // called to load the player's weapon functions, should be called in places like Shops where the player can swap out their weapons out of sight
     // shops will change the weaponInfoArr to update it with the new ScriptableObjects.
     public void LoadWeaponData()
@@ -89,23 +105,35 @@ public class WeaponHandler : MonoBehaviour
         // note: this for loop does it twice, once per weapon slot.
         for (int i = 0; i <= 1; i++)
         {
-
-            // dynamically adding weapon scripts based on the name of the script assigned by the shop
-            string weaponScriptName = weaponInfoArr[i].name + "Script";
+            // getting the scriptable object based on EquippedWeaponNames
 
             // check if this slot's weapon name matches the previous weapon name
-            if (equippedWeaponNames[i] == weaponInfoArr[i].name)
+            if (equippedWeaponScripts[i] == null)
+            {
+                // create the new script
+                LoadWeaponFromName(i);
+            }
+            else if (equippedWeaponNames[i] == weaponInfoArr[i].name)
             {
                 // if it does then no need to do much of anything, go next.
-                //print("same weapon already equipped");
+                print("same weapon already equipped");
                 continue;
             }
             else 
             {
                 // otherwise, remove the script so the new one can be added later
                 Destroy(equippedWeaponScripts[i]);
+
+                LoadWeaponFromName(i);
             }
-                
+
+            // error handling
+            if (weaponInfoArr[i] == null)
+                continue;
+
+            // dynamically adding weapon scripts based on the name of the script assigned by the shop
+            string weaponScriptName = weaponInfoArr[i].name + "Script";
+
             Type scriptType = Type.GetType(weaponScriptName);
 
             if (scriptType != null)

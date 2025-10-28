@@ -3,6 +3,8 @@ using Unity.Collections;
 using UnityEngine;
 using System.IO;
 using System.Security.Cryptography;
+using System.Collections;
+using JetBrains.Annotations;
 
 public class ShopScript : MonoBehaviour
 {
@@ -44,6 +46,12 @@ public class ShopScript : MonoBehaviour
 
     // item tiers
     public ItemList[] tierTables = new ItemList[3];
+
+    // item buying
+    public bool confirmed = false;
+    public bool cancelled = false;
+    public int changedSlot = -1; // default to -1 to not throw anything 
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -225,7 +233,6 @@ public class ShopScript : MonoBehaviour
     }
 
 
-
     // compares the current held scrap with the cost of the item
     // if the item can be afforded then do the appropriate thing with it.
     // otherwise do nothing.
@@ -233,25 +240,71 @@ public class ShopScript : MonoBehaviour
     {
         // making sure it's 0-indexed
         slot = slot - 1;
-        print("buying item in slot " + (slot + 1) + ", which is a: " + sellingItems[slot].displayName);
 
         // get the item stored in the slot
         Item slotItem = sellingItems[slot];
         int itemCost = slotItem.cost;
 
-        if (playerController.heldScrap >= itemCost) {
-            // you can afford it
 
-            // figure out what slot to add it to
+        // coroutine checking for confirmation
+        IEnumerator WaitForConfirmation()
+        {
 
-            // show the confirmation window
-            shopUIEvents.ShowConfirmationWindow();
+            // waiting until the player confirms
+            yield return new WaitUntil(() => confirmed == true || cancelled == true);
+            yield return new WaitUntil(() => changedSlot != -1);
+
+            if (confirmed == true)
+            {
+                print("buying item in slot " + (slot + 1) + ", which is a: " + sellingItems[slot].displayName);
+
+                // buy the item
+                if (playerController.heldScrap >= itemCost)
+                {
+                    // double checking that you can afford it
+                    playerController.heldScrap -= itemCost;
+
+                    // seeing what slot to replace it in
+                    playerController.weaponHandler.equippedWeaponNames[changedSlot] = slotItem.name;
+
+                    // reload the weapons
+                    playerController.weaponHandler.LoadWeaponData();
+
+                    print("bought weapon " + slotItem.displayName);
+                }
+
+                // hide the confirmation window 
+                shopUIEvents.HideConfirmationWindow();
+            }
+            else
+            {
+                // the buy was cancelled
+                print("cancelled");
+            }
+
+            // resetting variables
+            confirmed = false;
+            cancelled = false;
+            changedSlot = -1;
 
         }
 
 
-        // note: make sure to have a way to specify what slot it'll be equipping to
-        // either a selector or a drag n drop or smth
+        if (playerController.heldScrap >= itemCost) {
+            // you can afford it
+
+            // resetting variables (just in case)
+            confirmed = false;
+            cancelled = false;
+            changedSlot = -1;
+
+            // figure out what slot to add it to
+            // show the confirmation window
+            shopUIEvents.ShowConfirmationWindow(slotItem.displayName);
+
+            // wait for a confirmation
+            StartCoroutine(WaitForConfirmation());
+        }
 
     }
 

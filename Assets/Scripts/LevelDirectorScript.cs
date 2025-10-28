@@ -225,6 +225,9 @@ public class LevelDirector : MonoBehaviour
         StartLine.transform.position = startPosition.position;
         FinishLine.transform.position = spawnedBlocks[spawnedBlocks.Count - 1].GetComponent<LevelInformation>().endPosition.position;
 
+        // setting the player's speed
+        playerPlane.GetComponent<ForwardMovement>().moveSpeed = outLevelSpeed;
+
         // make start & end lines visible
         //StartLine.GetComponent<MeshRenderer>().enabled = true;
         //FinishLine.GetComponent<MeshRenderer>().enabled = true;
