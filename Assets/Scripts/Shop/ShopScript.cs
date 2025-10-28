@@ -216,6 +216,16 @@ public class ShopScript : MonoBehaviour
 
     }
 
+
+
+    // the player clicked one of the confirmation buttons, buy and equip the item into that slot
+    public void ConfirmPurchase(int weaponSlot)
+    {
+
+    }
+
+
+
     // compares the current held scrap with the cost of the item
     // if the item can be afforded then do the appropriate thing with it.
     // otherwise do nothing.
@@ -229,12 +239,14 @@ public class ShopScript : MonoBehaviour
         Item slotItem = sellingItems[slot];
         int itemCost = slotItem.cost;
 
-        if (playerController.heldScrap >= itemCost) { 
+        if (playerController.heldScrap >= itemCost) {
             // you can afford it
-            playerController.heldScrap -= itemCost;
 
             // figure out what slot to add it to
-        
+
+            // show the confirmation window
+            shopUIEvents.ShowConfirmationWindow();
+
         }
 
 

@@ -21,6 +21,15 @@ public class ShopUIEvents : MonoBehaviour
     private Label hullHealthLabel;
     private Label scrapAmount;
 
+    // confirmation window
+    private VisualElement confirmationWindow;
+    private Button slot1ConfirmButton;
+    private Label slot1Equipped;
+    private Button slot2ConfirmButton;
+    private Label slot2Equipped;
+    private Button cancelConfirmButton;
+    private Label equippingTitle;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -35,6 +44,16 @@ public class ShopUIEvents : MonoBehaviour
 
         repairButton.RegisterCallback<ClickEvent>(OnRepairClick);
         closeButton.RegisterCallback<ClickEvent>(OnCloseClick);
+
+        // getting the confirmation window
+        confirmationWindow = document.rootVisualElement.Q("ConfirmationWindow") as VisualElement;
+        slot1ConfirmButton = document.rootVisualElement.Q("Slot1Button") as Button;
+        slot1Equipped = slot1ConfirmButton.Q("EquippedLabel") as Label;
+        slot2ConfirmButton = document.rootVisualElement.Q("Slot2Button") as Button;
+        slot2Equipped = slot2ConfirmButton.Q("EquippedLabel") as Label;
+        cancelConfirmButton = document.rootVisualElement.Q("CancelConfirmButton") as Button;
+        equippingTitle = document.rootVisualElement.Q("EquippingTitle") as Label;
+
 
         // list of all buttons
         shopButtons = document.rootVisualElement.Query<Button>().ToList();
@@ -79,24 +98,26 @@ public class ShopUIEvents : MonoBehaviour
 
     private void OnEnable()
     {
-        print("enabled");
+        //print("enabled");
 
         if (repairButton != null && closeButton != null)
         {
             repairButton.RegisterCallback<ClickEvent>(OnRepairClick);
             closeButton.RegisterCallback<ClickEvent>(OnCloseClick);
+            cancelConfirmButton.RegisterCallback<ClickEvent>(OnCancelClick);
         }
         
     }
 
     private void OnDisable()
     {
-        print("disabled");
+        //print("disabled");
 
         if (repairButton != null && closeButton != null)
         {
             repairButton.UnregisterCallback<ClickEvent>(OnRepairClick);
             closeButton.UnregisterCallback<ClickEvent>(OnCloseClick);
+            cancelConfirmButton.UnregisterCallback<ClickEvent>(OnCancelClick);
         }
             
     }
@@ -111,6 +132,11 @@ public class ShopUIEvents : MonoBehaviour
         shopScript.CloseShop();
     }
 
+    private void OnCancelClick(ClickEvent ce)
+    {
+        HideConfirmationWindow();
+    }
+
 
     // showing/hiding the document to avoid using enable/disable
     public void ShowDocument()
@@ -122,6 +148,7 @@ public class ShopUIEvents : MonoBehaviour
     public void HideDocument()
     {
         document.rootVisualElement.style.display = DisplayStyle.None;
+        HideConfirmationWindow();
     }
 
 
@@ -136,6 +163,29 @@ public class ShopUIEvents : MonoBehaviour
         }
 
     }
+
+    // show/hiding the confirm window
+    public void ShowConfirmationWindow()
+    {
+        confirmationWindow.style.display = DisplayStyle.Flex;
+
+    }
+
+    public void HideConfirmationWindow()
+    {
+        confirmationWindow.style.display = DisplayStyle.None;
+
+    }
+
+    // TODO:
+    /*
+     * function for when you click confirm slot 1 or 2 that fires to the shop script that it was confirmed 
+     * plugs similarly to the cancel/close buttons n stuff 
+     * 
+     * 
+     */
+
+
 
     // try to buy the item that's held in the slot
     private void TryItemBuy(int slotNum)
@@ -154,6 +204,11 @@ public class ShopUIEvents : MonoBehaviour
             // player stats
             hullHealthLabel.text = "HULL: " + playerController.playerHealth + "/" + playerController.maxHealth;
             scrapAmount.text = playerController.heldScrap.ToString();
+
+            // player's weapons
+            slot1Equipped.text = playerController.weaponHandler.equippedWeaponNames[0];
+            slot2Equipped.text = playerController.weaponHandler.equippedWeaponNames[1];
+
         }
     }
 }

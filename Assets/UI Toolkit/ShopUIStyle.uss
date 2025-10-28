@@ -8,6 +8,7 @@
     -unity-text-outline-color: rgb(0, 0, 0);
     height: 10%;
     width: 100%;
+    position: absolute;
 }
 
 .button {
@@ -28,4 +29,16 @@
     -unity-text-align: middle-right;
     -unity-font-definition: url("project://database/Assets/Fonts/VCR_OSD_MONO_1.001.ttf?fileID=12800000&guid=ecb0fbdead74fa543810aebc587fec7b&type=3#VCR_OSD_MONO_1.001");
     font-size: 550%;
+}
+
+.confirmButton {
+    -unity-font-definition: url("project://database/Assets/Fonts/VCR_OSD_MONO_1.001.ttf?fileID=12800000&guid=ecb0fbdead74fa543810aebc587fec7b&type=3#VCR_OSD_MONO_1.001");
+    font-size: 361%;
+    width: 24%;
+    height: 10%;
+    top: 15%;
+    left: 0%;
+    flex-basis: auto;
+    flex-shrink: 1;
+    flex-direction: column;
 }
