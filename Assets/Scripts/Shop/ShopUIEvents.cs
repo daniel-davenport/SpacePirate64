@@ -176,7 +176,7 @@ public class ShopUIEvents : MonoBehaviour
 
 
     // updating the visual display names
-    public void UpdateDisplayItems(string[] displayNames)
+    public void UpdateDisplayItems(string[] displayNames, int[] displayCosts)
     {
         // TODO:
         // update this to show the price of the weapon along with the name
@@ -185,16 +185,22 @@ public class ShopUIEvents : MonoBehaviour
             if (itemTexts[i] != null)
             {
                 itemTexts[i].text = displayNames[i];
+
+                // setting the cost
+                Label itemCost = itemTexts[i].Q("CostLabel") as Label;
+                itemCost.text = displayCosts[i].ToString();
+
+
             }
         }
 
     }
 
     // show/hiding the confirm window
-    public void ShowConfirmationWindow(string buyingName)
+    public void ShowConfirmationWindow(string buyingName, int buyCost)
     {
         confirmationWindow.style.display = DisplayStyle.Flex;
-        equippingTitle.text = "BUYING: [" + buyingName + "]";
+        equippingTitle.text = "BUYING: [" + buyingName + "] FOR " + buyCost + " SCRAP";
 
     }
 
@@ -224,10 +230,14 @@ public class ShopUIEvents : MonoBehaviour
 
             // TODO:
             // change this to be the weapon display name rather than internal name
+            // also optionally show the weapon's level?
 
             // player's weapons
-            slot1Equipped.text = playerController.weaponHandler.equippedWeaponNames[0];
-            slot2Equipped.text = playerController.weaponHandler.equippedWeaponNames[1];
+            if (playerController.weaponHandler.weaponInfoArr[0] != null && playerController.weaponHandler.weaponInfoArr[1] != null)
+            {
+                slot1Equipped.text = playerController.weaponHandler.weaponInfoArr[0].weaponDisplayName;
+                slot2Equipped.text = playerController.weaponHandler.weaponInfoArr[1].weaponDisplayName;
+            }
 
         }
     }

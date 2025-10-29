@@ -43,6 +43,7 @@ public class ShopScript : MonoBehaviour
     public ItemList allItemsList = new ItemList();
     public Item[] sellingItems = new Item[3];
     public string[] sellingItemDisplayNames = new string[3];
+    public int[] sellingItemDisplayCosts = new int[3];
 
     // item tiers
     public ItemList[] tierTables = new ItemList[3];
@@ -56,7 +57,10 @@ public class ShopScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // setting the size based on whatever is specified
         sellingItems = new Item[maxItems];
+        sellingItemDisplayNames = new string[maxItems];
+        sellingItemDisplayCosts = new int[maxItems];
 
         shopUIEvents = shopUI.GetComponent<ShopUIEvents>();
         shopUIEvents.playerController = playerController;
@@ -120,7 +124,7 @@ public class ShopScript : MonoBehaviour
         // adding it to the list
         sellingItems[slot] = tierTables[tier].items[randomIndex];
         sellingItemDisplayNames[slot] = tierTables[tier].items[randomIndex].displayName;
-
+        sellingItemDisplayCosts[slot] = tierTables[tier].items[randomIndex].cost;
 
         // note: later maybe consider when there's more content to exclude same-type weapons?
         // or keep them since you got 2
@@ -173,7 +177,7 @@ public class ShopScript : MonoBehaviour
         GenerateStock();
 
         // fire it to the shopui so it can display the text for every slot
-        shopUIEvents.UpdateDisplayItems(sellingItemDisplayNames);
+        shopUIEvents.UpdateDisplayItems(sellingItemDisplayNames, sellingItemDisplayCosts);
 
         // at the end, show the shop ui
         shopUIEvents.ShowDocument();
@@ -300,7 +304,7 @@ public class ShopScript : MonoBehaviour
 
             // figure out what slot to add it to
             // show the confirmation window
-            shopUIEvents.ShowConfirmationWindow(slotItem.displayName);
+            shopUIEvents.ShowConfirmationWindow(slotItem.displayName, slotItem.cost);
 
             // wait for a confirmation
             StartCoroutine(WaitForConfirmation());
