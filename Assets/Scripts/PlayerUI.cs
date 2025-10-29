@@ -27,6 +27,9 @@ public class PlayerUI : MonoBehaviour
     {
         // updating the scrap every frame
         UpdateScrap();
+
+        // updating the health every frame
+        UpdateHealth(playerController.playerHealth);
     }
 
 
@@ -42,19 +45,24 @@ public class PlayerUI : MonoBehaviour
     // sets the health bars based on current health
     public void UpdateHealth(int health)
     {
-        RemoveHealthPip();
+        if (healthHolder.transform.childCount != health)
+        {
+            RemoveHealthPip();
 
-        if (health > 0)
-        {
-            for (int i = 0; i < health; i++)
+            if (health > 0)
             {
-                GameObject hp = Instantiate(healthPip, healthHolder);
+                for (int i = 0; i < health; i++)
+                {
+                    GameObject hp = Instantiate(healthPip, healthHolder);
+                }
             }
-        } else
-        {
-            // hiding the reticle when you die
-            playerReticle.SetActive(false);
+            else
+            {
+                // hiding the reticle when you die
+                playerReticle.SetActive(false);
+            }
         }
+
     }
 
 

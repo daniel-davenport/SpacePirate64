@@ -16,6 +16,7 @@ public class LevelDirector : MonoBehaviour
     public Transform startPosition;
     public ScoreHandler scoreHandler;
     public PlayerController playerController;
+    public ShopScript shopScript;
 
     [Header("Level Objects")]
     public GameObject[] levelBlocks;
@@ -92,6 +93,22 @@ public class LevelDirector : MonoBehaviour
         // set intensity back to half
         spawnDirector.intensity = Mathf.FloorToInt(spawnDirector.maxIntensity / 2);
 
+        // gain score for finishing a level
+        scoreHandler.ChangePlayerScore("levelFinish");
+
+        // set their speed to 0
+        playerPlane.GetComponent<ForwardMovement>().moveSpeed = 0;
+
+
+        // show the shop and do transition
+        shopScript.RefreshShop();
+
+    }
+
+
+    // the shop was closed, the game should continue now
+    public void ShopClosed()
+    {
         // Reset your level tickets
         levelTickets = maxLevelTickets;
 
@@ -100,11 +117,8 @@ public class LevelDirector : MonoBehaviour
 
         // set the playerplane's position to 0,0,0
         playerPlane.transform.position = new Vector3(0, 0, 0);
-
-        // gain score for finishing a level
-        scoreHandler.ChangePlayerScore("levelFinish");
-
     }
+
 
     // destroying the spawned level and clearing the list so that it can be used again.
     public void ClearSpawnedBlocks()
@@ -210,6 +224,9 @@ public class LevelDirector : MonoBehaviour
         // set the start and finish lines
         StartLine.transform.position = startPosition.position;
         FinishLine.transform.position = spawnedBlocks[spawnedBlocks.Count - 1].GetComponent<LevelInformation>().endPosition.position;
+
+        // setting the player's speed
+        playerPlane.GetComponent<ForwardMovement>().moveSpeed = outLevelSpeed;
 
         // make start & end lines visible
         //StartLine.GetComponent<MeshRenderer>().enabled = true;

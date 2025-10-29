@@ -278,7 +278,7 @@ public class PlayerController : MonoBehaviour
         scoreHandler.ChangePlayerScore("damage");
 
         // update their UI
-        playerUI.UpdateHealth(playerHealth);
+        //playerUI.UpdateHealth(playerHealth);
 
 
     }

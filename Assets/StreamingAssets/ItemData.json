@@ -1,0 +1,31 @@
+{
+	"items" : [
+		{
+			"name": "BasicLaser",
+			"displayName": "Basic Laser",
+			"tier": 1,
+			"cost": 100
+		},
+
+
+		{
+			"name": "2Laser",
+			"displayName": "Basic 2 Laser",
+			"tier": 2,
+			"cost": 500
+		},
+
+
+		{
+			"name": "AdvLaser",
+			"displayName": "Advanced Laser",
+			"tier": 3,
+			"cost": 1000
+		}
+
+
+
+		
+	]
+
+}
