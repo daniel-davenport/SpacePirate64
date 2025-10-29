@@ -235,8 +235,9 @@ public class ShopUIEvents : MonoBehaviour
             // player's weapons
             if (playerController.weaponHandler.weaponInfoArr[0] != null && playerController.weaponHandler.weaponInfoArr[1] != null)
             {
-                slot1Equipped.text = playerController.weaponHandler.weaponInfoArr[0].weaponDisplayName;
-                slot2Equipped.text = playerController.weaponHandler.weaponInfoArr[1].weaponDisplayName;
+                // shows the equipped weapon plus its current level
+                slot1Equipped.text = playerController.weaponHandler.weaponInfoArr[0].weaponDisplayName + " [" + playerController.weaponHandler.weaponLevels[0] + "]";
+                slot2Equipped.text = playerController.weaponHandler.weaponInfoArr[1].weaponDisplayName + " [" + playerController.weaponHandler.weaponLevels[1] + "]";
             }
 
         }
