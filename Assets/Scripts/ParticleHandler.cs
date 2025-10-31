@@ -76,7 +76,7 @@ public class ParticleHandler : MonoBehaviour
 
         while (showingScore < finalScore)
         {
-            showingScore += 1;
+            showingScore += 5;
             showingScore = Mathf.Clamp(showingScore, 0f, finalScore);
             finalScoreText.text = showingScore + "";
 

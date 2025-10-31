@@ -83,8 +83,8 @@ MonoBehaviour:
   playerController: {fileID: 2937767467000985525}
   FinalScoreHolder: {fileID: 7963281031698433247}
   finalScoreText: {fileID: 2628255355622427228}
-  ScoreTitle: {fileID: 2004283463837405397}
-  ScoreText: {fileID: 7050240795878503700}
+  ScoreTitle: {fileID: 1401984022075359317}
+  ScoreText: {fileID: 5604724718281722783}
 --- !u!1001 &1153831018591229292
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -749,6 +749,10 @@ PrefabInstance:
       propertyPath: styleListJson
       value: 
       objectReference: {fileID: 4900000, guid: 3aa47b07019d43a4798bbdb26111b1eb, type: 3}
+    - target: {fileID: 4545045460381912241, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4602668987470335176, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: limits.x
       value: 4
@@ -979,6 +983,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3452556402543908939, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
   m_PrefabInstance: {fileID: 3199780913873652964}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1401984022075359317 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4545045460381912241, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+  m_PrefabInstance: {fileID: 3199780913873652964}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1622020552036667726 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4243926663186144682, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
@@ -1022,6 +1031,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a496810c3f5c8441b01652005c21baf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &5604724718281722783 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7034654117570742139, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+  m_PrefabInstance: {fileID: 3199780913873652964}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5801930809005800309 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8999175693336901521, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
