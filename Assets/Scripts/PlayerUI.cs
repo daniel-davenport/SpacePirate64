@@ -1,17 +1,25 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour
 {
 
     [Header("References")]
     public PlayerController playerController;
+    public WeaponHandler weaponHandler;
     public ScoreHandler scoreHandler;
     public GameObject playerUI;
     public Transform healthHolder;
     public GameObject healthPip;
     public GameObject playerReticle;
     public TextMeshProUGUI scrapText;
+
+    // HUD elements
+    public GameObject bottomHud;
+    public GameObject[] hudHolders = new GameObject[2];
+    public TextMeshProUGUI[] levelTexts = new TextMeshProUGUI[2];
+    public Slider[] expSliders = new Slider[2];
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -23,6 +31,17 @@ public class PlayerUI : MonoBehaviour
         playerController = player.GetComponent<PlayerController>();
         scoreHandler = player.GetComponent<ScoreHandler>();
 
+        for (int i = 0; i < 2; i++)
+        {
+            Transform levelText = hudHolders[i].transform.Find("LevelText");
+
+            if (levelText != null)
+            {
+                levelTexts[i] = levelText.GetComponent<TextMeshProUGUI>();
+            }
+
+        }
+
     }
 
     // Update is called once per frame
@@ -33,6 +52,9 @@ public class PlayerUI : MonoBehaviour
 
         // updating the health every frame
         UpdateHealth(playerController.playerHealth);
+
+        // updating the weapon levels every frame
+        UpdateLevel();
     }
 
 
@@ -73,6 +95,30 @@ public class PlayerUI : MonoBehaviour
     public void UpdateScrap()
     {
         scrapText.text = playerController.heldScrap.ToString();
+    }
+
+
+    // updates the level text and progress bars
+    public void UpdateLevel()
+    {
+        for (int i = 0; i <= 1; i++)
+        {
+            WeaponInfo info = weaponHandler.weaponInfoArr[i];
+
+            if (info != null)
+            {
+                // getting the ratio of weapon exp and applying it to the slider
+                float expRatio = (float)weaponHandler.weaponEXP[i] / info.maxEXP;
+                expSliders[i].value = expRatio;
+
+                // changing the text to reflect the level
+                levelTexts[i].text = "LV " + weaponHandler.weaponLevels[i].ToString();
+            }
+
+
+
+
+        }
     }
 
 }

@@ -56,11 +56,12 @@ public class ScoreHandler : MonoBehaviour
             print("ERROR: STYLE DATA FILE NOT FOUND.");
         }
 
-        GameObject scoreObject = playerUI.transform.Find("ScoreText").gameObject;
+        /*
+        GameObject scoreObject = scoreText.gameObject;
 
         if (scoreObject != null)
             playerScoreText = scoreObject.GetComponent<TextMeshProUGUI>();
-
+        */
 
         playerScore = 0;
     }
@@ -102,7 +103,7 @@ public class ScoreHandler : MonoBehaviour
             if (allStyleList.styles[index].amount < 0)
                 mod = "-";
 
-            string displayText = mod + allStyleList.styles[index].displayName;
+            string displayText = " " + mod + allStyleList.styles[index].displayName;
 
             playerScore += allStyleList.styles[index].amount;
 
@@ -117,7 +118,7 @@ public class ScoreHandler : MonoBehaviour
             newScore.GetComponent<TextMeshProUGUI>().text = displayText;
 
             // then distroy it after 3 seconds or so
-            Destroy(newScore, 1.5f);
+            Destroy(newScore, 3.5f);
 
         }
 

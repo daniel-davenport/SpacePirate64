@@ -2764,12 +2764,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerController: {fileID: 0}
+  weaponHandler: {fileID: 0}
   scoreHandler: {fileID: 0}
   playerUI: {fileID: 6305501681807096250}
   healthHolder: {fileID: 3702067750917934662}
   healthPip: {fileID: 4449404845622193882, guid: 8224792047fcedb4e8b6e295c7c98182, type: 3}
   playerReticle: {fileID: 0}
   scrapText: {fileID: 7579740938397239804}
+  bottomHud: {fileID: 0}
+  hudHolders:
+  - {fileID: 7199840976785055393}
+  - {fileID: 9121175465088302874}
+  levelTexts:
+  - {fileID: 0}
+  - {fileID: 0}
+  expSliders:
+  - {fileID: 158549730312617756}
+  - {fileID: 3673269473720434287}
 --- !u!1 &6392632798726379739
 GameObject:
   m_ObjectHideFlags: 0
