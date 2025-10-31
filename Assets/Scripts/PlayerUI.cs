@@ -17,8 +17,11 @@ public class PlayerUI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        playerController = gameObject.GetComponent<PlayerController>();
-        scoreHandler = gameObject.GetComponent<ScoreHandler>();
+        Transform playerPlane = transform.parent.transform.Find("PlayerPlane");
+        Transform player = playerPlane.transform.Find("Player");
+
+        playerController = player.GetComponent<PlayerController>();
+        scoreHandler = player.GetComponent<ScoreHandler>();
 
     }
 

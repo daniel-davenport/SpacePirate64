@@ -462,7 +462,6 @@ GameObject:
   - component: {fileID: 8025418266089119036}
   - component: {fileID: 7800948338623296920}
   - component: {fileID: 4243926663186144682}
-  - component: {fileID: 7004633967340942217}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -579,6 +578,8 @@ MonoBehaviour:
   isInvincible: 0
   iFrames: 0.5
   obstacleKBForce: 5
+  heldScrap: 0
+  startingScrapAmount: 10
   xSpeed: 18
   ySpeed: 18
   lookSpeed: 340
@@ -594,12 +595,10 @@ MonoBehaviour:
   leanLerpSpeed: 0.1
   tiltLimit: 60
   tiltLerpSpeed: 0.5
-  maxChargeTimes:
-  - 1
-  - 1
-  firingSpeeds:
-  - 0
-  - 0
+  chargeVisuals:
+  - {fileID: 0}
+  - {fileID: 0}
+  chargeVisualSize: 3
   heldBombs: 1
   maxBombs: 3
   mainCamera: {fileID: 2961590559325638884}
@@ -636,12 +635,23 @@ MonoBehaviour:
   weaponComponents:
   - {fileID: 0}
   - {fileID: 0}
-  prevWeaponScripts:
+  equippedWeaponScripts:
   - {fileID: 0}
   - {fileID: 0}
+  equippedWeaponNames:
+  - 
+  - 
   lockedOnEnemies:
   - {fileID: 0}
   - {fileID: 0}
+  maxChargeTimes:
+  - 1
+  - 1
+  firingSpeeds:
+  - 0
+  - 0
+  weaponLevels: 0000000000000000
+  weaponEXP: 0000000000000000
 --- !u!54 &7800948338623296920
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -692,24 +702,6 @@ MonoBehaviour:
   styleListJson: {fileID: 0}
   allStyleList:
     styles: []
---- !u!114 &7004633967340942217
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6304848417311388752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7ee6560c7522a0499926d36bfc721b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerController: {fileID: 334089062770637649}
-  scoreHandler: {fileID: 0}
-  playerUI: {fileID: 0}
-  healthHolder: {fileID: 0}
-  healthPip: {fileID: 4449404845622193882, guid: 8224792047fcedb4e8b6e295c7c98182, type: 3}
-  playerReticle: {fileID: 3452556402543908939}
 --- !u!1 &6764684166486520411
 GameObject:
   m_ObjectHideFlags: 0
@@ -1006,6 +998,7 @@ MonoBehaviour:
   target: {fileID: 1330743856990617903}
   offset: {x: 0, y: 0, z: 0}
   limits: {x: 5, y: 3}
+  limitMult: {x: 4, y: 3}
   smoothTime: 0
 --- !u!1001 &3796265938929306554
 PrefabInstance:

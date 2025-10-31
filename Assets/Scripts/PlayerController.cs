@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour
 
         // getting references
         weaponHandler = transform.GetComponent<WeaponHandler>();
-        playerUI = transform.GetComponent<PlayerUI>();
+        //playerUI = transform.GetComponent<PlayerUI>();
 
         // setting their health
         playerUI.UpdateHealth(playerHealth);
