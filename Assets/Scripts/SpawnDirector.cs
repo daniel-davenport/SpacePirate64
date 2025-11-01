@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Random = UnityEngine.Random;
 using UnityEngine;
 using System.IO;
+using UnityEngine.UI;
 
 public class SpawnDirector : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class SpawnDirector : MonoBehaviour
     public GameObject enemyHolder;
     public DroneGrid droneGrid;
     public ParticleHandler particleHandler;
+    public Slider intensitySlider;
 
     [Header("Player Stats")]
     private float timeSinceDamage;
@@ -89,6 +91,12 @@ public class SpawnDirector : MonoBehaviour
         if (intensity < 0) 
             intensity = 0;
 
+        if (intensitySlider)
+        {
+            float intensityRatio = (float)(intensity / maxIntensity);
+            intensitySlider.value = intensityRatio;
+        }
+        
     }
 
     // changing the intensity from other scripts

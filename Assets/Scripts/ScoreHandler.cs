@@ -2,7 +2,8 @@ using JetBrains.Annotations;
 using System.IO;
 using TMPro;
 using UnityEngine;
-using static SpawnDirector;
+using DG.Tweening;
+using System.Collections;
 
 public class ScoreHandler : MonoBehaviour
 {
@@ -16,7 +17,9 @@ public class ScoreHandler : MonoBehaviour
     public GameObject scoreText;
 
     [Header("Scoring")]
-    public int playerScore;
+    public float playerScore;
+    private float currentScore;
+    public int maxScoreDifference;
 
     [Header("Style List")]
     public TextAsset styleListJson;
@@ -64,14 +67,39 @@ public class ScoreHandler : MonoBehaviour
         */
 
         playerScore = 0;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        UpdateScore();
     }
 
+
+
+    private void UpdateScore()
+    {
+        if (currentScore != playerScore)
+        {
+            // make it tick up faster if the difference is too great
+            float difference = Mathf.Abs(playerScore - currentScore);
+            float ratio = currentScore / playerScore;
+
+            int negate = 1;
+
+            // allowing the function to tick down
+            if (currentScore > playerScore)
+                negate = -1;
+
+            //currentScore += 1;
+            currentScore += negate * (Mathf.Round(1 / ratio));
+            currentScore = Mathf.Clamp(currentScore, 0f, playerScore);
+            //print(currentScore);
+
+            playerScoreText.text = currentScore.ToString();
+        }
+    }
 
     public int FindStyleIndex(string styleName)
     {
@@ -109,11 +137,24 @@ public class ScoreHandler : MonoBehaviour
 
             //print(displayText);
 
-            playerScoreText.text = playerScore.ToString();
-
-
             // instantiate ScoreText and change the text to match displayText
             GameObject newScore = Instantiate(scoreText, styleGrid.transform);
+
+            // scaling effect
+            newScore.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+            newScore.transform.DOScale(Vector3.one, 0.5f);
+
+            // scaling the total score too 
+            float difference = playerScore - currentScore;
+            float scaleSize = 1 + (difference / maxScoreDifference); // any score diff greater than this is clamped
+            print(difference + " " + playerScore + " " + scaleSize);
+            scaleSize = Mathf.Clamp(scaleSize, 0, 2);
+
+            
+
+            playerScoreText.transform.localScale = new Vector3(scaleSize, scaleSize, scaleSize);
+            playerScoreText.transform.DOScale(Vector3.one, 1f);
+
 
             newScore.GetComponent<TextMeshProUGUI>().text = displayText;
 

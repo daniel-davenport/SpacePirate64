@@ -19,9 +19,12 @@ public class ForwardMovement : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        transform.localPosition += (Vector3.forward * moveSpeed * Time.deltaTime);
+        // note: later maybe do stuff the other way around so the player doesnt jitter so much
+        // lerping this
+        Vector3 targetPos = ((transform.position + (Vector3.forward * moveSpeed * Time.deltaTime)));
+        transform.localPosition = Vector3.Lerp(transform.position, targetPos, moveSpeed);
     }
 
 }
