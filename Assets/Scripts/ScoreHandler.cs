@@ -15,6 +15,7 @@ public class ScoreHandler : MonoBehaviour
     public TextMeshProUGUI playerScoreText;
     public GameObject styleGrid;
     public GameObject scoreText;
+    public GameObject scoreTitle;
 
     [Header("Scoring")]
     public float playerScore;
@@ -68,6 +69,9 @@ public class ScoreHandler : MonoBehaviour
 
         playerScore = 0;
 
+        // heartbeat effect
+        StartCoroutine(ScoreBeat());
+
     }
 
     // Update is called once per frame
@@ -76,7 +80,37 @@ public class ScoreHandler : MonoBehaviour
         UpdateScore();
     }
 
+    // cool visual effect to give the score meter a heartbeat effect based on current intensity
+    private IEnumerator ScoreBeat()
+    {
+        while (playerController.playerHealth > 0)
+        {
+            if (spawnDirector == null)
+                break;
 
+            float intensity = spawnDirector.intensity;
+            float maxIntensity = spawnDirector.maxIntensity;
+            float ratio = (intensity / maxIntensity);
+
+            if (scoreTitle != null)
+            {
+                //float ratio = (((intensity / maxIntensity) + 1) / 2) - 0.5f; // gets it on a scale of 0-0.5
+                float maxIncrease = 0.2f;
+                float beatSize = (ratio * maxIncrease) + 1; // getting the increase ratio
+                beatSize = Mathf.Clamp(beatSize, 1f, maxIncrease + 1);
+                //print(beatSize);
+
+                scoreTitle.transform.localScale = new Vector3(beatSize, beatSize, beatSize);
+                scoreTitle.transform.DOScale(Vector3.one, 0.5f);
+            }
+
+            float fastestBeat = 0.5f;
+            float beatTime = 1.25f - (fastestBeat * ratio);
+
+            yield return new WaitForSeconds(beatTime);
+        }
+
+    }
 
     private void UpdateScore()
     {
@@ -147,7 +181,7 @@ public class ScoreHandler : MonoBehaviour
             // scaling the total score too 
             float difference = playerScore - currentScore;
             float scaleSize = 1 + (difference / maxScoreDifference); // any score diff greater than this is clamped
-            print(difference + " " + playerScore + " " + scaleSize);
+            //print(difference + " " + playerScore + " " + scaleSize);
             scaleSize = Mathf.Clamp(scaleSize, 0, 2);
 
             

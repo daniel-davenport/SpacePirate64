@@ -1,3 +1,4 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,7 @@ public class PlayerUI : MonoBehaviour
     // HUD elements
     public GameObject bottomHud;
     public GameObject[] hudHolders = new GameObject[2];
+    public TextMeshProUGUI[] weaponNames = new TextMeshProUGUI[2];
     public TextMeshProUGUI[] levelTexts = new TextMeshProUGUI[2];
     public Slider[] expSliders = new Slider[2];
 
@@ -109,15 +111,15 @@ public class PlayerUI : MonoBehaviour
             {
                 // getting the ratio of weapon exp and applying it to the slider
                 float expRatio = (float)weaponHandler.weaponEXP[i] / info.maxEXP;
-                expSliders[i].value = expRatio;
+                //expSliders[i].value = expRatio;
+                // tweening the value cuz it looks nicer
+                expSliders[i].DOValue(expRatio, 0.25f);
 
                 // changing the text to reflect the level
                 levelTexts[i].text = "LV " + weaponHandler.weaponLevels[i].ToString();
+                weaponNames[i].text = weaponHandler.weaponInfoArr[i].weaponDisplayName;
+
             }
-
-
-
-
         }
     }
 
