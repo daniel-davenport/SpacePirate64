@@ -37,7 +37,7 @@
 
 		{
 			"name": "levelFinish",
-			"displayName": "/// LEVEL CLEARED ///",
+			"displayName": "LEVEL CLEARED",
 			"amount": 1000
 		},
 

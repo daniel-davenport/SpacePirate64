@@ -23,6 +23,9 @@ public class PlayerUI : MonoBehaviour
     public TextMeshProUGUI[] levelTexts = new TextMeshProUGUI[2];
     public Slider[] expSliders = new Slider[2];
 
+    [Header("Stats")]
+    private Vector3 healthHolderBaseScale = new Vector3(0.02f, 0.02f, 0.02f); // magic number unfortunately
+    private int lastScrapAmount = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -63,6 +66,10 @@ public class PlayerUI : MonoBehaviour
     // clears the health up
     private void RemoveHealthPip()
     {
+        // shrink effect to emphasize getting hurt
+        healthHolder.localScale = healthHolderBaseScale / 1.5f;
+        healthHolder.DOScale(healthHolderBaseScale, 0.5f);
+
         foreach(Transform child in healthHolder)
         {
             Destroy(child.gameObject);
@@ -96,6 +103,15 @@ public class PlayerUI : MonoBehaviour
     // updating the scrap UI
     public void UpdateScrap()
     {
+        // doing a little bounce when your scrap increases
+        if (lastScrapAmount < playerController.heldScrap)
+        {
+            float increaseAmount = 1.25f;
+            lastScrapAmount = playerController.heldScrap;
+            scrapText.transform.localScale = new Vector3(increaseAmount, increaseAmount, increaseAmount);
+            scrapText.transform.DOScale(Vector3.one, 0.5f);
+        }
+
         scrapText.text = playerController.heldScrap.ToString();
     }
 

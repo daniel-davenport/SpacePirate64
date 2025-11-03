@@ -86,6 +86,12 @@ public class LevelDirector : MonoBehaviour
         // ending the game
         gameStarted = false;
 
+        // set the playerplane's position to 0,0,0
+        playerPlane.transform.position = Vector3.zero;
+
+        // resetting them to the center of the screen
+        playerController.gameObject.transform.position = Vector3.zero;
+
 
         // clear all enemies
         spawnDirector.DestroyAllEnemies();
@@ -115,8 +121,6 @@ public class LevelDirector : MonoBehaviour
         // restart level generation
         StartGeneration();
 
-        // set the playerplane's position to 0,0,0
-        playerPlane.transform.position = new Vector3(0, 0, 0);
     }
 
 

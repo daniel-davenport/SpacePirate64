@@ -260,6 +260,9 @@ public class PlayerController : MonoBehaviour
         spawnDirector.ChangeIntensity(false, damage);
         spawnDirector.HalveIntensity();
 
+        // fire to the weapons handler to reduce exp
+        weaponHandler.ReduceEXP(damage);
+
         // make them briefly invincible
         StartCoroutine(PlayerInvincibility());
 
