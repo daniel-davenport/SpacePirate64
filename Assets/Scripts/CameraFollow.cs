@@ -49,7 +49,12 @@ public class CameraFollow : MonoBehaviour
     {
         Vector3 localPos = transform.localPosition;
         Vector3 targetLocalPos = target.transform.localPosition;
-        transform.localPosition = Vector3.SmoothDamp(localPos, new Vector3(targetLocalPos.x + offset.x, targetLocalPos.y + offset.y, localPos.z), ref velocity, smoothTime);
+        Vector3 targetWorldPos = target.transform.position;
+
+        //transform.localPosition = Vector3.SmoothDamp(localPos, new Vector3(targetLocalPos.x + offset.x, targetLocalPos.y + offset.y, targetWorldPos.z + offset.z), ref velocity, smoothTime);
+        //transform.localPosition = Vector3.Lerp(localPos, new Vector3(targetLocalPos.x + offset.x, targetLocalPos.y + offset.y, targetWorldPos.z + offset.z), smoothTime);
+        transform.localPosition = Vector3.Lerp(localPos, new Vector3(targetLocalPos.x + offset.x, targetLocalPos.y + offset.y, localPos.z), smoothTime);
+
     }
 
 

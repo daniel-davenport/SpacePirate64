@@ -15,6 +15,8 @@ public class WeaponHandler : MonoBehaviour
     public GameObject[] weaponModels = new GameObject[2];
     private GameObject lockOnIndicator;
     private GameObject[] indicators = new GameObject[2];
+    public GameObject levelUpText;
+    public GameObject levelDownText;
 
     [Header("Stats")]
     public WeaponInfo[] weaponInfoArr = new WeaponInfo[2];
@@ -287,6 +289,68 @@ public class WeaponHandler : MonoBehaviour
         playerController.chargeVisuals[slot] = chargeVisual;
     }
 
+    // reducing exp from taking damage by how much damage you took
+    public void ReduceEXP(int damage)
+    {
+        // most damage is only 1, so exp loss should be amped in some way
+        damage *= 5; // good number i think
+
+        // add the value to both weapons
+        for (int i = 0; i <= 1; i++)
+        {
+
+            // losing exp
+            int remainder = weaponEXP[i] - damage;
+            weaponEXP[i] -= damage;
+
+            // leveling down if you're hit below zero
+            if (weaponEXP[i] < 0)
+            {
+                if (weaponLevels[i] > 1)
+                {
+                    weaponLevels[i] -= 1;
+
+                    // reducing it further if possible
+                    weaponEXP[i] = weaponInfoArr[i].maxEXP - 1;
+
+                    if (remainder < 0)
+                    {
+                        // overflow damage
+                        weaponEXP[i] -= Mathf.Abs(remainder);
+
+                        // preventing it from levelling you down too much
+                        if (weaponEXP[i] <= 0)
+                        {
+                            weaponEXP[i] = 0;
+                        }
+                    }
+
+
+                    // showing level down effect
+                    GameObject levelText = Instantiate(levelDownText, playerController.transform);
+                    //levelText.transform.localPosition = new Vector3(0, 0.25f, 0);
+                    levelText.transform.DOLocalMoveY(0.35f, 1f).SetEase(Ease.OutExpo);
+
+                    Destroy(levelText, 1f);
+
+
+                }
+                else
+                {
+                    // just setting it to zero
+                    weaponEXP[i] = 0;
+                }
+                    
+
+
+
+
+
+            }
+
+        }
+    }
+
     // colliding with weapon EXP
     // note: they have to have IsTrigger set to true
     private void OnTriggerEnter(Collider other)
@@ -326,10 +390,11 @@ public class WeaponHandler : MonoBehaviour
                         {
                             weaponLevels[i] += 1;
 
-                            print("slot " + i + " level up");
+                            GameObject levelText = Instantiate(levelUpText, playerController.transform);
+                            //levelText.transform.localPosition = new Vector3(0, 0.25f, 0);
+                            levelText.transform.DOLocalMoveY(0.35f, 1f).SetEase(Ease.OutExpo);
 
-                            // show some effect
-
+                            Destroy(levelText, 1f);
 
                         } else
                         {

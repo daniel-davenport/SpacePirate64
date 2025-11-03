@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour
 
         // getting references
         weaponHandler = transform.GetComponent<WeaponHandler>();
-        playerUI = transform.GetComponent<PlayerUI>();
+        //playerUI = transform.GetComponent<PlayerUI>();
 
         // setting their health
         playerUI.UpdateHealth(playerHealth);
@@ -259,6 +259,9 @@ public class PlayerController : MonoBehaviour
         // fire to the spawn director that they're playing worse
         spawnDirector.ChangeIntensity(false, damage);
         spawnDirector.HalveIntensity();
+
+        // fire to the weapons handler to reduce exp
+        weaponHandler.ReduceEXP(damage);
 
         // make them briefly invincible
         StartCoroutine(PlayerInvincibility());
