@@ -15,6 +15,8 @@ public class WeaponHandler : MonoBehaviour
     public GameObject[] weaponModels = new GameObject[2];
     private GameObject lockOnIndicator;
     private GameObject[] indicators = new GameObject[2];
+    public GameObject levelUpText;
+    public GameObject levelDownText;
 
     [Header("Stats")]
     public WeaponInfo[] weaponInfoArr = new WeaponInfo[2];
@@ -322,7 +324,17 @@ public class WeaponHandler : MonoBehaviour
                             weaponEXP[i] = 0;
                         }
                     }
-                } 
+
+
+                    // showing level down effect
+                    GameObject levelText = Instantiate(levelDownText, playerController.transform);
+                    //levelText.transform.localPosition = new Vector3(0, 0.25f, 0);
+                    levelText.transform.DOLocalMoveY(0.35f, 1f).SetEase(Ease.OutExpo);
+
+                    Destroy(levelText, 1f);
+
+
+                }
                 else
                 {
                     // just setting it to zero
@@ -378,10 +390,11 @@ public class WeaponHandler : MonoBehaviour
                         {
                             weaponLevels[i] += 1;
 
-                            print("slot " + i + " level up");
+                            GameObject levelText = Instantiate(levelUpText, playerController.transform);
+                            //levelText.transform.localPosition = new Vector3(0, 0.25f, 0);
+                            levelText.transform.DOLocalMoveY(0.35f, 1f).SetEase(Ease.OutExpo);
 
-                            // show some effect
-
+                            Destroy(levelText, 1f);
 
                         } else
                         {

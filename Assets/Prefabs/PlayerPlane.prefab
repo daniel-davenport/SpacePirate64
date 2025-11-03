@@ -501,6 +501,7 @@ MonoBehaviour:
   weaponModels:
   - {fileID: 0}
   - {fileID: 0}
+  levelUpText: {fileID: 0}
   weaponInfoArr:
   - {fileID: 0}
   - {fileID: 0}
