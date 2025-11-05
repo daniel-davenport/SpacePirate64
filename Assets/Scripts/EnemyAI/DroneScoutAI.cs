@@ -63,7 +63,9 @@ public class DroneScoutAI : MonoBehaviour
     private void ChangeColor(Color color)
     {
         Renderer objectRenderer = transform.GetChild(0).GetComponent<Renderer>();
-        objectRenderer.material.color = color;
+
+        if (objectRenderer != null)
+            objectRenderer.material.color = color;
     }
 
     private IEnumerator Attack()

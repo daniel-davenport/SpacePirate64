@@ -52,6 +52,9 @@ public class EnemyInit : MonoBehaviour
         {
             // add their AI to the enemy gameobject
             gameObject.AddComponent(scriptType);
+        } else
+        {
+            Debug.LogWarning("ERROR: ENEMY AI NOT FOUND FOR TYPE: " + enemyAIName);
         }
 
     }
@@ -202,7 +205,11 @@ public class EnemyInit : MonoBehaviour
         enemyModel.layer = LayerMask.NameToLayer("Enemy");
 
         // making a collider
-        BoxCollider enemyCollider = enemyModel.AddComponent<BoxCollider>();
+        BoxCollider enemyCollider = enemyModel.GetComponent<BoxCollider>();
+
+        // make a box collider
+        if (enemyCollider == null) 
+            enemyCollider = enemyModel.AddComponent<BoxCollider>();
 
         // add a kinematic rigidbody
         Rigidbody rb = enemyModel.AddComponent<Rigidbody>();
