@@ -20,13 +20,14 @@ public class DroneAssaultAI : MonoBehaviour
     public float attackPrepTime = 2f;
     public float minCooldown = 3f;
     public float maxCooldown = 4f;
-    public float projectileSpeed = 15f;
+    public float projectileSpeed = 18f;
     public float projectileLifetime = 8f;
-    public float forwardOffset = 5f; // makes the drone fly away from the player
-    public float detectionRadius = 10f;
+    private float forwardOffset = -10f; // makes the drone fly away from the player
+    private float detectionRadius = 10f;
 
+    private bool lockingOn = false;
+    private LineRenderer lockOnLine;
     private Vector3 boxExtents;
-
     private Vector2 limits;
 
     // drone heavy scouts fly in front of drones and strafe to random positons, trying to shoot the player
@@ -64,8 +65,18 @@ public class DroneAssaultAI : MonoBehaviour
         // get a random location and move there
         Vector3 randomPos = GetRandomPosition();
 
-        // tweening to that location
-        transform.DOLocalMove(randomPos, 0.5f).SetLink(transform.gameObject);
+        // offsetting the randomPos to be behind the player
+        Vector3 startPos = new Vector3(randomPos.x, randomPos.y, 40);
+        transform.position = startPos;
+
+        // remove its collider until it reaches its location
+        transform.GetChild(0).GetComponent<Collider>().enabled = false;
+
+        // tweening to that location, then enabling the collider
+        transform.DOLocalMove(randomPos, 1.5f).SetLink(transform.gameObject).SetEase(Ease.OutExpo).OnComplete(() =>
+        {
+            transform.GetChild(0).GetComponent<Collider>().enabled = true;
+        });
 
         // setting the box collider's constraints
         float boxExtentsX = transform.GetChild(0).GetComponent<BoxCollider>().size.x / 2;
@@ -73,6 +84,11 @@ public class DroneAssaultAI : MonoBehaviour
         float boxExtentsZ = transform.GetChild(0).GetComponent<BoxCollider>().size.z / 2;
 
         boxExtents = new Vector3(boxExtentsX, boxExtentsY, boxExtentsZ);
+
+
+        // creating the laser for the lockon
+        lockOnLine = gameObject.AddComponent<LineRenderer>();
+        lockOnLine.SetPosition(0, transform.position);
 
 
 }
@@ -100,6 +116,7 @@ public class DroneAssaultAI : MonoBehaviour
 
         // constantly check if there's an obstacle
         CheckObstacle();
+        UpdateLineRenderer();
 
     }
 
@@ -136,7 +153,6 @@ public class DroneAssaultAI : MonoBehaviour
 
         if (Physics.BoxCast(origin, boxExtents, direction, out hit, quaternion.identity, 50f, obstacleMask))
         {
-            print("collision");
 
             Vector3 playerPos = playerShip.transform.position;
 
@@ -146,14 +162,35 @@ public class DroneAssaultAI : MonoBehaviour
 
             Vector3 playerDirection = (offsetPlayerPos - origin).normalized;
 
-
-            //Vector3 centerDirection = (enemyPlane.transform.position - origin).normalized;
-
             // step it over a bit
-            Vector3 pointDirection = hit.point + (playerDirection.normalized * strafeSpeed);
+            Vector3 pointDirection = origin + (playerDirection.normalized * strafeSpeed);
 
-            Vector3 randomPos = new Vector3(pointDirection.x, pointDirection.y, -forwardOffset);
-            transform.DOLocalMove(randomPos, 0.1f).SetLink(transform.gameObject);
+            Vector3 moveToPlayerPos = new Vector3(pointDirection.x, pointDirection.y, -forwardOffset);
+            transform.DOLocalMove(moveToPlayerPos, 0.25f).SetLink(transform.gameObject);
+
+
+
+            /*
+            RaycastHit stillHit;
+            if (Physics.BoxCast(origin, boxExtents, direction, out stillHit, quaternion.identity, 50f, obstacleMask)) {
+                print("still collision");
+
+                // move towards the center of the screen on the X axis only if there's still a collision
+                Vector3 centerXPos = new Vector3(enemyPlane.transform.position.x, origin.y, origin.z);
+                Vector3 centerDirection = (centerXPos - origin).normalized;
+
+                Vector3 toCenterDir = origin + (centerDirection * strafeSpeed);
+                Vector3 moveToCenter = new Vector3(toCenterDir.x, toCenterDir.y, -forwardOffset);
+
+                transform.DOLocalMove(moveToCenter, 0.25f).SetLink(transform.gameObject);
+            }
+            */
+
+
+
+
+
+
 
         }
     }
@@ -177,13 +214,30 @@ public class DroneAssaultAI : MonoBehaviour
             objectRenderer.material.color = color;
     }
 
+
+    // updates the linerenderer with the player's position
+    private void UpdateLineRenderer()
+    {
+        if (lockingOn == true)
+        {
+            lockOnLine.SetPosition(0, transform.position);
+            lockOnLine.SetPosition(1, playerShip.transform.position);
+        } 
+        else
+        {
+            lockOnLine.SetPosition(0, transform.position);
+            lockOnLine.SetPosition(1, transform.position);
+        }
+
+    }
+
     private IEnumerator Attack()
     {
         // target the enemy player and shoot a laser at them
         stateMachine.currentState = StateMachine.EnemyState.Attacking;
 
         // fire a laser at the player
-        GameObject firedLaser = Instantiate(laserProjectile, transform.position, Quaternion.identity);
+        GameObject firedLaser = Instantiate(missileProjectile, transform.position, Quaternion.identity);
         firedLaser.transform.SetParent(enemyPlane.transform);
         firedLaser.transform.LookAt(playerShip.transform.position);
 
@@ -194,15 +248,16 @@ public class DroneAssaultAI : MonoBehaviour
         // setting its lifetime
         Destroy(firedLaser, projectileLifetime);
 
-        // moving it towards the player
-        Rigidbody rb = firedLaser.GetComponent<Rigidbody>();
-
-        if (rb != null)
-            rb.AddForce(firedLaser.transform.forward * projectileSpeed, ForceMode.Impulse);
+        // homing missile
+        StartCoroutine(HomingProjectile(firedLaser, playerShip.transform));
 
         // setting their state to cooldown
         stateMachine.currentState = StateMachine.EnemyState.Cooldown;
         ChangeColor(Color.grey);
+
+        // clearing the lock on
+        lockingOn = false;
+        lockOnLine.SetPosition(1, transform.position);
 
         // waiting for the cooldown
         yield return new WaitForSeconds(Random.Range(minCooldown, maxCooldown));
@@ -210,10 +265,56 @@ public class DroneAssaultAI : MonoBehaviour
         stateMachine.currentState = StateMachine.EnemyState.Idle;
     }
 
+
+    // missile homing
+    private IEnumerator HomingProjectile(GameObject projectile, Transform target)
+    {
+        ProjectileInfo projInfo = projectile.GetComponent<ProjectileInfo>();
+
+        while (target != null && projectile != null)
+        {
+            if (projInfo != null)
+            {
+                if (projInfo.parried == true)
+                    break;
+            }
+
+            projectile.transform.LookAt(target);
+
+            // getting the direction between them
+            Vector3 direction = (target.position - projectile.transform.position);
+
+            // note: this might work but might cause issues later, maybe have some other way of testing this?
+            projectile.transform.position += (direction.normalized * projectileSpeed * Time.deltaTime);
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        if (projectile != null)
+        {
+            // projectile was parried most likely
+            Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+            if (rb != null)
+                rb.AddForce(projectile.transform.forward * projectileSpeed, ForceMode.Impulse);
+        }
+
+    }
+
+
+
     private IEnumerator AttackCooldown()
     {
         stateMachine.currentState = StateMachine.EnemyState.Preparing;
+
+        // brief period before being able to lock on
+        yield return new WaitForSeconds(attackPrepTime / 2);
+        
         ChangeColor(Color.red);
+
+        // setting the lockon
+        lockingOn = true;
+        lockOnLine.SetPosition(1, playerShip.transform.position);
 
         yield return new WaitForSeconds(attackPrepTime);
 

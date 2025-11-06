@@ -114,6 +114,8 @@ MonoBehaviour:
   projectileHolder: {fileID: 0}
   projectileOwner: {fileID: 0}
   projectileDamage: 0
+  parried: 0
+  interceptable: 1
 --- !u!136 &884568938396642118
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -160,7 +162,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
