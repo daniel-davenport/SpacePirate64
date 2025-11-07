@@ -69,6 +69,10 @@ public class EnemyInit : MonoBehaviour
 
     private void OnDestroy()
     {
+        // ignoring this if the game isnt loaded
+        if (!gameObject.scene.isLoaded)
+            return;
+
         // getting the enemy's location
         Vector3 enemyPos = transform.position;  
 

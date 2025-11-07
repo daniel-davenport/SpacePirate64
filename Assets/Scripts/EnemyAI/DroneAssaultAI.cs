@@ -23,7 +23,6 @@ public class DroneAssaultAI : MonoBehaviour
     public float projectileSpeed = 18f;
     public float projectileLifetime = 8f;
     private float forwardOffset = -10f; // makes the drone fly away from the player
-    private float detectionRadius = 10f;
 
     private bool lockingOn = false;
     private LineRenderer lockOnLine;
@@ -89,6 +88,13 @@ public class DroneAssaultAI : MonoBehaviour
         // creating the laser for the lockon
         lockOnLine = gameObject.AddComponent<LineRenderer>();
         lockOnLine.SetPosition(0, transform.position);
+
+        lockOnLine.startWidth = 0.5f;
+        lockOnLine.endWidth = 0.5f;
+
+        lockOnLine.material = Resources.Load<Material>("Materials/EnemyMissile");
+        lockOnLine.startColor = Color.red;
+        lockOnLine.endColor = Color.red;
 
 
 }
@@ -270,15 +276,11 @@ public class DroneAssaultAI : MonoBehaviour
     private IEnumerator HomingProjectile(GameObject projectile, Transform target)
     {
         ProjectileInfo projInfo = projectile.GetComponent<ProjectileInfo>();
+        if (projInfo == null)
+            Destroy(projectile);
 
-        while (target != null && projectile != null)
+        while (target != null && projectile != null && projInfo.parried != true)
         {
-            if (projInfo != null)
-            {
-                if (projInfo.parried == true)
-                    break;
-            }
-
             projectile.transform.LookAt(target);
 
             // getting the direction between them
@@ -290,13 +292,19 @@ public class DroneAssaultAI : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
-        if (projectile != null)
+
+        if (projectile != null && projInfo.parried == true)
         {
-            // projectile was parried most likely
+            // projectile was parried
             Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
             if (rb != null)
-                rb.AddForce(projectile.transform.forward * projectileSpeed, ForceMode.Impulse);
+            {
+                //projectile.transform.LookAt(transform);
+                //rb.AddForce(projectile.transform.forward * projectileSpeed, ForceMode.Impulse);
+                //projectile.transform.rotation = Quaternion.LookRotation(projectile.transform.forward);
+            }
+
         }
 
     }

@@ -792,10 +792,18 @@ public class PlayerController : MonoBehaviour
                 // set its layer to playerprojectile
                 enemyProj.layer = LayerMask.NameToLayer("PlayerProjectile");
 
-                // get the projectile's owner
-                GameObject projOwner = enemyProj.GetComponent<ProjectileInfo>().projectileOwner;
+                // get the projectile script
+                ProjectileInfo projInfo = enemyProj.GetComponent<ProjectileInfo>();
+
+                GameObject projOwner = projInfo.projectileOwner;
+                projInfo.parried = true;
 
                 Rigidbody rb = enemyProj.GetComponent<Rigidbody>();
+
+                // if it's kinematic (i.e. interceptable), turn that off so addforce can work
+                if (rb.isKinematic == true)
+                    rb.isKinematic = false;
+
                 rb.linearVelocity = Vector3.zero; // resetting its velocity
 
                 if (perfectParry)
@@ -818,7 +826,10 @@ public class PlayerController : MonoBehaviour
 
                     // sending it back where it came from
                     if (rb != null)
+                    {
                         rb.AddForce(enemyProj.transform.forward * (parrySpeed * 1.5f), ForceMode.Impulse);
+                    }
+                        
 
                     // fire to the spawn director that they're playing better
                     spawnDirector.ChangeIntensity(true, enemyProj.GetComponent<ProjectileInfo>().projectileDamage);

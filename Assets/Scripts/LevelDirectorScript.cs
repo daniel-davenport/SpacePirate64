@@ -86,15 +86,15 @@ public class LevelDirector : MonoBehaviour
         // ending the game
         gameStarted = false;
 
+        // clear all enemies
+        spawnDirector.DestroyAllEnemies();
+
         // set the playerplane's position to 0,0,0
         playerPlane.transform.position = Vector3.zero;
 
         // resetting them to the center of the screen
         playerController.gameObject.transform.position = Vector3.zero;
 
-
-        // clear all enemies
-        spawnDirector.DestroyAllEnemies();
 
         // set intensity back to half
         spawnDirector.intensity = Mathf.FloorToInt(spawnDirector.maxIntensity / 2);

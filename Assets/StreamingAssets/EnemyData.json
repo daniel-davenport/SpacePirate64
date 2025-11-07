@@ -14,7 +14,7 @@
 
 		{
 			"name": "DroneAssault",
-			"cost": 2,
+			"cost": 10,
 			"usingGrid": false
 		}
 		
