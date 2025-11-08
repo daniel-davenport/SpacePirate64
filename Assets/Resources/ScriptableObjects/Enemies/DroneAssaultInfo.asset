@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b86274126ac6bc4487f8384d6c92e33, type: 3}
+  m_Name: DroneAssaultInfo
+  m_EditorClassIdentifier: 
+  enemyName: DroneAssault
+  enemyDisplayName: Drone Assault
+  enemyHealth: 8
+  enemyMaxHealth: 8
+  projectileDamage: 1
+  scrapDropped: 20
+  enemyModel: {fileID: 4866580202996662787, guid: f543534fc320e1948aeda23ad6db2438, type: 3}

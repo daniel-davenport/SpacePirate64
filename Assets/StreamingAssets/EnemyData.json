@@ -10,6 +10,12 @@
 			"name": "DroneHeavyScout",
 			"cost": 2,
 			"usingGrid": false
+		},
+
+		{
+			"name": "DroneAssault",
+			"cost": 10,
+			"usingGrid": false
 		}
 		
 	]

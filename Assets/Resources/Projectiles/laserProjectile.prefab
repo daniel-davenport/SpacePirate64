@@ -151,3 +151,5 @@ MonoBehaviour:
   projectileHolder: {fileID: 0}
   projectileOwner: {fileID: 0}
   projectileDamage: 0
+  parried: 0
+  interceptable: 0
