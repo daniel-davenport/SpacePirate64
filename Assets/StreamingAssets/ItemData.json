@@ -9,10 +9,10 @@
 
 
 		{
-			"name": "2Laser",
-			"displayName": "Basic 2 Laser",
+			"name": "GatlingLaser",
+			"displayName": "Gatling Laser",
 			"tier": 2,
-			"cost": 500
+			"cost": 300
 		},
 
 

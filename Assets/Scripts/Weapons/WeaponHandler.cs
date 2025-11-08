@@ -235,7 +235,7 @@ public class WeaponHandler : MonoBehaviour
     // shapecast in front of the player, if it collides with an enemy then add it to a locked on array, then stop
     public void LockOn(int slot)
     {
-        // if there's no lock on charging, return
+        // if the weapon cannot lock on, return
         // if there's already a locked on enemy, return
         if (!weaponInfoArr[slot].chargedLocksOn || lockedOnEnemies[slot] != null)
             return;

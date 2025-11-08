@@ -201,7 +201,8 @@ public class PlayerController : MonoBehaviour
                 Tilt(side);
             }
 
-        } else if (tiltLeftAction.WasReleasedThisFrame())
+        } 
+        else if (tiltLeftAction.WasReleasedThisFrame())
         {
             EndTilt(hInput);
         }
@@ -220,7 +221,8 @@ public class PlayerController : MonoBehaviour
                 Tilt(side);
             }
 
-        } else if (tiltRightAction.WasReleasedThisFrame())
+        } 
+        else if (tiltRightAction.WasReleasedThisFrame())
         {
             EndTilt(hInput);
         }
@@ -317,34 +319,54 @@ public class PlayerController : MonoBehaviour
     void AttackStart(int weaponSlot, float chargeTime = 0f)
     {
 
-        if (chargeTime > 0f && chargeTime >= weaponHandler.maxChargeTimes[weaponSlot]) // firing a charged shot (ignores debounces)
-        {
-            Attack(weaponSlot, true);
-            chargeTimes[weaponSlot] = 0f;
+        // allowing weapons to not have charged shots
+        // holding down the attack button will instead just constantly fire.
 
-            return;
-
-            /*
-            Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
-            objectRenderer.material.color = Color.white;
-            */
-        }
-        else if (chargeTime > 0f && chargeTime < weaponHandler.maxChargeTimes[weaponSlot]) // didnt fully charge
+        if (weaponHandler.weaponInfoArr[weaponSlot].hasChargedShot == true)
         {
-            chargeTimes[weaponSlot] = 0f;
-            return;
-        }
-        else if (attackDebounces[weaponSlot] == false && chargeTimes[weaponSlot] <= 0f) // firing a regular shot (note: will not fire if you're charging)
-        {
-            attackDebounces[weaponSlot] = true;
-            Attack(weaponSlot, false);
-            chargeTimes[weaponSlot] = 0f;
+            if (chargeTime > 0f && chargeTime >= weaponHandler.maxChargeTimes[weaponSlot]) // firing a charged shot (ignores debounces)
+            {
+                Attack(weaponSlot, true);
+                chargeTimes[weaponSlot] = 0f;
 
-            /*
-            Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
-            objectRenderer.material.color = Color.blue;
-            */
+                return;
+
+                /*
+                Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
+                objectRenderer.material.color = Color.white;
+                */
+            }
+            else if (chargeTime > 0f && chargeTime < weaponHandler.maxChargeTimes[weaponSlot]) // didnt fully charge
+            {
+                chargeTimes[weaponSlot] = 0f;
+                return;
+            }
+            else if (attackDebounces[weaponSlot] == false && chargeTimes[weaponSlot] <= 0f) // firing a regular shot (note: will not fire if you're charging)
+            {
+                attackDebounces[weaponSlot] = true;
+                Attack(weaponSlot, false);
+                chargeTimes[weaponSlot] = 0f;
+
+                /*
+                Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
+                objectRenderer.material.color = Color.blue;
+                */
+            }
+        } 
+        else
+        {
+            if (attackDebounces[weaponSlot] == false)
+            {
+                // just attacking every frame
+                attackDebounces[weaponSlot] = true;
+                Attack(weaponSlot, false);
+                chargeTimes[weaponSlot] = 0f;
+            }
+
         }
+
+
+
 
 
 
