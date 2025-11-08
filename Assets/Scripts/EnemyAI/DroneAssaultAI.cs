@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
@@ -272,40 +273,17 @@ public class DroneAssaultAI : MonoBehaviour
     }
 
 
-    // missile homing
+    // missile homing, moved to the projectileinfo itself
     private IEnumerator HomingProjectile(GameObject projectile, Transform target)
     {
+
         ProjectileInfo projInfo = projectile.GetComponent<ProjectileInfo>();
         if (projInfo == null)
             Destroy(projectile);
 
-        while (target != null && projectile != null && projInfo.parried != true)
-        {
-            projectile.transform.LookAt(target);
+        projInfo.StartHoming(target, projectileSpeed);
 
-            // getting the direction between them
-            Vector3 direction = (target.position - projectile.transform.position);
-
-            // note: this might work but might cause issues later, maybe have some other way of testing this?
-            projectile.transform.position += (direction.normalized * projectileSpeed * Time.deltaTime);
-
-            yield return new WaitForFixedUpdate();
-        }
-
-
-        if (projectile != null && projInfo.parried == true)
-        {
-            // projectile was parried
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-            if (rb != null)
-            {
-                //projectile.transform.LookAt(transform);
-                //rb.AddForce(projectile.transform.forward * projectileSpeed, ForceMode.Impulse);
-                //projectile.transform.rotation = Quaternion.LookRotation(projectile.transform.forward);
-            }
-
-        }
+        yield return null;
 
     }
 

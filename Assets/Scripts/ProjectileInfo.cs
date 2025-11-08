@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.ProBuilder;
 
 public class ProjectileInfo : MonoBehaviour
 {
@@ -45,4 +47,30 @@ public class ProjectileInfo : MonoBehaviour
         //print("level ended projectile destroyed");
         Destroy(gameObject);
     }
+
+
+    public void StartHoming(Transform target, float projectileSpeed)
+    {
+        StartCoroutine(Homing(target, projectileSpeed));
+    }
+
+
+    private IEnumerator Homing(Transform target, float projectileSpeed)
+    {
+        while (transform.parent != null)
+        {
+            transform.LookAt(target);
+
+            // getting the direction between them
+            Vector3 direction = (target.position - transform.position);
+
+            // note: this might work but might cause issues later, maybe have some other way of testing this?
+            transform.position += (direction.normalized * projectileSpeed * Time.deltaTime);
+
+            yield return new WaitForFixedUpdate();
+        }
+
+    }
+
+
 }
