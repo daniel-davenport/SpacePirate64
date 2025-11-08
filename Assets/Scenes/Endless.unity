@@ -14663,7 +14663,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1870655572694423423, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: levelTickets
-      value: 10
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1870655572694423423, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: outLevelSpeed
