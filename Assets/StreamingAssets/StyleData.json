@@ -33,6 +33,13 @@
 			"displayName": "Smashed",
 			"amount": 25
 		},
+
+
+		{
+			"name": "projectileIntercept",
+			"displayName": "Intercepted",
+			"amount": 10
+		},
 		
 
 		{

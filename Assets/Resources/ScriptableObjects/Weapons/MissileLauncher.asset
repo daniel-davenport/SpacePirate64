@@ -15,11 +15,11 @@ MonoBehaviour:
   weaponDisplayName: Missile Launcher
   weaponDamage: 3
   projectileSpeed: 75
-  firingSpeed: 1
+  firingSpeed: 1.5
   explodeOnDestroy: 1
-  explosionRadius: 100
+  explosionRadius: 5
   explosionDamage: 2
-  maxEXP: 30
+  maxEXP: 50
   maxLevel: 3
   chargedLocksOn: 0
   hasChargedShot: 0

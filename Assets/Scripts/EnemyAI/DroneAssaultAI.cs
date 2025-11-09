@@ -16,6 +16,7 @@ public class DroneAssaultAI : MonoBehaviour
     public GameObject playerShip;
     public GameObject laserProjectile;
     public GameObject missileProjectile;
+    public ScoreHandler scoreHandler;
 
     [Header("Settings")]
     public float attackPrepTime = 2f;
@@ -25,6 +26,7 @@ public class DroneAssaultAI : MonoBehaviour
     public float projectileLifetime = 8f;
     private float forwardOffset = -10f; // makes the drone fly away from the player
 
+    private bool scanning = false;
     private bool lockingOn = false;
     private LineRenderer lockOnLine;
     private Vector3 boxExtents;
@@ -39,6 +41,9 @@ public class DroneAssaultAI : MonoBehaviour
         stateMachine = GetComponent<StateMachine>();
         enemyInit = GetComponent<EnemyInit>();
         playerShip = GetComponent<EnemyInit>().playerShip;
+
+        // the player object is playership's parent
+        scoreHandler = playerShip.transform.parent.GetComponent<ScoreHandler>();
 
         laserProjectile = Resources.Load<GameObject>("Projectiles/laserProjectile");
         missileProjectile = Resources.Load<GameObject>("Projectiles/missileProjectile");
@@ -76,6 +81,7 @@ public class DroneAssaultAI : MonoBehaviour
         transform.DOLocalMove(randomPos, 1.5f).SetLink(transform.gameObject).SetEase(Ease.OutExpo).OnComplete(() =>
         {
             transform.GetChild(0).GetComponent<Collider>().enabled = true;
+            scanning = true;
         });
 
         // setting the box collider's constraints
@@ -122,7 +128,9 @@ public class DroneAssaultAI : MonoBehaviour
 
 
         // constantly check if there's an obstacle
-        CheckObstacle();
+        if (scanning == true)
+            CheckObstacle();
+
         UpdateLineRenderer();
 
     }
@@ -249,8 +257,12 @@ public class DroneAssaultAI : MonoBehaviour
         firedLaser.transform.LookAt(playerShip.transform.position);
 
         // setting the owner + damage
-        firedLaser.GetComponent<ProjectileInfo>().projectileOwner = transform.gameObject;
-        firedLaser.GetComponent<ProjectileInfo>().projectileDamage = enemyInit.projectileDamage;
+        ProjectileInfo projInfo = firedLaser.GetComponent<ProjectileInfo>();
+        
+        projInfo.projectileOwner = transform.gameObject;
+        projInfo.projectileDamage = enemyInit.projectileDamage;
+        projInfo.scoreHandler = scoreHandler;
+
 
         // setting its lifetime
         Destroy(firedLaser, projectileLifetime);

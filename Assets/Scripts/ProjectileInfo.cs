@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 
 public class ProjectileInfo : MonoBehaviour
 {
+    public ScoreHandler scoreHandler; // ref to score intercepts
     public Transform projectileHolder;
     public GameObject projectileOwner;
     public int projectileDamage;
@@ -39,8 +40,11 @@ public class ProjectileInfo : MonoBehaviour
         {
             if (LayerMask.LayerToName(otherLayer) == "PlayerProjectile")
             {
-                print("intercepted");
                 Destroy(gameObject);
+
+                // score for intercepting
+                if (scoreHandler != null)
+                    scoreHandler.ChangePlayerScore("projectileIntercept");
             }
         }
 
@@ -51,10 +55,12 @@ public class ProjectileInfo : MonoBehaviour
         if (gameObject.scene.isLoaded == false)
             return;
 
-        if (interceptable == true)
+        if (interceptable == true && gameObject.layer != LayerMask.NameToLayer("PlayerProjectile"))
         {
             // make an explosion effect i think
-
+            GameObject spawnedParticle = Instantiate(explosionRef);
+            spawnedParticle.transform.localScale = new Vector3(2, 2, 2);
+            spawnedParticle.transform.position = transform.position;
         }
 
 
@@ -65,18 +71,23 @@ public class ProjectileInfo : MonoBehaviour
             //LayerMask enemyMask = (1 << LayerMask.NameToLayer("Enemy"));
             int enemyMask = LayerMask.NameToLayer("Enemy");
 
-            Collider[] allHit = Physics.OverlapSphere(transform.position, explosionRadius, enemyMask);
+            //print(transform.position);
+
+            Collider[] allHit = Physics.OverlapSphere(transform.position, explosionRadius);
 
             // deal damage to them all
             foreach (Collider hitCollider in allHit)
             {
                 GameObject enemy = hitCollider.gameObject;
-                print(allHit.Length);
-                EnemyInit enemyScript = enemy.GetComponent<EnemyInit>();
+                EnemyCollision enemyCollisionScript = enemy.GetComponent<EnemyCollision>();
 
-                if (enemyScript != null)
+                if (enemyCollisionScript != null)
                 {
-                    enemyScript.TakeDamage(explosionDamage);
+                    // enemyInit should be the parent
+                    EnemyInit enemyScript = enemy.transform.parent.GetComponent<EnemyInit>();
+
+                    if (enemyScript != null)
+                        enemyScript.TakeDamage(explosionDamage);
                 }
 
             }
@@ -173,7 +184,7 @@ public class ProjectileInfo : MonoBehaviour
 
         if (gameObject != null)
         {
-            print(lockedOnEnemy);
+            //print(lockedOnEnemy);
             StartHoming(lockedOnEnemy.transform, projectileSpeed);
         }
 

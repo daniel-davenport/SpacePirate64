@@ -260,7 +260,7 @@ public class ShopScript : MonoBehaviour
 
             if (confirmed == true)
             {
-                print("buying item in slot " + (slot + 1) + ", which is a: " + sellingItems[slot].displayName);
+                //print("buying item in slot " + (slot + 1) + ", which is a: " + sellingItems[slot].displayName);
 
                 // buy the item
                 if (playerController.heldScrap >= itemCost)

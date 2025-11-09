@@ -17,10 +17,10 @@
 
 
 		{
-			"name": "AdvLaser",
-			"displayName": "Advanced Laser",
+			"name": "MissileLauncher",
+			"displayName": "Missile Launcher",
 			"tier": 3,
-			"cost": 1000
+			"cost": 500
 		}
 
 
