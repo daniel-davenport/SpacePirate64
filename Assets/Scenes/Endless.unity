@@ -15107,7 +15107,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4830080560392032728, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: 'equippedWeaponNames.Array.data[0]'
-      value: GatlingLaser
+      value: MissileLauncher
       objectReference: {fileID: 0}
     - target: {fileID: 4830080560392032728, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: 'equippedWeaponNames.Array.data[1]'

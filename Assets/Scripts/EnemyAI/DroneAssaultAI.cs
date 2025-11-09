@@ -256,7 +256,7 @@ public class DroneAssaultAI : MonoBehaviour
         Destroy(firedLaser, projectileLifetime);
 
         // homing missile
-        StartCoroutine(HomingProjectile(firedLaser, playerShip.transform));
+        StartCoroutine(HomingProjectile(firedLaser, playerShip));
 
         // setting their state to cooldown
         stateMachine.currentState = StateMachine.EnemyState.Cooldown;
@@ -274,14 +274,14 @@ public class DroneAssaultAI : MonoBehaviour
 
 
     // missile homing, moved to the projectileinfo itself
-    private IEnumerator HomingProjectile(GameObject projectile, Transform target)
+    private IEnumerator HomingProjectile(GameObject projectile, GameObject target)
     {
 
         ProjectileInfo projInfo = projectile.GetComponent<ProjectileInfo>();
         if (projInfo == null)
             Destroy(projectile);
 
-        projInfo.StartHoming(target, projectileSpeed);
+        projInfo.StartHoming(target.transform, projectileSpeed);
 
         yield return null;
 

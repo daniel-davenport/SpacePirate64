@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75816875ba9ba3442aa05859d57aef4d, type: 3}
+  m_Name: MissileLauncher
+  m_EditorClassIdentifier: 
+  weaponDisplayName: Missile Launcher
+  weaponDamage: 3
+  projectileSpeed: 75
+  firingSpeed: 1
+  explodeOnDestroy: 1
+  explosionRadius: 100
+  explosionDamage: 2
+  maxEXP: 30
+  maxLevel: 3
+  chargedLocksOn: 0
+  hasChargedShot: 0
+  chargeTime: 0
+  maxChargeTime: 1
+  chargedSpeed: 75
+  chargedDamage: 2
+  weaponColor: {r: 0.74509805, g: 0.1998502, b: 0.05882353, a: 0}
+  projectileColor: {r: 0.9056604, g: 0.57256776, b: 0.49982202, a: 0}
