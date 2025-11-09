@@ -121,13 +121,11 @@ public class DroneAssaultAI : MonoBehaviour
         if (stateMachine.currentState == StateMachine.EnemyState.Idle)
         {
             //print("moving");
-
-
             StartCoroutine(AttackCooldown());
         }
 
 
-        // constantly check if there's an obstacle
+        // constantly check if there's an obstacle while scanning (after its intro)
         if (scanning == true)
             CheckObstacle();
 
