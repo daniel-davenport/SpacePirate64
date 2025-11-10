@@ -15,6 +15,7 @@ public class IonCannonScript : MonoBehaviour
     public GameObject chargedShotProjectile;
     public GameObject playerShip;
     public GameObject chargeVisual;
+    public GameObject chainVisual;
 
     [Header("Stats")]
     public int weaponSlot;
@@ -30,8 +31,10 @@ public class IonCannonScript : MonoBehaviour
     public Transform firePoint;
     public float projectileLifetime = 3f;
 
-    private int bounces = 1;
-    private int chainRadius = 5;
+    private int bounces = 2;
+    private int chainRadius = 15;
+    private int baseChainRadius = 15;
+    private Coroutine chainRoutine;
 
     /*
 
@@ -67,6 +70,7 @@ public class IonCannonScript : MonoBehaviour
         laserProjectile = Resources.Load<GameObject>("Projectiles/laserProjectile");
         missileProjectile = Resources.Load<GameObject>("Projectiles/missileProjectile");
         chargedShotProjectile = Resources.Load<GameObject>("Projectiles/projectileSphere");
+        chainVisual = Resources.Load<GameObject>("Projectiles/ChainLightning");
         playerShip = transform.gameObject;
 
         // setting the damage vars
@@ -92,17 +96,16 @@ public class IonCannonScript : MonoBehaviour
     {
         currentLevel = level;
 
-        // update the WeaponHandler's cooldown and charge time levels here
-        float firingSpeed = weaponInfo.firingSpeed / level;// reducing the firing speed
-
-        // increasing its projspeed based on level
-        int increase = (level - 1) * 15;
-        float projectileSpeed = weaponInfo.projectileSpeed + increase;
-
         // damage increases linearly
         projectileDamage = weaponInfo.weaponDamage * currentLevel;
 
-        weaponHandler.firingSpeeds[weaponSlot] = firingSpeed;
+        // chain radius also increases linearly
+        chainRadius = baseChainRadius * currentLevel;
+
+        // bounces also increases linearly
+        bounces = (currentLevel + 2);
+
+        //weaponHandler.firingSpeeds[weaponSlot] = firingSpeed;
     }
 
     private GameObject ChargedShot()
@@ -191,66 +194,96 @@ public class IonCannonScript : MonoBehaviour
     }
 
 
-    private void ChainAttack(GameObject projectile, int bounces, GameObject lockedOnEnemy)
+    private IEnumerator StartChainAttack(GameObject projectile, int bounces, GameObject lockedOnEnemy)
     {
+        // wait until the projectile is destroyed (it hit something, because it can only fire if locked onto an enemy)
+        yield return new WaitUntil(() => projectile.IsDestroyed() == true);
+
         print("begin chain");
+
+        // make a linerenderer and have it chain between enemies
+        GameObject chainLightning = Instantiate(chainVisual);
+        LineRenderer lr = chainLightning.GetComponent<LineRenderer>();
+
+        //StopCoroutine(chainRoutine);
 
         if (lockedOnEnemy != null)
         {
             GameObject enemy = lockedOnEnemy;
-            //LayerMask enemyMask = (1 << LayerMask.NameToLayer("Enemy"));
-            int enemyMask = LayerMask.NameToLayer("Enemy");
+            Vector3 startPos = enemy.transform.position;
+            LayerMask enemyMask = (1 << LayerMask.NameToLayer("Enemy"));
+            //int enemyMask = LayerMask.NameToLayer("Enemy");
             List<GameObject> alreadyHitEnemies = new List<GameObject>(); // can't hit the same enemy twice
+
+            // excluding itself
+            alreadyHitEnemies.Add(enemy.transform.gameObject);
+
+            // dealing damage to the main enemy (the projectile has to be damageless in order for this script to properly work)
+            EnemyInit enemScript = enemy.transform.parent.GetComponent<EnemyInit>();
+
+            if (enemScript != null)
+                enemScript.TakeDamage(projectileDamage);
 
             // do an overlap sphere on the enemy based on the number of bounces
             for (int i = 0; i < bounces; i++)
             {
-                //print(transform.position);
-                Collider[] allHit = Physics.OverlapSphere(enemy.transform.position, chainRadius);
-                print(allHit.Length);
+                //print("---------- bounce " + i + " --------------");
 
-                // nothing else to chain to
+                // set the lightning start
+                lr.SetPosition(0, startPos);
+
+                //print(transform.position);
+                Collider[] allHit = Physics.OverlapSphere(startPos, chainRadius, enemyMask);
+
+                // Finding something to chain to
                 if (allHit.Length > 0)
                 {
                     // deal damage to whoever comes first
                     foreach (Collider hitCollider in allHit)
                     {
+
                         // hit the first enemy that hasn't been hit already
                         GameObject hitEnemy = hitCollider.gameObject;
 
-                        if (hitEnemy != null && !alreadyHitEnemies.Contains(hitEnemy))
+                        // get their script to hit them
+                        EnemyCollision enemyCollisionScript = hitEnemy.GetComponent<EnemyCollision>();
+
+                        if (enemyCollisionScript != null)
                         {
-                            // add them to the list
-                            alreadyHitEnemies.Add(hitEnemy);
+                            //hitEnemy = enemy.transform.parent.gameObject;
 
-                            // get their script to hit them
-                            EnemyCollision enemyCollisionScript = enemy.GetComponent<EnemyCollision>();
-
-                            if (enemyCollisionScript != null)
+                            // because the enemyHolder is technically the same, it'll always return true if compared with Contains()
+                            // kinda dumb but eh it works.
+                            if (hitEnemy != null && !alreadyHitEnemies.Contains(hitEnemy))
                             {
+                                // add them to the list
+                                alreadyHitEnemies.Add(hitEnemy);
+
                                 // enemyInit should be the parent
-                                EnemyInit enemyScript = enemy.transform.parent.GetComponent<EnemyInit>();
+                                EnemyInit enemyScript = hitEnemy.transform.parent.GetComponent<EnemyInit>();
+
+                                // set the lightning end
+                                lr.SetPosition(1, hitEnemy.transform.position);
 
                                 if (enemyScript != null)
                                     enemyScript.TakeDamage(projectileDamage);
 
+                                // break and chain again, setting the new enemy as the starting point
+                                //print("chaining to: " + hitEnemy.name);
+                                startPos = hitEnemy.transform.position;
+
+                                yield return new WaitForSeconds(0.1f); // brief pause to show the chain
+                                break;
+
                             }
-
-                            // break and chain again, setting the new enemy as the starting point
-                            print("chaining to: " + hitEnemy.name);
-                            enemy = hitEnemy;
-                            break;
-
                         }
                     }
-
-
-
                 }
                 else
                 {
-                    print("no targets!");
-                    return;
+                    //print("no targets!");
+                    Destroy(chainLightning);
+                    yield break;
                 }
 
 
@@ -261,16 +294,9 @@ public class IonCannonScript : MonoBehaviour
 
         }
 
-    }
 
-    private IEnumerator StartChainAttack(GameObject projectile, int bounces, GameObject lockedOnEnemy)
-    {
-        // wait until the projectile is destroyed (it hit something, because it can only fire if locked onto an enemy)
-        yield return new WaitUntil(() => projectile.IsDestroyed() == true);
-
-        print("destroyed");
-
-        yield return true;
+        Destroy(chainLightning);
+        yield break;
     }
 
     // shoot the weapon based on the weapon's level
@@ -291,7 +317,7 @@ public class IonCannonScript : MonoBehaviour
                 StartCoroutine(HomingProjectile(firedShot, enemy.transform));
 
                 // start the chain lightning
-                StartCoroutine(StartChainAttack(firedShot, bounces, enemy));
+                chainRoutine = StartCoroutine(StartChainAttack(firedShot, bounces, enemy));
 
             }
 

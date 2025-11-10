@@ -13,19 +13,19 @@ MonoBehaviour:
   m_Name: IonCannon
   m_EditorClassIdentifier: 
   weaponDisplayName: Ion Cannon
-  weaponDamage: 1
+  weaponDamage: 2
   projectileSpeed: 100
   firingSpeed: 0.4
   explodeOnDestroy: 0
   explosionRadius: 0
-  explosionDamage: 0
+  explosionDamage: 2
   maxEXP: 35
   maxLevel: 3
   chargedLocksOn: 1
   hasChargedShot: 1
   chargeTime: 0
   maxChargeTime: 1.5
-  chargedSpeed: 75
-  chargedDamage: 1
+  chargedSpeed: 150
+  chargedDamage: 0
   weaponColor: {r: 0.40468067, g: 1, b: 0.023584902, a: 0}
   projectileColor: {r: 0.43867922, g: 0.9851835, b: 1, a: 0}
