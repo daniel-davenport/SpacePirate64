@@ -8,8 +8,11 @@ public class BombScript : MonoBehaviour
     [Header("References")]
     public GameObject explosionRef;
     public GameObject bombRef;
+    public GameObject blankRef;
     public WeaponHandler weaponHandler;
     public PlayerController playerController;
+    public LevelDirector levelDirector;
+    public SpawnDirector spawnDirector;
     public EnemyPlane enemyPlane;
 
     [Header("Stats")]
@@ -28,13 +31,13 @@ public class BombScript : MonoBehaviour
     void Start()
     {
         // setting default bomb type
-        equippedBomb = "normal";
+        equippedBomb = "blank";
         bombDebounce = false;
 
         // loading projectiles
         bombRef = Resources.Load<GameObject>("Projectiles/BombProjectile");
         explosionRef = Resources.Load<GameObject>("Projectiles/ExplosionModel");
-
+        blankRef = Resources.Load<GameObject>("Projectiles/BlankSphere");
 
     }
 
@@ -148,6 +151,29 @@ public class BombScript : MonoBehaviour
             // deals no damage to enemies, moreso a panic button.
             case "blank":
                 print("firing blank");
+
+                // destroy all projectiles on screen (use spawn director for this)
+                spawnDirector.DestroyAllProjectiles();
+
+
+                // make a sphere centered on the player, make it grow and fade out
+                GameObject explosion = Instantiate(blankRef, transform.position, Quaternion.identity, transform);
+                Renderer objectRenderer = explosion.GetComponent<Renderer>();
+
+                float bigScale = 8000;
+                Vector3 finalSize = new Vector3(bigScale, bigScale, bigScale);
+                explosion.transform.localScale = Vector3.zero;
+
+                // making it grow, fade out, and rotate
+                explosion.transform.DOScale(finalSize, 0.8f).SetEase(Ease.OutExpo).SetLink(explosion);
+
+                // fade out
+                Color currentColor = objectRenderer.material.color;
+                objectRenderer.material.DOColor(new Color(currentColor.r, currentColor.g, currentColor.b, 0), 0.85f).SetEase(Ease.OutExpo).SetLink(explosion);
+
+                Destroy(explosion, 0.7f);
+
+
 
                 break;
 

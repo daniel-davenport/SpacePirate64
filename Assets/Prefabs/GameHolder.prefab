@@ -794,6 +794,14 @@ PrefabInstance:
       propertyPath: enemyPlane
       value: 
       objectReference: {fileID: 8248574561149427187}
+    - target: {fileID: 5117537703328207466, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: levelDirector
+      value: 
+      objectReference: {fileID: 1870655572694423423}
+    - target: {fileID: 5117537703328207466, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+      propertyPath: spawnDirector
+      value: 
+      objectReference: {fileID: 4232812026863180493}
     - target: {fileID: 5308275946848256221, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
       propertyPath: m_LocalScale.x
       value: 73.72152
