@@ -13,6 +13,7 @@ public class BombScript : MonoBehaviour
     public PlayerController playerController;
     public LevelDirector levelDirector;
     public SpawnDirector spawnDirector;
+    public ScoreHandler scoreHandler;
     public EnemyPlane enemyPlane;
 
     [Header("Stats")]
@@ -39,6 +40,9 @@ public class BombScript : MonoBehaviour
         explosionRef = Resources.Load<GameObject>("Projectiles/ExplosionModel");
         blankRef = Resources.Load<GameObject>("Projectiles/BlankSphere");
 
+        // loading refs
+        scoreHandler = GetComponent<ScoreHandler>();
+
     }
 
     // Update is called once per frame
@@ -59,6 +63,11 @@ public class BombScript : MonoBehaviour
             StartCoroutine(BombSwitch(equippedBomb));
 
             StartCoroutine(ResetBomb(bombCooldown));
+
+            // some score for bombing
+            scoreHandler.ChangePlayerScore("bombed");
+
+
         }
         else if (heldBombs <= 0)
         {
