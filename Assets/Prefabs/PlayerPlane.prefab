@@ -334,6 +334,7 @@ GameObject:
   - component: {fileID: 8025418266089119036}
   - component: {fileID: 7800948338623296920}
   - component: {fileID: 4243926663186144682}
+  - component: {fileID: 5117537703328207466}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -462,7 +463,6 @@ MonoBehaviour:
   perfectParryWindow: 0.15
   parrySpeed: 50
   aileronCooldown: 0.75
-  bombCooldown: 1
   leanLimit: 80
   leanLerpSpeed: 0.1
   tiltLimit: 60
@@ -471,8 +471,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   chargeVisualSize: 3
-  heldBombs: 1
-  maxBombs: 3
   mainCamera: {fileID: 3255109915506413267}
   aimTarget: {fileID: 8999175693336901521}
   leftWeaponModel: {fileID: 8204222748499731728}
@@ -502,6 +500,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   levelUpText: {fileID: 0}
+  levelDownText: {fileID: 0}
   weaponInfoArr:
   - {fileID: 0}
   - {fileID: 0}
@@ -525,6 +524,9 @@ MonoBehaviour:
   - 0
   weaponLevels: 0000000000000000
   weaponEXP: 0000000000000000
+  bombCooldown: 0
+  heldBombs: 1
+  maxBombs: 3
 --- !u!54 &7800948338623296920
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -577,6 +579,18 @@ MonoBehaviour:
   styleListJson: {fileID: 0}
   allStyleList:
     styles: []
+--- !u!114 &5117537703328207466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6304848417311388752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a4b42167d94e524f8490f00ad94bc98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6764684166486520411
 GameObject:
   m_ObjectHideFlags: 0

@@ -199,7 +199,7 @@ public class IonCannonScript : MonoBehaviour
         // wait until the projectile is destroyed (it hit something, because it can only fire if locked onto an enemy)
         yield return new WaitUntil(() => projectile.IsDestroyed() == true);
 
-        print("begin chain");
+        //print("begin chain");
 
         // make a linerenderer and have it chain between enemies
         GameObject chainLightning = Instantiate(chainVisual);

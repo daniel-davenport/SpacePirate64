@@ -36,7 +36,6 @@ public class PlayerController : MonoBehaviour
 
     [Header("Combat Parameters")]
     public float aileronCooldown = 1f;
-    public float bombCooldown = 1f;
 
     // note: lean is for the automatic horizontal leaning for moving horizontally
     //       whereas tilt is for the manual tilting by pressing bumpers or Q/E
@@ -53,9 +52,6 @@ public class PlayerController : MonoBehaviour
     public GameObject[] chargeVisuals = new GameObject[2]; // used to represent how charged the weapons are
     public float chargeVisualSize = 3; // how much the size is multiplied by to change its scale
 
-    public int heldBombs = 1;
-    public int maxBombs = 3;
-
     [Header("References")]
     public Camera mainCamera;
     public Transform aimTarget;
@@ -63,6 +59,7 @@ public class PlayerController : MonoBehaviour
     public GameObject rightWeaponModel;
     public GameObject playerModel;
     public WeaponHandler weaponHandler;
+    public BombScript bombScript;
     public SpawnDirector spawnDirector;
     public ScoreHandler scoreHandler;
     public PlayerUI playerUI;
@@ -86,7 +83,6 @@ public class PlayerController : MonoBehaviour
     GameObject[] weaponModels = new GameObject[2];
 
     bool[] attackDebounces = new bool[] { false, false };
-    private bool bombDebounce = false;
 
     // materials
     private Material parriedMaterial;
@@ -118,6 +114,7 @@ public class PlayerController : MonoBehaviour
 
         // getting references
         weaponHandler = transform.GetComponent<WeaponHandler>();
+        bombScript = transform.GetComponent<BombScript>();
         //playerUI = transform.GetComponent<PlayerUI>();
 
         // setting their health
@@ -427,20 +424,12 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    // fires a bomb based on what you have equipped (added later). tracks your held bombs and cooldowns.
+
+
+    // tells the weapon handler to fire a bomb
     void Bomb()
     {
-        if (bombDebounce == false && heldBombs > 0)
-        {
-            bombDebounce = true;
-            heldBombs -= 1;
-            print("firing bomb");
-
-            StartCoroutine(ResetBomb(bombCooldown));
-        } else if (heldBombs <= 0) 
-        {
-            print("out of bombs!");
-        }
+        bombScript.FireBomb();
     }
 
 
@@ -544,13 +533,6 @@ public class PlayerController : MonoBehaviour
         */
 
 
-    }
-
-    // resets your bomb cooldown.
-    IEnumerator ResetBomb(float cooldown)
-    {
-        yield return new WaitForSeconds(cooldown);
-        bombDebounce = false;
     }
 
     // makes the player blink while invincible

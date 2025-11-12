@@ -12,6 +12,7 @@ public class WeaponHandler : MonoBehaviour
     [Header("References")]
     public GameObject playerShip;
     public PlayerController playerController;
+    public BombScript bombScript;
     public GameObject[] weaponModels = new GameObject[2];
     private GameObject lockOnIndicator;
     private GameObject[] indicators = new GameObject[2];
@@ -36,11 +37,16 @@ public class WeaponHandler : MonoBehaviour
 
     private float lockOnRadius = 4f;
 
+    // end of vars ------------------------------------------------------------------
+
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // getting player controller
+        // getting references
         playerController = GetComponent<PlayerController>(); 
+        bombScript = GetComponent<BombScript>();
 
         // getting the weapon models
         weaponModels[0] = playerController.leftWeaponModel;
