@@ -1,7 +1,10 @@
+using DG.Tweening;
 using JetBrains.Annotations;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
-using DG.Tweening;
+using static ShopScript;
 
 public class BombScript : MonoBehaviour
 {
@@ -17,16 +20,41 @@ public class BombScript : MonoBehaviour
     public EnemyPlane enemyPlane;
 
     [Header("Stats")]
+    public string bombDisplayName;
     public string equippedBomb;
     public float bombCooldown; // default is 1 second
     private bool bombDebounce;
     public int bombDamage; // default is 5
     public int heldBombs; // default is 1
-    public int maxBombs; // default is 3
+    public int maxBombs; // default is 3 - absolute max amount of bombs should be 4 (thats all that fits on the hud)
 
     public int bombDistance;
 
     private bool bombDetonated = false;
+
+    // bomb data json
+    [System.Serializable]
+    public class Bomb
+    {
+        public string name;
+        public string displayName;
+        public int maxBombs;
+    }
+
+    [System.Serializable]
+    public class BombList
+    {
+        public List<Bomb> bombs;
+    }
+
+    [SerializeField]
+
+    // bomb list
+    public BombList allBombsList = new BombList();
+    private TextAsset bombListJson;
+    private string lastBombType;
+
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,12 +71,30 @@ public class BombScript : MonoBehaviour
         // loading refs
         scoreHandler = GetComponent<ScoreHandler>();
 
+        // loading .json
+        // reading bomb info from the physical json instead of a compiled one
+        string bombFilePath = Path.Combine(Application.streamingAssetsPath, "BombData.json");
+        if (File.Exists(bombFilePath))
+        {
+            string fileContent = File.ReadAllText(bombFilePath);
+            bombListJson = new TextAsset(fileContent);
+
+            allBombsList = JsonUtility.FromJson<BombList>(bombListJson.text);
+        }
+        else
+        {
+            print("ERROR: ITEM DATA FILE NOT FOUND.");
+        }
+
+
+        UpdateBombDisplayName();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        // updating the display name of the bomb
+        UpdateBombDisplayName();
     }
 
     // fires a bomb based on what you have equipped. tracks your held bombs and cooldowns.
@@ -122,6 +168,44 @@ public class BombScript : MonoBehaviour
     }
 
 
+    // updating the display name whenever the name changes
+    private void UpdateBombDisplayName()
+    {
+        if (lastBombType != equippedBomb)
+        {
+            lastBombType = equippedBomb;
+            int index = FindBombIndex(equippedBomb);
+
+            print(index);
+
+            if (index >= 0)
+            {
+                string displayName = allBombsList.bombs[index].displayName;
+
+                if (displayName != null)
+                    bombDisplayName = displayName;
+
+            }
+
+        }
+    }
+
+    // get the index of the bomb in the json
+    private int FindBombIndex(string bombName)
+    {
+        int index = -1;
+
+        for (int i = 0; i < allBombsList.bombs.Count; i++)
+        {
+            if (allBombsList.bombs[i].name == bombName)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
 
     // bomb code is handled here
     // normally i'd have a dedicated script for every bomb type but this is fine for now since there aren't many bomb types.

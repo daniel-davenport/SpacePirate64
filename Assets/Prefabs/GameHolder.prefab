@@ -158,6 +158,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 437582500119606461, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
+      propertyPath: bombScript
+      value: 
+      objectReference: {fileID: 7737961123047562894}
+    - target: {fileID: 437582500119606461, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
       propertyPath: shopUIEvents
       value: 
       objectReference: {fileID: 3492377787062447521}
@@ -197,6 +201,10 @@ PrefabInstance:
       propertyPath: scrapText
       value: 
       objectReference: {fileID: 2160232850422138771}
+    - target: {fileID: 2091571885048386804, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
+      propertyPath: bombScript
+      value: 
+      objectReference: {fileID: 7737961123047562894}
     - target: {fileID: 2091571885048386804, guid: b8f24fd3d30408145b6513abbd2b30f2, type: 3}
       propertyPath: healthHolder
       value: 
@@ -1109,6 +1117,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7737961123047562894 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5117537703328207466, guid: 79c3ee85464b0df40a72509e20b02196, type: 3}
+  m_PrefabInstance: {fileID: 3199780913873652964}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a4b42167d94e524f8490f00ad94bc98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &8019131559908522467 stripped

@@ -1,0 +1,19 @@
+{
+	"bombs" : [
+		{
+			"name": "normal",
+			"displayName": "BOMB",
+			"maxBombs": 3
+		},
+
+
+		{
+			"name": "blank",
+			"displayName": "BLANK",
+			"maxBombs": 3
+		}
+
+		
+	]
+
+}

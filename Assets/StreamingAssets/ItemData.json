@@ -4,6 +4,7 @@
 			"name": "BasicLaser",
 			"displayName": "Basic Laser",
 			"tier": 1,
+			"itemType": "weapon",
 			"cost": 100
 		},
 
@@ -12,6 +13,7 @@
 			"name": "GatlingLaser",
 			"displayName": "Gatling Laser",
 			"tier": 2,
+			"itemType": "weapon",
 			"cost": 300
 		},
 
@@ -20,6 +22,7 @@
 			"name": "MissileLauncher",
 			"displayName": "Missile Launcher",
 			"tier": 3,
+			"itemType": "weapon",
 			"cost": 500
 		}
 

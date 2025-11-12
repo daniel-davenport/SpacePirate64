@@ -13,9 +13,11 @@ public class ShopScript : MonoBehaviour
     public PlayerController playerController;
     public LevelDirector levelDirector;
     public ShopUIEvents shopUIEvents;
+    public BombScript bombScript;
 
     [Header("Stats")]
     public int repairCost;
+    public int bombCost;
     private TextAsset itemListJson;
     
     public int maxItems = 3;
@@ -26,6 +28,7 @@ public class ShopScript : MonoBehaviour
     {
         public string name;
         public string displayName;
+        public string itemType; // weapon, bomb, item?
         public int tier; // lower number = less rare
         public int cost;
     }
@@ -65,7 +68,7 @@ public class ShopScript : MonoBehaviour
         shopUIEvents = shopUI.GetComponent<ShopUIEvents>();
         shopUIEvents.playerController = playerController;
 
-        LoadWeaponJson();
+        LoadItemJson();
     }
 
     // Update is called once per frame
@@ -75,7 +78,7 @@ public class ShopScript : MonoBehaviour
     }
 
 
-    private void LoadWeaponJson()
+    private void LoadItemJson()
     {
         // reading enemy info from the physical json instead of a compiled one
         string itemFilePath = Path.Combine(Application.streamingAssetsPath, "ItemData.json");
@@ -233,6 +236,41 @@ public class ShopScript : MonoBehaviour
     // the player clicked one of the confirmation buttons, buy and equip the item into that slot
     public void ConfirmPurchase(int weaponSlot)
     {
+
+    }
+
+    
+    public void BuyBomb()
+    {
+        // check if they can afford a bomb, then give them another one
+        int playerBombs = bombScript.heldBombs;
+        int playerMaxBombs = bombScript.maxBombs;
+        int playerHeldScrap = playerController.heldScrap;
+
+        // they're allowed to heal
+        if (playerBombs < playerMaxBombs)
+        {
+            // they have enough to buy a repair
+            if (playerHeldScrap >= bombCost)
+            {
+                print("bought bomb");
+                // increase their HP and reduce their scrap by the repair cost
+                bombScript.heldBombs += 1;
+                playerController.heldScrap -= bombCost;
+
+            }
+            else
+            {
+                // too poor
+                print("poor");
+            }
+
+
+        }
+        else
+        {
+            print("bombs max");
+        }
 
     }
 

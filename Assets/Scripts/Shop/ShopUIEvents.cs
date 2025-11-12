@@ -17,10 +17,13 @@ public class ShopUIEvents : MonoBehaviour
     private UIDocument document;
     private Button repairButton;
     private Button closeButton;
+    private Button bombRestockButton;
 
     private Label repairCost;
     private Label hullHealthLabel;
     private Label scrapAmount;
+    private Label bombRestockCost;
+    private Label bombsHeld;
 
     // confirmation window
     private VisualElement confirmationWindow;
@@ -37,11 +40,15 @@ public class ShopUIEvents : MonoBehaviour
         document = GetComponent<UIDocument>();
         repairButton = document.rootVisualElement.Q("RepairButton") as Button;
         closeButton = document.rootVisualElement.Q("CloseButton") as Button;
+        bombRestockButton = document.rootVisualElement.Q("BombRestockButton") as Button;
 
         // getting labels
         hullHealthLabel = document.rootVisualElement.Q("HullHealth") as Label;
         scrapAmount = document.rootVisualElement.Q("ScrapAmount") as Label;
         repairCost = document.rootVisualElement.Q("RepairCost") as Label;
+        bombRestockCost = document.rootVisualElement.Q("BombCost") as Label;
+        bombsHeld = document.rootVisualElement.Q("BombsHeld") as Label;
+
 
         repairButton.RegisterCallback<ClickEvent>(OnRepairClick);
         closeButton.RegisterCallback<ClickEvent>(OnCloseClick);
@@ -92,6 +99,10 @@ public class ShopUIEvents : MonoBehaviour
             {
                 button.clicked += () => OnCancelClick();
             }
+
+            if (button.name == "BombRestockButton")
+                button.clicked += () => OnBombRestockClick();
+
 
         }
 
@@ -148,6 +159,11 @@ public class ShopUIEvents : MonoBehaviour
     private void OnCloseClick(ClickEvent ce)
     {
         shopScript.CloseShop();
+    }
+
+    private void OnBombRestockClick()
+    {
+        shopScript.BuyBomb();
     }
 
     private void OnCancelClick()
