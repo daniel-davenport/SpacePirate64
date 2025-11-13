@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 
 public class ProjectileInfo : MonoBehaviour
 {
+
     public ScoreHandler scoreHandler; // ref to score intercepts
     public Transform projectileHolder;
     public GameObject projectileOwner;
@@ -126,9 +127,12 @@ public class ProjectileInfo : MonoBehaviour
             if (rb != null && rb.isKinematic == false)
                 rb.linearVelocity = Vector3.zero;
 
-            // todo:
-            // change this back to just use a transform
-            // add aoe explosion to missiles
+            // TODO:
+            // this works for missiles homing, add into the playercontroller a bool called 'InDanger'
+            // if that bool is true, a spinning orange circle appears around the player
+            // the bottom of their screen (above bombs) will flash the word "! MISSILE !"
+            if (target.name.Contains("Player"))
+                print("missile homing in on you");
 
             transform.LookAt(target);
 

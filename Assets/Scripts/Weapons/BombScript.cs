@@ -219,7 +219,7 @@ public class BombScript : MonoBehaviour
             // launched forward then explodes after a short delay
             // deals moderate damage to all enemies on screen.
             case "normal":
-                print("firing normal bomb");
+                //print("firing normal bomb");
 
                 StartCoroutine(CreateBomb(1f));
 
@@ -243,7 +243,7 @@ public class BombScript : MonoBehaviour
             // fires instantly, banishing all projectiles.
             // deals no damage to enemies, moreso a panic button.
             case "blank":
-                print("firing blank");
+                //print("firing blank");
 
                 // destroy all projectiles on screen (use spawn director for this)
                 spawnDirector.DestroyAllProjectiles();
