@@ -11,6 +11,7 @@ public class ShopUIEvents : MonoBehaviour
     [Header("References")]
     public ShopScript shopScript;
     public PlayerController playerController;
+    public BombScript bombScript;
     public List<Button> shopButtons = new List<Button>();
     public List<Label> itemTexts = new List<Label>();
 
@@ -37,6 +38,9 @@ public class ShopUIEvents : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // getting references
+        bombScript = shopScript.bombScript;
+
         document = GetComponent<UIDocument>();
         repairButton = document.rootVisualElement.Q("RepairButton") as Button;
         closeButton = document.rootVisualElement.Q("CloseButton") as Button;
@@ -239,9 +243,11 @@ public class ShopUIEvents : MonoBehaviour
         {
             // shop stats
             repairCost.text = "[" + shopScript.repairCost + "] SCRAP";
+            bombRestockCost.text = "[" + shopScript.bombCost + "] SCRAP";
 
             // player stats
             hullHealthLabel.text = "HULL: " + playerController.playerHealth + "/" + playerController.maxHealth;
+            bombsHeld.text = "HELD: " + bombScript.heldBombs + "/" + bombScript.maxBombs;
             scrapAmount.text = playerController.heldScrap.ToString();
 
             // TODO:

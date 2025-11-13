@@ -176,7 +176,7 @@ public class BombScript : MonoBehaviour
             lastBombType = equippedBomb;
             int index = FindBombIndex(equippedBomb);
 
-            print(index);
+            //print(index);
 
             if (index >= 0)
             {
