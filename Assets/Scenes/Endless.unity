@@ -2055,6 +2055,11 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &484791082 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8870039519744030900, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+  m_PrefabInstance: {fileID: 8362458625429985666}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &501575974
 Mesh:
   m_ObjectHideFlags: 0
@@ -3063,7 +3068,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spinSpeed: 45
-  spinAmount: {x: 0, y: 0, z: 1}
+  spinAmount: {x: 0, y: 1, z: 0}
+  startRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!43 &625014540
 Mesh:
   m_ObjectHideFlags: 0
@@ -4603,7 +4609,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1622020552036667726, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
   m_PrefabInstance: {fileID: 8362458625429985666}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 484791082}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c4b6faf10b65f24fb9ad69157371a86, type: 3}
@@ -14594,7 +14600,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 994456595937476700, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1037382101711948964, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_ClearDepth
@@ -14618,15 +14624,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1462762280052193459, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.50009924
+      value: 1.4637405
       objectReference: {fileID: 0}
     - target: {fileID: 1462762280052193459, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.50009924
+      value: 1.4637405
       objectReference: {fileID: 0}
     - target: {fileID: 1462762280052193459, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.50009924
+      value: 1.4637405
       objectReference: {fileID: 0}
     - target: {fileID: 1462762280052193459, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_LocalPosition.z
@@ -15068,6 +15074,14 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4617011216416213531, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4617011216416213531, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
+      propertyPath: followingObject
+      value: 
+      objectReference: {fileID: 484791082}
     - target: {fileID: 4642371846490326903, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_text
       value: 0
@@ -15174,7 +15188,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4830080560392032728, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: 'equippedWeaponNames.Array.data[0]'
-      value: BasicLaser
+      value: IonCannon
       objectReference: {fileID: 0}
     - target: {fileID: 4830080560392032728, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: 'equippedWeaponNames.Array.data[1]'
@@ -15366,7 +15380,7 @@ PrefabInstance:
       objectReference: {fileID: 1038539747}
     - target: {fileID: 6706859261981600912, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_VersionIndex
-      value: 11775
+      value: 11793
       objectReference: {fileID: 0}
     - target: {fileID: 6890879712864759951, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_CellSize.x
@@ -15594,7 +15608,7 @@ PrefabInstance:
       objectReference: {fileID: 1742419399}
     - target: {fileID: 8153612830653783937, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: m_VersionIndex
-      value: 11775
+      value: 11793
       objectReference: {fileID: 0}
     - target: {fileID: 8166887997357711169, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: field of view

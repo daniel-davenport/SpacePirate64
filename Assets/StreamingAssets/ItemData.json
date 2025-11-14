@@ -3,6 +3,7 @@
 		{
 			"name": "BasicLaser",
 			"displayName": "Basic Laser",
+			"description": "A basic laser-based weapon. Charged shot has to lock on before homing.",
 			"tier": 1,
 			"itemType": "weapon",
 			"cost": 100
@@ -12,6 +13,7 @@
 		{
 			"name": "GatlingLaser",
 			"displayName": "Gatling Laser",
+			"description": "A modified Basic Laser that removes the charged shot in favor of a rapid-fire barrage.",
 			"tier": 2,
 			"itemType": "weapon",
 			"cost": 300
@@ -19,8 +21,19 @@
 
 
 		{
+			"name": "IonCannon",
+			"displayName": "Ion Cannon",
+			"description": "A slow-charging, overclocked EMF generator that shoots homing orbs of electrostatic destruction.",
+			"tier": 2,
+			"itemType": "weapon",
+			"cost": 400
+		},
+
+
+		{
 			"name": "MissileLauncher",
 			"displayName": "Missile Launcher",
+			"description": "Onboard Missile Replicator lets you shoot a constant stream of fire-and-forget, armor-penetrating missiles!",
 			"tier": 3,
 			"itemType": "weapon",
 			"cost": 500

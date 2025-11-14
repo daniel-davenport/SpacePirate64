@@ -28,6 +28,7 @@ public class ShopScript : MonoBehaviour
     {
         public string name;
         public string displayName;
+        public string description;
         public string itemType; // weapon, bomb, item?
         public int tier; // lower number = less rare
         public int cost;
@@ -46,7 +47,9 @@ public class ShopScript : MonoBehaviour
     public ItemList allItemsList = new ItemList();
     public Item[] sellingItems = new Item[3];
     public string[] sellingItemDisplayNames = new string[3];
+    public string[] sellingItemDescriptions = new string[3];
     public int[] sellingItemDisplayCosts = new int[3];
+    public int[] sellingItemDisplayTiers = new int[3];
 
     // item tiers
     public ItemList[] tierTables = new ItemList[3];
@@ -63,6 +66,7 @@ public class ShopScript : MonoBehaviour
         // setting the size based on whatever is specified
         sellingItems = new Item[maxItems];
         sellingItemDisplayNames = new string[maxItems];
+        sellingItemDescriptions = new string[maxItems];
         sellingItemDisplayCosts = new int[maxItems];
 
         shopUIEvents = shopUI.GetComponent<ShopUIEvents>();
@@ -127,7 +131,9 @@ public class ShopScript : MonoBehaviour
         // adding it to the list
         sellingItems[slot] = tierTables[tier].items[randomIndex];
         sellingItemDisplayNames[slot] = tierTables[tier].items[randomIndex].displayName;
+        sellingItemDescriptions[slot] = tierTables[tier].items[randomIndex].description;
         sellingItemDisplayCosts[slot] = tierTables[tier].items[randomIndex].cost;
+        sellingItemDisplayTiers[slot] = tierTables[tier].items[randomIndex].tier;
 
         // note: later maybe consider when there's more content to exclude same-type weapons?
         // or keep them since you got 2
@@ -139,9 +145,9 @@ public class ShopScript : MonoBehaviour
     {
         // rng logic:
         // weapons are tiered levels 1-3
-        // level 1 chance: 70%
-        // level 2 chance: 20%
-        // level 3 chance: 10%
+        // level 1 chance: 50%
+        // level 2 chance: 30%
+        // level 3 chance: 20%
         print("generating shop");
 
         // generating an item for each slot
@@ -150,11 +156,11 @@ public class ShopScript : MonoBehaviour
             int itemTier = 0;
             int rng = Random.Range(0, 100);
 
-            if (rng < 70)
+            if (rng < 50)
             {
                 itemTier = 1;
             }
-            else if (rng < 90)
+            else if (rng < 80)
             {
                 itemTier = 2;
             }

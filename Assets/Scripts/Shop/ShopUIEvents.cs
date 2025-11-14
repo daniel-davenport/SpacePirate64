@@ -4,7 +4,9 @@ using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
 using Button = UnityEngine.UIElements.Button;
+using Unity.VisualScripting;
 
 public class ShopUIEvents : MonoBehaviour
 {
@@ -19,6 +21,7 @@ public class ShopUIEvents : MonoBehaviour
     private Button repairButton;
     private Button closeButton;
     private Button bombRestockButton;
+    private VisualElement hoverTooltipWindow;
 
     private Label repairCost;
     private Label hullHealthLabel;
@@ -34,6 +37,11 @@ public class ShopUIEvents : MonoBehaviour
     private Label slot2Equipped;
     private Button cancelConfirmButton;
     private Label equippingTitle;
+
+    private Label hoverTitle;
+    private Label hoverDescription;
+    private bool hoveringOverText = false;
+    private int hoveringSlot = -1;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -53,12 +61,14 @@ public class ShopUIEvents : MonoBehaviour
         bombRestockCost = document.rootVisualElement.Q("BombCost") as Label;
         bombsHeld = document.rootVisualElement.Q("BombsHeld") as Label;
 
-
         repairButton.RegisterCallback<ClickEvent>(OnRepairClick);
         closeButton.RegisterCallback<ClickEvent>(OnCloseClick);
 
         // getting the confirmation window
         confirmationWindow = document.rootVisualElement.Q("ConfirmationWindow") as VisualElement;
+
+        // getting tooltip
+        hoverTooltipWindow = document.rootVisualElement.Q("DescriptionTooltip") as VisualElement;
 
         slot1ConfirmButton = document.rootVisualElement.Q("Slot1Button") as Button;
         slot1Equipped = slot1ConfirmButton.Q("EquippedLabel") as Label;
@@ -76,6 +86,9 @@ public class ShopUIEvents : MonoBehaviour
         // list of all item texts
         itemTexts = document.rootVisualElement.Query<Label>().ToList();
 
+        // getting the hover tooltip
+        hoverTitle = hoverTooltipWindow.Q("Title") as Label;
+        hoverDescription = hoverTooltipWindow.Q("Description") as Label;
 
         int slot = 1;
         foreach (Button button in shopButtons)
@@ -110,25 +123,56 @@ public class ShopUIEvents : MonoBehaviour
 
         }
 
+
+        // this has to go backwards for whatever reason
+        int itemLabelSlot = 2;
         // iterating through itemtexts backwards to remove any non-itemtext labels
         for (int i = itemTexts.Count - 1; i >= 0; i--)
         {
             if (itemTexts[i].name != "ItemText")
             {
                 itemTexts.RemoveAt(i);
-            } else
+            } 
+            else
             {
                 // test case to show it really exists (remember that the order in the UI Builder matters)
                 itemTexts[i].text = (i).ToString();
+                print(itemLabelSlot);
+                itemTexts[i].RegisterCallback<MouseEnterEvent, int>(ItemMouseEnter, itemLabelSlot);
+                itemTexts[i].RegisterCallback<MouseLeaveEvent, int>(ItemMouseExit, itemLabelSlot);
+                itemLabelSlot--;
             }
         }
 
+        // starting the tooltip hover routine
+        StartCoroutine(SetTooltipWindow());
 
 
         // disabling the shop so it doesnt appear
         HideDocument();
 
     }
+
+
+    private IEnumerator SetTooltipWindow()
+    {
+        while (true)
+        {
+            Vector2 screenPosition = Input.mousePosition;
+
+            //print(hoveringOverText);
+            hoverTooltipWindow.visible = hoveringOverText;
+
+            //print(screenPosition);
+            // inverting Y-axis which fixes some issues
+            screenPosition.y = -screenPosition.y;
+
+            hoverTooltipWindow.transform.position = screenPosition;
+
+            yield return null;
+        }
+    }
+
 
     private void OnEnable()
     {
@@ -154,6 +198,21 @@ public class ShopUIEvents : MonoBehaviour
         }
             
     }
+
+
+    // showing description tooltips
+    private void ItemMouseEnter(MouseEnterEvent me, int slot)
+    {
+        hoveringOverText = true;
+        hoveringSlot = slot;
+    }
+
+    private void ItemMouseExit(MouseLeaveEvent me, int slot)
+    {
+        hoveringOverText = false;
+        hoveringSlot = -1;
+    }
+
 
     private void OnRepairClick(ClickEvent ce)
     {
@@ -250,16 +309,18 @@ public class ShopUIEvents : MonoBehaviour
             bombsHeld.text = "HELD: " + bombScript.heldBombs + "/" + bombScript.maxBombs;
             scrapAmount.text = playerController.heldScrap.ToString();
 
-            // TODO:
-            // change this to be the weapon display name rather than internal name
-            // also optionally show the weapon's level?
-
             // player's weapons
             if (playerController.weaponHandler.weaponInfoArr[0] != null && playerController.weaponHandler.weaponInfoArr[1] != null)
             {
                 // shows the equipped weapon plus its current level
                 slot1Equipped.text = playerController.weaponHandler.weaponInfoArr[0].weaponDisplayName + " [" + playerController.weaponHandler.weaponLevels[0] + "]";
                 slot2Equipped.text = playerController.weaponHandler.weaponInfoArr[1].weaponDisplayName + " [" + playerController.weaponHandler.weaponLevels[1] + "]";
+            }
+
+            if (hoveringSlot >= 0)
+            {
+                hoverTitle.text = shopScript.sellingItemDisplayNames[hoveringSlot] + " - Tier " + shopScript.sellingItemDisplayTiers[hoveringSlot];
+                hoverDescription.text = shopScript.sellingItemDescriptions[hoveringSlot];
             }
 
         }

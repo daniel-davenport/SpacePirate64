@@ -27,6 +27,23 @@ public class ProjectileInfo : MonoBehaviour
     private void Start()
     {
         explosionRef = Resources.Load<GameObject>("Particles/explosion");
+
+        // changing laserprojectile hitboxes based on ownership (player projectiles have bigger hitboxes to be more forgiving)
+        if (gameObject.name == "laserProjectile")
+        {
+            if (gameObject.layer == LayerMask.NameToLayer("EnemyProjectile"))
+            {
+                gameObject.GetComponent<MeshCollider>().enabled = true;
+                gameObject.GetComponent<CapsuleCollider>().enabled = false;
+            }
+            else
+            {
+                // it's a player projectile
+                gameObject.GetComponent<MeshCollider>().enabled = false;
+                gameObject.GetComponent<CapsuleCollider>().enabled = true;
+            }
+        }
+
     }
 
     // destroying the projectile if it hits a wall or other object
