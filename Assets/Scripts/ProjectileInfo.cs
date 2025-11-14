@@ -14,6 +14,9 @@ public class ProjectileInfo : MonoBehaviour
     public bool parried;
     public bool interceptable;
 
+    // dangerSettings
+    private PlayerController pc;
+
     // explosion settings
     public float explosionRadius;
     public int explosionDamage;
@@ -62,6 +65,12 @@ public class ProjectileInfo : MonoBehaviour
             GameObject spawnedParticle = Instantiate(explosionRef);
             spawnedParticle.transform.localScale = new Vector3(2, 2, 2);
             spawnedParticle.transform.position = transform.position;
+        }
+
+        // tell the PC that it's not in danger anymore
+        if (pc != null)
+        {
+            pc.inDanger = false;
         }
 
 
@@ -132,7 +141,16 @@ public class ProjectileInfo : MonoBehaviour
             // if that bool is true, a spinning orange circle appears around the player
             // the bottom of their screen (above bombs) will flash the word "! MISSILE !"
             if (target.name.Contains("Player"))
-                print("missile homing in on you");
+            {
+                pc = target.parent.GetComponent<PlayerController>();
+
+                if (pc != null)
+                {
+                    pc.inDanger = true;
+                }
+
+            }
+                
 
             transform.LookAt(target);
 
@@ -148,6 +166,11 @@ public class ProjectileInfo : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
 
+
+        if (pc != null)
+        {
+            pc.inDanger = false;
+        }
     }
 
 

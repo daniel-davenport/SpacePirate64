@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
     public float parrySpeed = 75f; // how fast a parried projectile returns
 
     private bool perfectParry = false;
+    public bool inDanger = false; // is true when locked on by a missile
 
     [Header("Combat Parameters")]
     public float aileronCooldown = 1f;
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviour
     public PlayerUI playerUI;
     public ParticleHandler particleHandler;
     public CameraFollow cameraFollow;
+    public GameObject missileIndicator;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -123,6 +125,8 @@ public class PlayerController : MonoBehaviour
         // setting scrap
         heldScrap = startingScrapAmount;
 
+        // getting the MWS
+        missileIndicator = transform.parent.Find("MissileIndicator").gameObject;
 
         tiltTween.SetAutoKill(false);
     }
@@ -239,6 +243,10 @@ public class PlayerController : MonoBehaviour
         // clamping the player's position
         // note: this has to be in lateupdate
         ClampPosition();
+
+        // showing the MWS
+        missileIndicator.SetActive(inDanger);
+
     }
 
 

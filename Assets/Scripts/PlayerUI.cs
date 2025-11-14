@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +24,8 @@ public class PlayerUI : MonoBehaviour
     public GameObject bombPip;
 
     public TextMeshProUGUI bombName;
+    public GameObject missileWarningText;
+
     public GameObject[] hudHolders = new GameObject[2];
     public TextMeshProUGUI[] weaponNames = new TextMeshProUGUI[2];
     public TextMeshProUGUI[] levelTexts = new TextMeshProUGUI[2];
@@ -32,6 +35,7 @@ public class PlayerUI : MonoBehaviour
     private Vector3 healthHolderBaseScale = new Vector3(0.02f, 0.02f, 0.02f); // magic number unfortunately
     private int lastScrapAmount = 0;
     private int lastBombAmount = 0;
+    private bool MWSDebounce = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -69,6 +73,21 @@ public class PlayerUI : MonoBehaviour
 
         // updating the bomb info every frame
         UpdateBombs();
+    }
+
+
+    private void LateUpdate()
+    {
+        // showing the MWS if there's a missile incoming
+        if (playerController.inDanger == true && MWSDebounce == false)
+        {
+            MWSDebounce = true;
+            StartCoroutine(MissileWarning());
+        } else if (playerController.inDanger == false)
+        {
+            MWSDebounce = false;
+        }
+
     }
 
 
@@ -181,4 +200,20 @@ public class PlayerUI : MonoBehaviour
 
     }
 
+
+    private IEnumerator MissileWarning()
+    {
+
+        while (playerController.inDanger == true)
+        {
+            missileWarningText.SetActive(true);
+            yield return new WaitForSeconds(0.1f);
+            missileWarningText.SetActive(false);
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        missileWarningText.SetActive(false);
+        
+
+    }
 }
