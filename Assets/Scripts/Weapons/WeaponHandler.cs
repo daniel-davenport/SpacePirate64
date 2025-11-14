@@ -273,7 +273,11 @@ public class WeaponHandler : MonoBehaviour
     // setting the charge visual in the PlayerController
     public void SetChargeVisual(int slot, GameObject visualRef)
     {
-        GameObject chargeVisual = Instantiate(visualRef);
+        // destroying the last one, if it exists
+        if (playerController.chargeVisuals[slot] != null)
+            Destroy(playerController.chargeVisuals[slot]);
+
+        GameObject chargeVisual = Instantiate(visualRef, weaponModels[slot].transform.GetChild(0).transform.position, Quaternion.identity);
 
         // setting the visual to firepoint
         chargeVisual.transform.SetParent(weaponModels[slot].transform.GetChild(0).transform);

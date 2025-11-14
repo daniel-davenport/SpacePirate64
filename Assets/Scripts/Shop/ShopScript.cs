@@ -300,7 +300,7 @@ public class ShopScript : MonoBehaviour
 
             // waiting until the player confirms
             yield return new WaitUntil(() => confirmed == true || cancelled == true);
-            yield return new WaitUntil(() => changedSlot != -1);
+            yield return new WaitUntil(() => changedSlot != -1 || cancelled == true);
 
             if (confirmed == true)
             {
