@@ -157,7 +157,7 @@ public class ProjectileInfo : MonoBehaviour
             // this works for missiles homing, add into the playercontroller a bool called 'InDanger'
             // if that bool is true, a spinning orange circle appears around the player
             // the bottom of their screen (above bombs) will flash the word "! MISSILE !"
-            if (target.name.Contains("Player"))
+            if (target != null && target.name.Contains("Player"))
             {
                 pc = target.parent.GetComponent<PlayerController>();
 

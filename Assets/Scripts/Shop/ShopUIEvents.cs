@@ -19,6 +19,10 @@ public class ShopUIEvents : MonoBehaviour
     private List<Label> itemTexts = new List<Label>();
     private List<Label> weaponTexts = new List<Label>();
 
+    // list of all buttons/labels for sellout 
+    private List<Button> weaponBuyButtons = new List<Button>();
+    private List<Button> itemBuyButtons = new List<Button>();
+
     private UIDocument document;
     private Button repairButton;
     private Button closeButton;
@@ -105,12 +109,16 @@ public class ShopUIEvents : MonoBehaviour
                 int index = weaponSlot;
                 button.clicked += () => TryWeaponBuy(index);
                 weaponSlot++;
+
+                weaponBuyButtons.Add(button);
             }
             else if (button.name == "BuyItemButton")
             {
                 int index = itemSlot;
                 button.clicked += () => TryItemBuy(index);
                 itemSlot++;
+
+                itemBuyButtons.Add(button);
             }
 
 
@@ -308,6 +316,13 @@ public class ShopUIEvents : MonoBehaviour
             }
         }
 
+        // also setting all of the buttons to say "BUY"
+        for (int i = 0; i < weaponBuyButtons.Count; i++)
+        {
+            weaponBuyButtons[i].text = "BUY";
+            weaponBuyButtons[i].SetEnabled(true);
+        }
+
     }
 
     // same as above
@@ -326,9 +341,16 @@ public class ShopUIEvents : MonoBehaviour
                 itemCost.text = displayCosts[i].ToString();
             }
         }
+
+
+        // also setting all of the buttons to say "BUY"
+        for (int i = 0; i < itemBuyButtons.Count; i++)
+        {
+            itemBuyButtons[i].text = "BUY";
+            itemBuyButtons[i].SetEnabled(true);
+        }
+
     }
-
-
 
     // show/hiding the confirm window
     public void ShowConfirmationWindow(string buyingName, int buyCost)
@@ -353,6 +375,30 @@ public class ShopUIEvents : MonoBehaviour
     private void TryItemBuy(int slotNum)
     {
         shopScript.BuyItem(slotNum);
+    }
+
+
+    // fired by the ShopScript when you buy something to show the "SOLD OUT" text
+    public void BoughtObject(string type, int slotNum)
+    {
+        print(slotNum);
+
+        if (type == "weapon")
+        {
+            if (weaponBuyButtons[slotNum] != null)
+            {
+                weaponBuyButtons[slotNum].text = "SOLD OUT";
+                weaponBuyButtons[slotNum].SetEnabled(false);
+            }
+        }
+        else
+        {
+            if (itemBuyButtons[slotNum] != null)
+            {
+                itemBuyButtons[slotNum].text = "SOLD OUT";
+                itemBuyButtons[slotNum].SetEnabled(false);
+            }
+        }
     }
 
     // Update is called once per frame

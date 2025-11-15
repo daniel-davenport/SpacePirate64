@@ -373,7 +373,10 @@ public class ShopScript : MonoBehaviour
             // double checking that you can afford it
             playerController.heldScrap -= itemCost;
 
-            print("bought item " + slotItem.displayName + " / " + slotItem.name);
+            //print("bought item " + slotItem.displayName + " / " + slotItem.name);
+
+            // tell that one button to sell out
+            shopUIEvents.BoughtObject("item", slot);
 
             if (slotItem.itemType == "bomb")
             {
@@ -424,7 +427,10 @@ public class ShopScript : MonoBehaviour
                     // reload the weapons
                     playerController.weaponHandler.LoadWeaponData();
 
-                    print("bought weapon " + slotItem.displayName);
+                    // tell that one button to sell out
+                    shopUIEvents.BoughtObject("weapon", slot);
+
+                    //print("bought weapon " + slotItem.displayName);
                 }
 
                 // hide the confirmation window 
