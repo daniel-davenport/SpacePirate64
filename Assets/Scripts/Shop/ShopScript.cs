@@ -20,7 +20,8 @@ public class ShopScript : MonoBehaviour
     public int bombCost;
     private TextAsset itemListJson;
     
-    public int maxItems = 3;
+    public int maxWeapons = 3;
+    public int maxItems = 1;
 
     // setting up loot table .json file
     [System.Serializable]
@@ -43,8 +44,15 @@ public class ShopScript : MonoBehaviour
 
     [SerializeField]
 
-    // item list
+    // weapon list
     public ItemList allItemsList = new ItemList();
+    public Item[] sellingWeapons = new Item[3];
+    public string[] sellingWeaponDisplayNames = new string[3];
+    public string[] sellingWeaponDescriptions = new string[3];
+    public int[] sellingWeaponDisplayCosts = new int[3];
+    public int[] sellingWeaponDisplayTiers = new int[3];
+
+    // item list
     public Item[] sellingItems = new Item[3];
     public string[] sellingItemDisplayNames = new string[3];
     public string[] sellingItemDescriptions = new string[3];
@@ -52,7 +60,8 @@ public class ShopScript : MonoBehaviour
     public int[] sellingItemDisplayTiers = new int[3];
 
     // item tiers
-    public ItemList[] tierTables = new ItemList[3];
+    public ItemList[] weaponTierTables = new ItemList[3];
+    public ItemList[] itemTierTables = new ItemList[3];
 
     // item buying
     public bool confirmed = false;
@@ -64,10 +73,18 @@ public class ShopScript : MonoBehaviour
     void Start()
     {
         // setting the size based on whatever is specified
+        sellingWeapons = new Item[maxWeapons];
+        sellingWeaponDisplayNames = new string[maxWeapons];
+        sellingWeaponDescriptions = new string[maxWeapons];
+        sellingWeaponDisplayCosts = new int[maxWeapons];
+        sellingWeaponDisplayTiers = new int[maxWeapons];
+
         sellingItems = new Item[maxItems];
         sellingItemDisplayNames = new string[maxItems];
         sellingItemDescriptions = new string[maxItems];
         sellingItemDisplayCosts = new int[maxItems];
+        sellingItemDisplayTiers = new int[maxItems];
+
 
         shopUIEvents = shopUI.GetComponent<ShopUIEvents>();
         shopUIEvents.playerController = playerController;
@@ -106,7 +123,16 @@ public class ShopScript : MonoBehaviour
             int itemTier = allItemsList.items[i].tier - 1;
 
             // add it to the end
-            tierTables[itemTier].items.Add(allItemsList.items[i]);
+            if (allItemsList.items[i].itemType == "weapon")
+            {
+                weaponTierTables[itemTier].items.Add(allItemsList.items[i]);
+            }
+            //else if (allItemsList.items[i].itemType == "item")
+            else
+            {
+                itemTierTables[itemTier].items.Add(allItemsList.items[i]);
+            }
+            
         }
 
         // manually printing every item at the end
@@ -120,25 +146,50 @@ public class ShopScript : MonoBehaviour
 
 
     // getting a random item in the tiered list
-    private void GetRandomItemByTier(int slot, int tier)
+    private void GetRandomItemByTier(int slot, int tier, string type)
     {
-        // making sure it's 0-index
-        tier = tier - 1;
+        if (type == "weapon")
+        {
+            // making sure it's 0-index
+            tier = tier - 1;
 
-        // getting a random item in the list
-        int randomIndex = Random.Range(0, tierTables[tier].items.Count);
+            // getting a random item in the list
+            int randomIndex = Random.Range(0, weaponTierTables[tier].items.Count);
 
-        // adding it to the list
-        sellingItems[slot] = tierTables[tier].items[randomIndex];
-        sellingItemDisplayNames[slot] = tierTables[tier].items[randomIndex].displayName;
-        sellingItemDescriptions[slot] = tierTables[tier].items[randomIndex].description;
-        sellingItemDisplayCosts[slot] = tierTables[tier].items[randomIndex].cost;
-        sellingItemDisplayTiers[slot] = tierTables[tier].items[randomIndex].tier;
+            // adding it to the list
+            sellingWeapons[slot] = weaponTierTables[tier].items[randomIndex];
+            sellingWeaponDisplayNames[slot] = weaponTierTables[tier].items[randomIndex].displayName;
+            sellingWeaponDescriptions[slot] = weaponTierTables[tier].items[randomIndex].description;
+            sellingWeaponDisplayCosts[slot] = weaponTierTables[tier].items[randomIndex].cost;
+            sellingWeaponDisplayTiers[slot] = weaponTierTables[tier].items[randomIndex].tier;
 
-        // note: later maybe consider when there's more content to exclude same-type weapons?
-        // or keep them since you got 2
+            // note: later maybe consider when there's more content to exclude same-type weapons?
+            // or keep them since you got 2
+        }
+        else
+        {
+            // making sure it's 0-index
+            tier = tier - 1;
+
+            // getting a random item in the list
+            int randomIndex = Random.Range(0, itemTierTables[tier].items.Count);
+
+            // adding it to the list
+            sellingItems[slot] = itemTierTables[tier].items[randomIndex];
+            sellingItemDisplayNames[slot] = itemTierTables[tier].items[randomIndex].displayName;
+            sellingItemDescriptions[slot] = itemTierTables[tier].items[randomIndex].description;
+            sellingItemDisplayCosts[slot] = itemTierTables[tier].items[randomIndex].cost;
+            sellingItemDisplayTiers[slot] = itemTierTables[tier].items[randomIndex].tier;
+
+        }
+
+
 
     }
+
+
+
+
 
     // generates the stock based on tiers
     private void GenerateStock()
@@ -150,8 +201,8 @@ public class ShopScript : MonoBehaviour
         // level 3 chance: 20%
         print("generating shop");
 
-        // generating an item for each slot
-        for (int i = 0; i < maxItems; i++)
+        // generating a weapon for each slot
+        for (int i = 0; i < maxWeapons; i++)
         {
             int itemTier = 0;
             int rng = Random.Range(0, 100);
@@ -171,9 +222,39 @@ public class ShopScript : MonoBehaviour
 
 
             // find a random item of that tier
-            GetRandomItemByTier(i, itemTier);
+            GetRandomItemByTier(i, itemTier, "weapon");
+
+            //print(sellingWeapons[i].name);
+        }
 
 
+        // generating an item for each slot
+        for (int i = 0; i < maxItems; i++)
+        {
+            int itemTier = 0;
+            int rng = Random.Range(0, 100);
+
+            // NOTE: THERE CURRENTLY ARE ONLY TIER 1 ITEMS, CHANGE THIS LATER WHEN YOU ADD MORE
+            itemTier = 1;
+            /*
+            if (rng < 50)
+            {
+                itemTier = 1;
+            }
+            else if (rng < 80)
+            {
+                itemTier = 2;
+            }
+            else if (rng <= 100)
+            {
+                itemTier = 3;
+            }
+            */
+
+            // find a random item of that tier
+            GetRandomItemByTier(i, itemTier, "item");
+
+            print(sellingItems[i].name);
         }
 
     }
@@ -186,6 +267,7 @@ public class ShopScript : MonoBehaviour
         GenerateStock();
 
         // fire it to the shopui so it can display the text for every slot
+        shopUIEvents.UpdateDisplayWeapons(sellingWeaponDisplayNames, sellingWeaponDisplayCosts);
         shopUIEvents.UpdateDisplayItems(sellingItemDisplayNames, sellingItemDisplayCosts);
 
         // at the end, show the shop ui
@@ -238,14 +320,7 @@ public class ShopScript : MonoBehaviour
     }
 
 
-
-    // the player clicked one of the confirmation buttons, buy and equip the item into that slot
-    public void ConfirmPurchase(int weaponSlot)
-    {
-
-    }
-
-    
+    // restocking bombs specifically
     public void BuyBomb()
     {
         // check if they can afford a bomb, then give them another one
@@ -281,9 +356,8 @@ public class ShopScript : MonoBehaviour
     }
 
 
-    // compares the current held scrap with the cost of the item
-    // if the item can be afforded then do the appropriate thing with it.
-    // otherwise do nothing.
+    // buying items (bombs, later other items)
+    // note: due to time constraint (and my desire to not do it) there will be no confirmation, you just click and buy it.
     public void BuyItem(int slot)
     {
         // making sure it's 0-indexed
@@ -291,6 +365,38 @@ public class ShopScript : MonoBehaviour
 
         // get the item stored in the slot
         Item slotItem = sellingItems[slot];
+        int itemCost = slotItem.cost;
+
+        // buy the item
+        if (playerController.heldScrap >= itemCost)
+        {
+            // double checking that you can afford it
+            playerController.heldScrap -= itemCost;
+
+            print("bought item " + slotItem.displayName + " / " + slotItem.name);
+
+            if (slotItem.itemType == "bomb")
+            {
+                // update their bombscript
+                bombScript.equippedBomb = slotItem.name;
+            }
+
+        }
+
+
+    }
+
+
+    // compares the current held scrap with the cost of the item
+    // if the item can be afforded then do the appropriate thing with it.
+    // otherwise do nothing.
+    public void BuyWeapon(int slot)
+    {
+        // making sure it's 0-indexed
+        slot = slot - 1;
+
+        // get the item stored in the slot
+        Item slotItem = sellingWeapons[slot];
         int itemCost = slotItem.cost;
 
 
@@ -304,7 +410,7 @@ public class ShopScript : MonoBehaviour
 
             if (confirmed == true)
             {
-                //print("buying item in slot " + (slot + 1) + ", which is a: " + sellingItems[slot].displayName);
+                //print("buying item in slot " + (slot + 1) + ", which is a: " + sellingWeapons[slot].displayName);
 
                 // buy the item
                 if (playerController.heldScrap >= itemCost)

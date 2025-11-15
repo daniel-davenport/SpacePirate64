@@ -28,7 +28,7 @@
     height: 10%;
     -unity-text-align: middle-right;
     -unity-font-definition: url("project://database/Assets/Fonts/VCR_OSD_MONO_1.001.ttf?fileID=12800000&guid=ecb0fbdead74fa543810aebc587fec7b&type=3#VCR_OSD_MONO_1.001");
-    font-size: 550%;
+    font-size: 400%;
     position: relative;
     white-space: nowrap;
     text-overflow: ellipsis;

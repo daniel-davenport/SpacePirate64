@@ -3365,22 +3365,55 @@ MonoBehaviour:
   bombScript: {fileID: 0}
   repairCost: 25
   bombCost: 50
-  maxItems: 3
+  maxWeapons: 3
+  maxItems: 1
   allItemsList:
     items: []
+  sellingWeapons:
+  - name: 
+    displayName: 
+    description: 
+    itemType: 
+    tier: 0
+    cost: 0
+  - name: 
+    displayName: 
+    description: 
+    itemType: 
+    tier: 0
+    cost: 0
+  - name: 
+    displayName: 
+    description: 
+    itemType: 
+    tier: 0
+    cost: 0
+  sellingWeaponDisplayNames:
+  - 
+  - 
+  - 
+  sellingWeaponDescriptions:
+  - 
+  - 
+  - 
+  sellingWeaponDisplayCosts: 000000000000000000000000
+  sellingWeaponDisplayTiers: 000000000000000000000000
   sellingItems:
   - name: 
     displayName: 
+    description: 
     itemType: 
     tier: 0
     cost: 0
   - name: 
     displayName: 
+    description: 
     itemType: 
     tier: 0
     cost: 0
   - name: 
     displayName: 
+    description: 
     itemType: 
     tier: 0
     cost: 0
@@ -3388,8 +3421,17 @@ MonoBehaviour:
   - 
   - 
   - 
+  sellingItemDescriptions:
+  - 
+  - 
+  - 
   sellingItemDisplayCosts: 000000000000000000000000
-  tierTables:
+  sellingItemDisplayTiers: 000000000000000000000000
+  weaponTierTables:
+  - items: []
+  - items: []
+  - items: []
+  itemTierTables:
   - items: []
   - items: []
   - items: []
