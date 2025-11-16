@@ -1,10 +1,11 @@
+using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
-using Unity.Collections;
-using UnityEngine;
 using System.IO;
 using System.Security.Cryptography;
-using System.Collections;
-using JetBrains.Annotations;
+using Unity.Collections;
+using UnityEngine;
+using static ShopScript;
 
 public class ShopScript : MonoBehaviour
 {
@@ -18,6 +19,10 @@ public class ShopScript : MonoBehaviour
     [Header("Stats")]
     public int repairCost;
     public int bombCost;
+    public int resupplyCost; // how much restocking the shop costs
+    public int baseResupplyCost; 
+    public float resupplyModifier; // how much the price increases per restock
+
     private TextAsset itemListJson;
     
     public int maxWeapons = 3;
@@ -192,7 +197,7 @@ public class ShopScript : MonoBehaviour
 
 
     // generates the stock based on tiers
-    private void GenerateStock()
+    private void GenerateStock(bool reroll)
     {
         // rng logic:
         // weapons are tiered levels 1-3
@@ -200,6 +205,10 @@ public class ShopScript : MonoBehaviour
         // level 2 chance: 30%
         // level 3 chance: 20%
         print("generating shop");
+
+        // resetting the resupply cost only if you didn't reroll
+        if (reroll == false)
+            resupplyCost = baseResupplyCost;
 
         // generating a weapon for each slot
         for (int i = 0; i < maxWeapons; i++)
@@ -261,10 +270,10 @@ public class ShopScript : MonoBehaviour
 
 
     // called at a level end, creates the shop's stock and shows the shop hud.
-    public void RefreshShop()
+    public void RefreshShop(bool reroll = false)
     {
         // generate the shop's stock using RNG to determine the rarity of each item
-        GenerateStock();
+        GenerateStock(reroll);
 
         // fire it to the shopui so it can display the text for every slot
         shopUIEvents.UpdateDisplayWeapons(sellingWeaponDisplayNames, sellingWeaponDisplayCosts);
@@ -355,6 +364,28 @@ public class ShopScript : MonoBehaviour
 
     }
 
+
+    // check if you have enough to bribe the shop
+    // if you do, RefreshShop() and increase the cost of bribing by the multiplier
+    // if you don't, do nothing
+    public void BribeShop()
+    {
+        if (playerController.heldScrap >= resupplyCost)
+        {
+            print("can bribe shop");
+            // reducing money + increasing resupply cost
+            playerController.heldScrap -= resupplyCost;
+            resupplyCost = Mathf.CeilToInt(resupplyCost * resupplyModifier);
+
+            // restocking the shop
+            RefreshShop(true);
+
+        }
+        else
+        {
+            print("poor");
+        }
+    }
 
     // buying items (bombs, later other items)
     // note: due to time constraint (and my desire to not do it) there will be no confirmation, you just click and buy it.

@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
 using Button = UnityEngine.UIElements.Button;
-using Unity.VisualScripting;
 
 public class ShopUIEvents : MonoBehaviour
 {
@@ -27,6 +25,7 @@ public class ShopUIEvents : MonoBehaviour
     private Button repairButton;
     private Button closeButton;
     private Button bombRestockButton;
+    private Button bribeButton;
     private VisualElement hoverTooltipWindow;
 
     private Label repairCost;
@@ -34,6 +33,10 @@ public class ShopUIEvents : MonoBehaviour
     private Label scrapAmount;
     private Label bombRestockCost;
     private Label bombsHeld;
+    private Label bribeCost;
+
+    // restocking
+
 
     // confirmation window
     private VisualElement confirmationWindow;
@@ -61,6 +64,7 @@ public class ShopUIEvents : MonoBehaviour
         repairButton = document.rootVisualElement.Q("RepairButton") as Button;
         closeButton = document.rootVisualElement.Q("CloseButton") as Button;
         bombRestockButton = document.rootVisualElement.Q("BombRestockButton") as Button;
+        bribeButton = document.rootVisualElement.Q("BribeButton") as Button;
 
         // getting labels
         hullHealthLabel = document.rootVisualElement.Q("HullHealth") as Label;
@@ -68,6 +72,7 @@ public class ShopUIEvents : MonoBehaviour
         repairCost = document.rootVisualElement.Q("RepairCost") as Label;
         bombRestockCost = document.rootVisualElement.Q("BombCost") as Label;
         bombsHeld = document.rootVisualElement.Q("BombsHeld") as Label;
+        bribeCost = bribeButton.Q("BribeCost") as Label;
 
         repairButton.RegisterCallback<ClickEvent>(OnRepairClick);
         closeButton.RegisterCallback<ClickEvent>(OnCloseClick);
@@ -134,6 +139,10 @@ public class ShopUIEvents : MonoBehaviour
             else if (button.name == "CancelConfirmButton")
             {
                 button.clicked += () => OnCancelClick();
+            }
+            else if (button.name == "BribeButton")
+            {
+                button.clicked += () => TryBribeShop();
             }
 
             if (button.name == "BombRestockButton")
@@ -377,6 +386,12 @@ public class ShopUIEvents : MonoBehaviour
         shopScript.BuyItem(slotNum);
     }
 
+    // try to bribe the shop and restock items
+    private void TryBribeShop()
+    {
+        shopScript.BribeShop();
+    }
+
 
     // fired by the ShopScript when you buy something to show the "SOLD OUT" text
     public void BoughtObject(string type, int slotNum)
@@ -414,6 +429,8 @@ public class ShopUIEvents : MonoBehaviour
             hullHealthLabel.text = "HULL: " + playerController.playerHealth + "/" + playerController.maxHealth;
             bombsHeld.text = "HELD: " + bombScript.heldBombs + "/" + bombScript.maxBombs;
             scrapAmount.text = playerController.heldScrap.ToString();
+
+            bribeCost.text = "[" + shopScript.resupplyCost + "] SCRAP";
 
             // player's weapons
             if (playerController.weaponHandler.weaponInfoArr[0] != null && playerController.weaponHandler.weaponInfoArr[1] != null)

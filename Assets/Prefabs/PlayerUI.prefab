@@ -3365,6 +3365,9 @@ MonoBehaviour:
   bombScript: {fileID: 0}
   repairCost: 25
   bombCost: 50
+  resupplyCost: 20
+  baseResupplyCost: 20
+  resupplyModifier: 1.5
   maxWeapons: 3
   maxItems: 1
   allItemsList:
