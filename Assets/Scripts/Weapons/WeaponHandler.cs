@@ -148,6 +148,7 @@ public class WeaponHandler : MonoBehaviour
             {
                 // resetting the weapon level
                 weaponLevels[i] = 1;
+                weaponEXP[i] = 0;
 
                 // add their weapon script 
                 Component weaponScript = gameObject.AddComponent(scriptType);
@@ -277,26 +278,31 @@ public class WeaponHandler : MonoBehaviour
         if (playerController.chargeVisuals[slot] != null)
             Destroy(playerController.chargeVisuals[slot]);
 
-        GameObject chargeVisual = Instantiate(visualRef, weaponModels[slot].transform.GetChild(0).transform.position, Quaternion.identity);
+        // creating a charge visual, if one was provided
+        if (visualRef != null)
+        {
+            GameObject chargeVisual = Instantiate(visualRef, weaponModels[slot].transform.GetChild(0).transform.position, Quaternion.identity);
 
-        // setting the visual to firepoint
-        chargeVisual.transform.SetParent(weaponModels[slot].transform.GetChild(0).transform);
+            // setting the visual to firepoint
+            chargeVisual.transform.SetParent(weaponModels[slot].transform.GetChild(0).transform);
 
-        // centering it
-        chargeVisual.transform.localPosition = Vector3.zero;
+            // centering it
+            chargeVisual.transform.localPosition = Vector3.zero;
 
-        // destroying its collider and rb
-        if (chargeVisual.GetComponent<Rigidbody>())
-            Destroy(chargeVisual.GetComponent<Rigidbody>());
+            // destroying its collider and rb
+            if (chargeVisual.GetComponent<Rigidbody>())
+                Destroy(chargeVisual.GetComponent<Rigidbody>());
 
-        if (chargeVisual.GetComponent<Collider>())
-            Destroy(chargeVisual.GetComponent<Collider>());
+            if (chargeVisual.GetComponent<Collider>())
+                Destroy(chargeVisual.GetComponent<Collider>());
 
 
-        chargeVisual.transform.localScale = Vector3.zero;
+            chargeVisual.transform.localScale = Vector3.zero;
 
-        // setting it in the playercontroller
-        playerController.chargeVisuals[slot] = chargeVisual;
+            // setting it in the playercontroller
+            playerController.chargeVisuals[slot] = chargeVisual;
+        }
+
     }
 
     // reducing exp from taking damage by how much damage you took

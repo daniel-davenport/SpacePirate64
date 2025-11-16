@@ -70,8 +70,8 @@ public class MissileLauncherScript : MonoBehaviour
         projectileSpeed = weaponInfo.projectileSpeed;
 
         // setting the charge visual (optional)
-        chargeVisual = chargedShotProjectile;
-        //weaponHandler.SetChargeVisual(weaponSlot, chargeVisual);
+        chargeVisual = null; // doesnt have a charge visual
+        weaponHandler.SetChargeVisual(weaponSlot, chargeVisual);
 
     }
 

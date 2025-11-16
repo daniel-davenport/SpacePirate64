@@ -14712,7 +14712,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1870655572694423423, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: levelTickets
-      value: 5
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1870655572694423423, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: outLevelSpeed
@@ -14720,7 +14720,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1870655572694423423, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: maxLevelTickets
-      value: 5
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1870655572694423423, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: levelEndEvent.m_PersistentCalls.m_Calls.Array.size
@@ -15196,7 +15196,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4830080560392032728, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: 'equippedWeaponNames.Array.data[0]'
-      value: IonCannon
+      value: BasicLaser
       objectReference: {fileID: 0}
     - target: {fileID: 4830080560392032728, guid: 71d6ca20b5994014a8f175a266a1ddb6, type: 3}
       propertyPath: 'equippedWeaponNames.Array.data[1]'

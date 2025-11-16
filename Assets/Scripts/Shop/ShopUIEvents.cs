@@ -396,7 +396,7 @@ public class ShopUIEvents : MonoBehaviour
     // fired by the ShopScript when you buy something to show the "SOLD OUT" text
     public void BoughtObject(string type, int slotNum)
     {
-        print(slotNum);
+        //print(slotNum);
 
         if (type == "weapon")
         {

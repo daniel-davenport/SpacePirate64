@@ -60,7 +60,7 @@ public class BombScript : MonoBehaviour
     void Start()
     {
         // setting default bomb type
-        equippedBomb = "blank";
+        equippedBomb = "normal";
         bombDebounce = false;
 
         // loading projectiles

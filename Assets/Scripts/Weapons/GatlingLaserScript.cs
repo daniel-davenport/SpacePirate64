@@ -65,7 +65,7 @@ public class GatlingLaserScript : MonoBehaviour
         chargedDamage = weaponInfo.chargedDamage;
 
         // setting the charge visual (optional)
-        chargeVisual = chargedShotProjectile;
+        chargeVisual = null; // optional
         weaponHandler.SetChargeVisual(weaponSlot, chargeVisual);
 
     }
