@@ -33,10 +33,10 @@ public class PlayerController : MonoBehaviour
     public float parrySpeed = 75f; // how fast a parried projectile returns
 
     private bool perfectParry = false;
+    public bool inDanger = false; // is true when locked on by a missile
 
     [Header("Combat Parameters")]
     public float aileronCooldown = 1f;
-    public float bombCooldown = 1f;
 
     // note: lean is for the automatic horizontal leaning for moving horizontally
     //       whereas tilt is for the manual tilting by pressing bumpers or Q/E
@@ -53,9 +53,6 @@ public class PlayerController : MonoBehaviour
     public GameObject[] chargeVisuals = new GameObject[2]; // used to represent how charged the weapons are
     public float chargeVisualSize = 3; // how much the size is multiplied by to change its scale
 
-    public int heldBombs = 1;
-    public int maxBombs = 3;
-
     [Header("References")]
     public Camera mainCamera;
     public Transform aimTarget;
@@ -63,11 +60,13 @@ public class PlayerController : MonoBehaviour
     public GameObject rightWeaponModel;
     public GameObject playerModel;
     public WeaponHandler weaponHandler;
+    public BombScript bombScript;
     public SpawnDirector spawnDirector;
     public ScoreHandler scoreHandler;
     public PlayerUI playerUI;
     public ParticleHandler particleHandler;
     public CameraFollow cameraFollow;
+    public GameObject missileIndicator;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -86,7 +85,6 @@ public class PlayerController : MonoBehaviour
     GameObject[] weaponModels = new GameObject[2];
 
     bool[] attackDebounces = new bool[] { false, false };
-    private bool bombDebounce = false;
 
     // materials
     private Material parriedMaterial;
@@ -118,6 +116,7 @@ public class PlayerController : MonoBehaviour
 
         // getting references
         weaponHandler = transform.GetComponent<WeaponHandler>();
+        bombScript = transform.GetComponent<BombScript>();
         //playerUI = transform.GetComponent<PlayerUI>();
 
         // setting their health
@@ -126,6 +125,8 @@ public class PlayerController : MonoBehaviour
         // setting scrap
         heldScrap = startingScrapAmount;
 
+        // getting the MWS
+        missileIndicator = transform.parent.Find("MissileIndicator").gameObject;
 
         tiltTween.SetAutoKill(false);
     }
@@ -201,7 +202,8 @@ public class PlayerController : MonoBehaviour
                 Tilt(side);
             }
 
-        } else if (tiltLeftAction.WasReleasedThisFrame())
+        } 
+        else if (tiltLeftAction.WasReleasedThisFrame())
         {
             EndTilt(hInput);
         }
@@ -220,7 +222,8 @@ public class PlayerController : MonoBehaviour
                 Tilt(side);
             }
 
-        } else if (tiltRightAction.WasReleasedThisFrame())
+        } 
+        else if (tiltRightAction.WasReleasedThisFrame())
         {
             EndTilt(hInput);
         }
@@ -240,6 +243,10 @@ public class PlayerController : MonoBehaviour
         // clamping the player's position
         // note: this has to be in lateupdate
         ClampPosition();
+
+        // showing the MWS
+        missileIndicator.SetActive(inDanger);
+
     }
 
 
@@ -317,34 +324,54 @@ public class PlayerController : MonoBehaviour
     void AttackStart(int weaponSlot, float chargeTime = 0f)
     {
 
-        if (chargeTime > 0f && chargeTime >= weaponHandler.maxChargeTimes[weaponSlot]) // firing a charged shot (ignores debounces)
-        {
-            Attack(weaponSlot, true);
-            chargeTimes[weaponSlot] = 0f;
+        // allowing weapons to not have charged shots
+        // holding down the attack button will instead just constantly fire.
 
-            return;
-
-            /*
-            Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
-            objectRenderer.material.color = Color.white;
-            */
-        }
-        else if (chargeTime > 0f && chargeTime < weaponHandler.maxChargeTimes[weaponSlot]) // didnt fully charge
+        if (weaponHandler.weaponInfoArr[weaponSlot].hasChargedShot == true)
         {
-            chargeTimes[weaponSlot] = 0f;
-            return;
-        }
-        else if (attackDebounces[weaponSlot] == false && chargeTimes[weaponSlot] <= 0f) // firing a regular shot (note: will not fire if you're charging)
-        {
-            attackDebounces[weaponSlot] = true;
-            Attack(weaponSlot, false);
-            chargeTimes[weaponSlot] = 0f;
+            if (chargeTime > 0f && chargeTime >= weaponHandler.maxChargeTimes[weaponSlot]) // firing a charged shot (ignores debounces)
+            {
+                Attack(weaponSlot, true);
+                chargeTimes[weaponSlot] = 0f;
 
-            /*
-            Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
-            objectRenderer.material.color = Color.blue;
-            */
+                return;
+
+                /*
+                Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
+                objectRenderer.material.color = Color.white;
+                */
+            }
+            else if (chargeTime > 0f && chargeTime < weaponHandler.maxChargeTimes[weaponSlot]) // didnt fully charge
+            {
+                chargeTimes[weaponSlot] = 0f;
+                return;
+            }
+            else if (attackDebounces[weaponSlot] == false && chargeTimes[weaponSlot] <= 0f) // firing a regular shot (note: will not fire if you're charging)
+            {
+                attackDebounces[weaponSlot] = true;
+                Attack(weaponSlot, false);
+                chargeTimes[weaponSlot] = 0f;
+
+                /*
+                Renderer objectRenderer = weaponModels[weaponSlot].GetComponent<Renderer>();
+                objectRenderer.material.color = Color.blue;
+                */
+            }
+        } 
+        else
+        {
+            if (attackDebounces[weaponSlot] == false)
+            {
+                // just attacking every frame
+                attackDebounces[weaponSlot] = true;
+                Attack(weaponSlot, false);
+                chargeTimes[weaponSlot] = 0f;
+            }
+
         }
+
+
+
 
 
 
@@ -405,20 +432,12 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    // fires a bomb based on what you have equipped (added later). tracks your held bombs and cooldowns.
+
+
+    // tells the weapon handler to fire a bomb
     void Bomb()
     {
-        if (bombDebounce == false && heldBombs > 0)
-        {
-            bombDebounce = true;
-            heldBombs -= 1;
-            print("firing bomb");
-
-            StartCoroutine(ResetBomb(bombCooldown));
-        } else if (heldBombs <= 0) 
-        {
-            print("out of bombs!");
-        }
+        bombScript.FireBomb();
     }
 
 
@@ -522,13 +541,6 @@ public class PlayerController : MonoBehaviour
         */
 
 
-    }
-
-    // resets your bomb cooldown.
-    IEnumerator ResetBomb(float cooldown)
-    {
-        yield return new WaitForSeconds(cooldown);
-        bombDebounce = false;
     }
 
     // makes the player blink while invincible

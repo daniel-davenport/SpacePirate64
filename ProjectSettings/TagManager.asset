@@ -6,6 +6,7 @@ TagManager:
   tags:
   - EXP
   - Scrap
+  - Persistent
   layers:
   - Default
   - TransparentFX

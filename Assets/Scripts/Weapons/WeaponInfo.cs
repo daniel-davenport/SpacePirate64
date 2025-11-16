@@ -9,6 +9,11 @@ public class WeaponInfo : ScriptableObject
     public int weaponDamage;
     public float projectileSpeed;
     public float firingSpeed; // how fast you can fire, lower number = faster firing speed
+    public bool explodeOnDestroy; // if the projectile should explode when it's destroyed
+
+    // explosion settings
+    public float explosionRadius;
+    public int explosionDamage;
 
     // weapon exp
     public int maxEXP; // how much exp you need to level it up

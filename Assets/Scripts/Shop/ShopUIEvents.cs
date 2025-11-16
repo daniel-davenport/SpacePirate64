@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
 using Button = UnityEngine.UIElements.Button;
 
 public class ShopUIEvents : MonoBehaviour
@@ -11,16 +11,32 @@ public class ShopUIEvents : MonoBehaviour
     [Header("References")]
     public ShopScript shopScript;
     public PlayerController playerController;
+    public BombScript bombScript;
     public List<Button> shopButtons = new List<Button>();
-    public List<Label> itemTexts = new List<Label>();
+    private List<Label> itemList = new List<Label>();
+    private List<Label> itemTexts = new List<Label>();
+    private List<Label> weaponTexts = new List<Label>();
+
+    // list of all buttons/labels for sellout 
+    private List<Button> weaponBuyButtons = new List<Button>();
+    private List<Button> itemBuyButtons = new List<Button>();
 
     private UIDocument document;
     private Button repairButton;
     private Button closeButton;
+    private Button bombRestockButton;
+    private Button bribeButton;
+    private VisualElement hoverTooltipWindow;
 
     private Label repairCost;
     private Label hullHealthLabel;
     private Label scrapAmount;
+    private Label bombRestockCost;
+    private Label bombsHeld;
+    private Label bribeCost;
+
+    // restocking
+
 
     // confirmation window
     private VisualElement confirmationWindow;
@@ -31,23 +47,41 @@ public class ShopUIEvents : MonoBehaviour
     private Button cancelConfirmButton;
     private Label equippingTitle;
 
+    private Label hoverTitle;
+    private Label hoverDescription;
+    private bool hoveringOverWeapon = false;
+    private bool hoveringOverItem = false;
+    private bool hoveringLabel = false;
+    private int hoveringSlot = -1;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // getting references
+        bombScript = shopScript.bombScript;
+
         document = GetComponent<UIDocument>();
         repairButton = document.rootVisualElement.Q("RepairButton") as Button;
         closeButton = document.rootVisualElement.Q("CloseButton") as Button;
+        bombRestockButton = document.rootVisualElement.Q("BombRestockButton") as Button;
+        bribeButton = document.rootVisualElement.Q("BribeButton") as Button;
 
         // getting labels
         hullHealthLabel = document.rootVisualElement.Q("HullHealth") as Label;
         scrapAmount = document.rootVisualElement.Q("ScrapAmount") as Label;
         repairCost = document.rootVisualElement.Q("RepairCost") as Label;
+        bombRestockCost = document.rootVisualElement.Q("BombCost") as Label;
+        bombsHeld = document.rootVisualElement.Q("BombsHeld") as Label;
+        bribeCost = bribeButton.Q("BribeCost") as Label;
 
         repairButton.RegisterCallback<ClickEvent>(OnRepairClick);
         closeButton.RegisterCallback<ClickEvent>(OnCloseClick);
 
         // getting the confirmation window
         confirmationWindow = document.rootVisualElement.Q("ConfirmationWindow") as VisualElement;
+
+        // getting tooltip
+        hoverTooltipWindow = document.rootVisualElement.Q("DescriptionTooltip") as VisualElement;
 
         slot1ConfirmButton = document.rootVisualElement.Q("Slot1Button") as Button;
         slot1Equipped = slot1ConfirmButton.Q("EquippedLabel") as Label;
@@ -63,19 +97,33 @@ public class ShopUIEvents : MonoBehaviour
         shopButtons = document.rootVisualElement.Query<Button>().ToList();
 
         // list of all item texts
-        itemTexts = document.rootVisualElement.Query<Label>().ToList();
+        itemList = document.rootVisualElement.Query<Label>().ToList();
 
+        // getting the hover tooltip
+        hoverTitle = hoverTooltipWindow.Q("Title") as Label;
+        hoverDescription = hoverTooltipWindow.Q("Description") as Label;
 
-        int slot = 1;
+        int weaponSlot = 1;
+        int itemSlot = 1;
         foreach (Button button in shopButtons)
         {
             // only counting buybuttons
             // note: it goes hierarchically, meaning the top button will be slot 1, and the bottom one will be whatever the max is
             if (button.name == "BuyButton")
             {
-                int index = slot;
+                int index = weaponSlot;
+                button.clicked += () => TryWeaponBuy(index);
+                weaponSlot++;
+
+                weaponBuyButtons.Add(button);
+            }
+            else if (button.name == "BuyItemButton")
+            {
+                int index = itemSlot;
                 button.clicked += () => TryItemBuy(index);
-                slot++;
+                itemSlot++;
+
+                itemBuyButtons.Add(button);
             }
 
 
@@ -92,28 +140,88 @@ public class ShopUIEvents : MonoBehaviour
             {
                 button.clicked += () => OnCancelClick();
             }
+            else if (button.name == "BribeButton")
+            {
+                button.clicked += () => TryBribeShop();
+            }
+
+            if (button.name == "BombRestockButton")
+                button.clicked += () => OnBombRestockClick();
+
 
         }
 
-        // iterating through itemtexts backwards to remove any non-itemtext labels
-        for (int i = itemTexts.Count - 1; i >= 0; i--)
+
+        // this has to go backwards because of the removals
+        int weaponLabelSlot = shopScript.maxWeapons - 1;
+        int itemLabelSlot = shopScript.maxItems - 1;
+        // iterating through itemList backwards to remove any non-itemtext labels
+        for (int i = itemList.Count - 1; i >= 0; i--)
         {
-            if (itemTexts[i].name != "ItemText")
+            if (itemList[i].name == "WeaponText")
             {
-                itemTexts.RemoveAt(i);
-            } else
+                // inserting it at 0 to shift everything over later (remember that the order in the UI Builder matters)
+                weaponTexts.Insert(0, itemList[i]); // (since we're iterating backwards, inserting at 0 makes sense because the first item should be last, technically)
+
+                // table to pass more args than unity allows
+                int[] slotTable = new int[2];
+                slotTable[0] = 0; // 0 = weapon
+                slotTable[1] = weaponLabelSlot;
+
+                itemList[i].RegisterCallback<MouseEnterEvent, int[]>(ItemMouseEnter, slotTable);
+                itemList[i].RegisterCallback<MouseLeaveEvent, int[]>(ItemMouseExit, slotTable);
+                weaponLabelSlot--;
+            }
+            else if (itemList[i].name == "ItemText")
             {
                 // test case to show it really exists (remember that the order in the UI Builder matters)
-                itemTexts[i].text = (i).ToString();
+                itemTexts.Insert(0, itemList[i]);
+
+                // table to pass more args than unity allows
+                int[] slotTable = new int[2];
+                slotTable[0] = 1; // 1 = item
+                slotTable[1] = itemLabelSlot;
+
+                itemList[i].RegisterCallback<MouseEnterEvent, int[]>(ItemMouseEnter, slotTable);
+                itemList[i].RegisterCallback<MouseLeaveEvent, int[]>(ItemMouseExit, slotTable);
+                itemLabelSlot--;
             }
+            else
+            {
+                itemList.RemoveAt(i);
+            }
+
         }
 
+        // starting the tooltip hover routine
+        StartCoroutine(SetTooltipWindow());
 
 
         // disabling the shop so it doesnt appear
         HideDocument();
 
     }
+
+
+    private IEnumerator SetTooltipWindow()
+    {
+        while (true)
+        {
+            Vector2 screenPosition = Input.mousePosition;
+
+            //print(hoveringOverText);
+            hoverTooltipWindow.visible = hoveringLabel;
+
+            //print(screenPosition);
+            // inverting Y-axis which fixes some issues
+            screenPosition.y = -screenPosition.y;
+
+            hoverTooltipWindow.transform.position = screenPosition;
+
+            yield return null;
+        }
+    }
+
 
     private void OnEnable()
     {
@@ -140,6 +248,33 @@ public class ShopUIEvents : MonoBehaviour
             
     }
 
+
+    // showing description tooltips
+    // slot 0 is a 0 or 1 to determine if it's a weapon or item
+    // slot 1 is the actual slot
+    private void ItemMouseEnter(MouseEnterEvent me, int[] slotInfo)
+    {
+        //print(slotInfo[0]);
+
+        if (slotInfo[0] == 0)
+            hoveringOverWeapon = true;
+        else
+            hoveringOverItem = true;
+
+        hoveringLabel = true;
+        hoveringSlot = slotInfo[1];
+    }
+
+    private void ItemMouseExit(MouseLeaveEvent me, int[] slotInfo)
+    {
+        hoveringOverWeapon = false;
+        hoveringOverItem = false;
+
+        hoveringLabel = false;
+        hoveringSlot = -1;
+    }
+
+
     private void OnRepairClick(ClickEvent ce)
     {
         shopScript.RepairShip();
@@ -148,6 +283,11 @@ public class ShopUIEvents : MonoBehaviour
     private void OnCloseClick(ClickEvent ce)
     {
         shopScript.CloseShop();
+    }
+
+    private void OnBombRestockClick()
+    {
+        shopScript.BuyBomb();
     }
 
     private void OnCancelClick()
@@ -176,12 +316,36 @@ public class ShopUIEvents : MonoBehaviour
 
 
     // updating the visual display names
-    public void UpdateDisplayItems(string[] displayNames, int[] displayCosts)
+    public void UpdateDisplayWeapons(string[] displayNames, int[] displayCosts)
     {
-        // TODO:
-        // update this to show the price of the weapon along with the name
 
         for (int i = 0; i < displayNames.Length; i++) {
+            if (weaponTexts[i] != null)
+            {
+                weaponTexts[i].text = displayNames[i];
+
+                // setting the cost
+                Label itemCost = weaponTexts[i].Q("CostLabel") as Label;
+                itemCost.text = displayCosts[i].ToString();
+            }
+        }
+
+        // also setting all of the buttons to say "BUY"
+        for (int i = 0; i < weaponBuyButtons.Count; i++)
+        {
+            weaponBuyButtons[i].text = "BUY";
+            weaponBuyButtons[i].SetEnabled(true);
+        }
+
+    }
+
+    // same as above
+    public void UpdateDisplayItems(string[] displayNames, int[] displayCosts)
+    {
+        //print(displayNames.Length + " " + displayCosts.Length);
+
+        for (int i = 0; i < displayNames.Length; i++)
+        {
             if (itemTexts[i] != null)
             {
                 itemTexts[i].text = displayNames[i];
@@ -189,9 +353,15 @@ public class ShopUIEvents : MonoBehaviour
                 // setting the cost
                 Label itemCost = itemTexts[i].Q("CostLabel") as Label;
                 itemCost.text = displayCosts[i].ToString();
-
-
             }
+        }
+
+
+        // also setting all of the buttons to say "BUY"
+        for (int i = 0; i < itemBuyButtons.Count; i++)
+        {
+            itemBuyButtons[i].text = "BUY";
+            itemBuyButtons[i].SetEnabled(true);
         }
 
     }
@@ -211,9 +381,44 @@ public class ShopUIEvents : MonoBehaviour
     }
 
     // try to buy the item that's held in the slot
+    private void TryWeaponBuy(int slotNum)
+    {
+        shopScript.BuyWeapon(slotNum);
+    }
+
     private void TryItemBuy(int slotNum)
     {
         shopScript.BuyItem(slotNum);
+    }
+
+    // try to bribe the shop and restock items
+    private void TryBribeShop()
+    {
+        shopScript.BribeShop();
+    }
+
+
+    // fired by the ShopScript when you buy something to show the "SOLD OUT" text
+    public void BoughtObject(string type, int slotNum)
+    {
+        //print(slotNum);
+
+        if (type == "weapon")
+        {
+            if (weaponBuyButtons[slotNum] != null)
+            {
+                weaponBuyButtons[slotNum].text = "SOLD OUT";
+                weaponBuyButtons[slotNum].SetEnabled(false);
+            }
+        }
+        else
+        {
+            if (itemBuyButtons[slotNum] != null)
+            {
+                itemBuyButtons[slotNum].text = "SOLD OUT";
+                itemBuyButtons[slotNum].SetEnabled(false);
+            }
+        }
     }
 
     // Update is called once per frame
@@ -223,14 +428,14 @@ public class ShopUIEvents : MonoBehaviour
         {
             // shop stats
             repairCost.text = "[" + shopScript.repairCost + "] SCRAP";
+            bombRestockCost.text = "[" + shopScript.bombCost + "] SCRAP";
 
             // player stats
             hullHealthLabel.text = "HULL: " + playerController.playerHealth + "/" + playerController.maxHealth;
+            bombsHeld.text = "HELD: " + bombScript.heldBombs + "/" + bombScript.maxBombs;
             scrapAmount.text = playerController.heldScrap.ToString();
 
-            // TODO:
-            // change this to be the weapon display name rather than internal name
-            // also optionally show the weapon's level?
+            bribeCost.text = "[" + shopScript.resupplyCost + "] SCRAP";
 
             // player's weapons
             if (playerController.weaponHandler.weaponInfoArr[0] != null && playerController.weaponHandler.weaponInfoArr[1] != null)
@@ -238,6 +443,25 @@ public class ShopUIEvents : MonoBehaviour
                 // shows the equipped weapon plus its current level
                 slot1Equipped.text = playerController.weaponHandler.weaponInfoArr[0].weaponDisplayName + " [" + playerController.weaponHandler.weaponLevels[0] + "]";
                 slot2Equipped.text = playerController.weaponHandler.weaponInfoArr[1].weaponDisplayName + " [" + playerController.weaponHandler.weaponLevels[1] + "]";
+            }
+
+            //print(hoveringOverWeapon + " | " + hoveringOverItem);
+
+            if (hoveringOverWeapon == true)
+            {
+                if (hoveringSlot >= 0)
+                {
+                    hoverTitle.text = shopScript.sellingWeaponDisplayNames[hoveringSlot] + " - Tier " + shopScript.sellingWeaponDisplayTiers[hoveringSlot];
+                    hoverDescription.text = shopScript.sellingWeaponDescriptions[hoveringSlot];
+                }
+            }
+            else if (hoveringOverItem == true)
+            {
+                if (hoveringSlot >= 0)
+                {
+                    hoverTitle.text = shopScript.sellingItemDisplayNames[hoveringSlot];
+                    hoverDescription.text = shopScript.sellingItemDescriptions[hoveringSlot];
+                }
             }
 
         }

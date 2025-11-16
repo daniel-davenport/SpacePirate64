@@ -29,7 +29,7 @@ public class EnemyInit : MonoBehaviour
     public int enemyMaxHealth;
     public int projectileDamage;
     private bool tookDamage; // tracking if they were killed by taking damage or not
-
+    private Color baseColor;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -47,12 +47,24 @@ public class EnemyInit : MonoBehaviour
         scriptType = Type.GetType(enemyAIName);
 
         //print(enemyAIName + " " + scriptType);
+        // damage coloring
+        Renderer objectRenderer = transform.GetChild(0).GetComponent<Renderer>();
+        if (objectRenderer != null )
+        {
+            baseColor = objectRenderer.material.color;
+        }
+        else
+        {
+            baseColor = Color.gray;
+        }
+
 
         if (scriptType != null)
         {
             // add their AI to the enemy gameobject
             gameObject.AddComponent(scriptType);
-        } else
+        }
+        else
         {
             Debug.LogWarning("ERROR: ENEMY AI NOT FOUND FOR TYPE: " + enemyAIName);
         }
@@ -230,6 +242,26 @@ public class EnemyInit : MonoBehaviour
         //print("enemy " + enemyName + " loaded successfully.");
     }
 
+
+    // changing the enemy's color when hit
+    private IEnumerator ColorFlash(Color color)
+    {
+        
+        Renderer objectRenderer = transform.GetChild(0).GetComponent<Renderer>();
+
+        if (objectRenderer != null)
+        {
+            
+            objectRenderer.material.color = color;
+
+            yield return new WaitForSeconds(0.1f);
+            objectRenderer.material.color = baseColor;
+
+        }
+            
+    }
+
+
     // handles taking damage outside of script
     public void TakeDamage(int damage, string style = null)
     {
@@ -249,6 +281,9 @@ public class EnemyInit : MonoBehaviour
             // gain score for whatever was defined
             scoreHandler.ChangePlayerScore(style);
         }
+
+        // make them flash white
+        StartCoroutine(ColorFlash(Color.white));
 
     }
 

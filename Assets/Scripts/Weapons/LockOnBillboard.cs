@@ -5,6 +5,7 @@ public class LockOnBillboard : MonoBehaviour
 
     [SerializeField]
     Camera mainCamera;
+    public GameObject followingObject;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -13,8 +14,13 @@ public class LockOnBillboard : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         transform.LookAt(mainCamera.transform);
+
+        if (followingObject != null)
+        {
+            transform.position = followingObject.transform.position;
+        }
     }
 }

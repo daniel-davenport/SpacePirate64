@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,9 +16,16 @@ public class PlayerUI : MonoBehaviour
     public GameObject healthPip;
     public GameObject playerReticle;
     public TextMeshProUGUI scrapText;
+    public BombScript bombScript;
 
     // HUD elements
     public GameObject bottomHud;
+    public GameObject bombHolder;
+    public GameObject bombPip;
+
+    public TextMeshProUGUI bombName;
+    public GameObject missileWarningText;
+
     public GameObject[] hudHolders = new GameObject[2];
     public TextMeshProUGUI[] weaponNames = new TextMeshProUGUI[2];
     public TextMeshProUGUI[] levelTexts = new TextMeshProUGUI[2];
@@ -26,6 +34,8 @@ public class PlayerUI : MonoBehaviour
     [Header("Stats")]
     private Vector3 healthHolderBaseScale = new Vector3(0.02f, 0.02f, 0.02f); // magic number unfortunately
     private int lastScrapAmount = 0;
+    private int lastBombAmount = 0;
+    private bool MWSDebounce = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -60,6 +70,24 @@ public class PlayerUI : MonoBehaviour
 
         // updating the weapon levels every frame
         UpdateLevel();
+
+        // updating the bomb info every frame
+        UpdateBombs();
+    }
+
+
+    private void LateUpdate()
+    {
+        // showing the MWS if there's a missile incoming
+        if (playerController.inDanger == true && MWSDebounce == false)
+        {
+            MWSDebounce = true;
+            StartCoroutine(MissileWarning());
+        } else if (playerController.inDanger == false)
+        {
+            MWSDebounce = false;
+        }
+
     }
 
 
@@ -71,6 +99,14 @@ public class PlayerUI : MonoBehaviour
         healthHolder.DOScale(healthHolderBaseScale, 0.5f);
 
         foreach(Transform child in healthHolder)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    private void RemoveBombPips()
+    {
+        foreach (Transform child in bombHolder.transform)
         {
             Destroy(child.gameObject);
         }
@@ -139,4 +175,45 @@ public class PlayerUI : MonoBehaviour
         }
     }
 
+
+    public void UpdateBombs()
+    {
+        int bombAmount = bombScript.heldBombs;
+        
+        // updating the bomb pips
+        if (lastBombAmount != bombAmount)
+        {
+            lastBombAmount = bombAmount;
+
+            RemoveBombPips();
+
+            for (int i = 0; i < bombAmount; i++)
+            {
+                GameObject bp = Instantiate(bombPip, bombHolder.transform);
+            }
+
+
+        }
+
+        // updating the bomb text
+        bombName.text = bombScript.bombDisplayName;
+
+    }
+
+
+    private IEnumerator MissileWarning()
+    {
+
+        while (playerController.inDanger == true)
+        {
+            missileWarningText.SetActive(true);
+            yield return new WaitForSeconds(0.1f);
+            missileWarningText.SetActive(false);
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        missileWarningText.SetActive(false);
+        
+
+    }
 }

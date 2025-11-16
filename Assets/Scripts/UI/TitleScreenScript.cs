@@ -13,7 +13,7 @@ public class TitleScreenScript : MonoBehaviour
     public TextMeshProUGUI subtitleText;
     public Transform cameraFinalPos;
     public Transform playerPosition;
-    public GameObject ControlsPanel;
+    public ControlsPanel ControlsPanel;
 
     private Color baseColor;
     private Color transColor;
@@ -93,7 +93,7 @@ public class TitleScreenScript : MonoBehaviour
 
     public void ShowControls()
     {
-        ControlsPanel.SetActive(!ControlsPanel.gameObject.activeInHierarchy);
+        ControlsPanel.ShowControls();
     }
 
     public void QuitGame()

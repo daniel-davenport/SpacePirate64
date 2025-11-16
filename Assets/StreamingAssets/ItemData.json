@@ -3,26 +3,63 @@
 		{
 			"name": "BasicLaser",
 			"displayName": "Basic Laser",
+			"description": "A basic laser-based weapon. Charged shot has to lock on before homing.",
 			"tier": 1,
+			"itemType": "weapon",
 			"cost": 100
 		},
 
 
 		{
-			"name": "2Laser",
-			"displayName": "Basic 2 Laser",
+			"name": "GatlingLaser",
+			"displayName": "Gatling Laser",
+			"description": "A modified Basic Laser that removes the charged shot in favor of a rapid-fire barrage.",
 			"tier": 2,
-			"cost": 500
+			"itemType": "weapon",
+			"cost": 300
 		},
 
 
 		{
-			"name": "AdvLaser",
-			"displayName": "Advanced Laser",
-			"tier": 3,
-			"cost": 1000
-		}
+			"name": "IonCannon",
+			"displayName": "Ion Cannon",
+			"description": "A slow-charging, overclocked EMF generator that shoots homing orbs of electrostatic destruction.",
+			"tier": 2,
+			"itemType": "weapon",
+			"cost": 400
+		},
 
+
+		{
+			"name": "MissileLauncher",
+			"displayName": "Missile Launcher",
+			"description": "Onboard Missile Replicator lets you shoot a constant stream of fire-and-forget, armor-penetrating missiles!",
+			"tier": 3,
+			"itemType": "weapon",
+			"cost": 500
+		}, 
+
+
+
+		{
+			"name": "blank",
+			"displayName": "BLANK - BOMB",
+			"description": "Banishes all enemy projectiles at the press of a button. Does no damage, unfortunately.",
+			"tier": 1,
+			"itemType": "bomb",
+			"cost": 100
+		},
+
+
+
+		{
+			"name": "normal",
+			"displayName": "EXPLOSIVE - BOMB",
+			"description": "Launches a small bomb that erupts into a massive, screenwide explosion after a brief delay.",
+			"tier": 1,
+			"itemType": "bomb",
+			"cost": 100
+		}
 
 
 		

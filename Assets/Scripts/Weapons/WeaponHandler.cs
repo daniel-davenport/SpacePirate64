@@ -12,6 +12,7 @@ public class WeaponHandler : MonoBehaviour
     [Header("References")]
     public GameObject playerShip;
     public PlayerController playerController;
+    public BombScript bombScript;
     public GameObject[] weaponModels = new GameObject[2];
     private GameObject lockOnIndicator;
     private GameObject[] indicators = new GameObject[2];
@@ -36,11 +37,16 @@ public class WeaponHandler : MonoBehaviour
 
     private float lockOnRadius = 4f;
 
+    // end of vars ------------------------------------------------------------------
+
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // getting player controller
+        // getting references
         playerController = GetComponent<PlayerController>(); 
+        bombScript = GetComponent<BombScript>();
 
         // getting the weapon models
         weaponModels[0] = playerController.leftWeaponModel;
@@ -142,6 +148,7 @@ public class WeaponHandler : MonoBehaviour
             {
                 // resetting the weapon level
                 weaponLevels[i] = 1;
+                weaponEXP[i] = 0;
 
                 // add their weapon script 
                 Component weaponScript = gameObject.AddComponent(scriptType);
@@ -235,7 +242,7 @@ public class WeaponHandler : MonoBehaviour
     // shapecast in front of the player, if it collides with an enemy then add it to a locked on array, then stop
     public void LockOn(int slot)
     {
-        // if there's no lock on charging, return
+        // if the weapon cannot lock on, return
         // if there's already a locked on enemy, return
         if (!weaponInfoArr[slot].chargedLocksOn || lockedOnEnemies[slot] != null)
             return;
@@ -267,26 +274,35 @@ public class WeaponHandler : MonoBehaviour
     // setting the charge visual in the PlayerController
     public void SetChargeVisual(int slot, GameObject visualRef)
     {
-        GameObject chargeVisual = Instantiate(visualRef);
+        // destroying the last one, if it exists
+        if (playerController.chargeVisuals[slot] != null)
+            Destroy(playerController.chargeVisuals[slot]);
 
-        // setting the visual to firepoint
-        chargeVisual.transform.SetParent(weaponModels[slot].transform.GetChild(0).transform);
+        // creating a charge visual, if one was provided
+        if (visualRef != null)
+        {
+            GameObject chargeVisual = Instantiate(visualRef, weaponModels[slot].transform.GetChild(0).transform.position, Quaternion.identity);
 
-        // centering it
-        chargeVisual.transform.localPosition = Vector3.zero;
+            // setting the visual to firepoint
+            chargeVisual.transform.SetParent(weaponModels[slot].transform.GetChild(0).transform);
 
-        // destroying its collider and rb
-        if (chargeVisual.GetComponent<Rigidbody>())
-            Destroy(chargeVisual.GetComponent<Rigidbody>());
+            // centering it
+            chargeVisual.transform.localPosition = Vector3.zero;
 
-        if (chargeVisual.GetComponent<Collider>())
-            Destroy(chargeVisual.GetComponent<Collider>());
+            // destroying its collider and rb
+            if (chargeVisual.GetComponent<Rigidbody>())
+                Destroy(chargeVisual.GetComponent<Rigidbody>());
+
+            if (chargeVisual.GetComponent<Collider>())
+                Destroy(chargeVisual.GetComponent<Collider>());
 
 
-        chargeVisual.transform.localScale = Vector3.zero;
+            chargeVisual.transform.localScale = Vector3.zero;
 
-        // setting it in the playercontroller
-        playerController.chargeVisuals[slot] = chargeVisual;
+            // setting it in the playercontroller
+            playerController.chargeVisuals[slot] = chargeVisual;
+        }
+
     }
 
     // reducing exp from taking damage by how much damage you took

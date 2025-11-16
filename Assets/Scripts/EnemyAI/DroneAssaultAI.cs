@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
@@ -15,6 +16,7 @@ public class DroneAssaultAI : MonoBehaviour
     public GameObject playerShip;
     public GameObject laserProjectile;
     public GameObject missileProjectile;
+    public ScoreHandler scoreHandler;
 
     [Header("Settings")]
     public float attackPrepTime = 2f;
@@ -24,6 +26,7 @@ public class DroneAssaultAI : MonoBehaviour
     public float projectileLifetime = 8f;
     private float forwardOffset = -10f; // makes the drone fly away from the player
 
+    private bool scanning = false;
     private bool lockingOn = false;
     private LineRenderer lockOnLine;
     private Vector3 boxExtents;
@@ -38,6 +41,9 @@ public class DroneAssaultAI : MonoBehaviour
         stateMachine = GetComponent<StateMachine>();
         enemyInit = GetComponent<EnemyInit>();
         playerShip = GetComponent<EnemyInit>().playerShip;
+
+        // the player object is playership's parent
+        scoreHandler = playerShip.transform.parent.GetComponent<ScoreHandler>();
 
         laserProjectile = Resources.Load<GameObject>("Projectiles/laserProjectile");
         missileProjectile = Resources.Load<GameObject>("Projectiles/missileProjectile");
@@ -75,6 +81,7 @@ public class DroneAssaultAI : MonoBehaviour
         transform.DOLocalMove(randomPos, 1.5f).SetLink(transform.gameObject).SetEase(Ease.OutExpo).OnComplete(() =>
         {
             transform.GetChild(0).GetComponent<Collider>().enabled = true;
+            scanning = true;
         });
 
         // setting the box collider's constraints
@@ -114,14 +121,14 @@ public class DroneAssaultAI : MonoBehaviour
         if (stateMachine.currentState == StateMachine.EnemyState.Idle)
         {
             //print("moving");
-
-
             StartCoroutine(AttackCooldown());
         }
 
 
-        // constantly check if there's an obstacle
-        CheckObstacle();
+        // constantly check if there's an obstacle while scanning (after its intro)
+        if (scanning == true)
+            CheckObstacle();
+
         UpdateLineRenderer();
 
     }
@@ -248,14 +255,18 @@ public class DroneAssaultAI : MonoBehaviour
         firedLaser.transform.LookAt(playerShip.transform.position);
 
         // setting the owner + damage
-        firedLaser.GetComponent<ProjectileInfo>().projectileOwner = transform.gameObject;
-        firedLaser.GetComponent<ProjectileInfo>().projectileDamage = enemyInit.projectileDamage;
+        ProjectileInfo projInfo = firedLaser.GetComponent<ProjectileInfo>();
+        
+        projInfo.projectileOwner = transform.gameObject;
+        projInfo.projectileDamage = enemyInit.projectileDamage;
+        projInfo.scoreHandler = scoreHandler;
+
 
         // setting its lifetime
         Destroy(firedLaser, projectileLifetime);
 
         // homing missile
-        StartCoroutine(HomingProjectile(firedLaser, playerShip.transform));
+        StartCoroutine(HomingProjectile(firedLaser, playerShip));
 
         // setting their state to cooldown
         stateMachine.currentState = StateMachine.EnemyState.Cooldown;
@@ -272,40 +283,17 @@ public class DroneAssaultAI : MonoBehaviour
     }
 
 
-    // missile homing
-    private IEnumerator HomingProjectile(GameObject projectile, Transform target)
+    // missile homing, moved to the projectileinfo itself
+    private IEnumerator HomingProjectile(GameObject projectile, GameObject target)
     {
+
         ProjectileInfo projInfo = projectile.GetComponent<ProjectileInfo>();
         if (projInfo == null)
             Destroy(projectile);
 
-        while (target != null && projectile != null && projInfo.parried != true)
-        {
-            projectile.transform.LookAt(target);
+        projInfo.StartHoming(target.transform, projectileSpeed);
 
-            // getting the direction between them
-            Vector3 direction = (target.position - projectile.transform.position);
-
-            // note: this might work but might cause issues later, maybe have some other way of testing this?
-            projectile.transform.position += (direction.normalized * projectileSpeed * Time.deltaTime);
-
-            yield return new WaitForFixedUpdate();
-        }
-
-
-        if (projectile != null && projInfo.parried == true)
-        {
-            // projectile was parried
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-            if (rb != null)
-            {
-                //projectile.transform.LookAt(transform);
-                //rb.AddForce(projectile.transform.forward * projectileSpeed, ForceMode.Impulse);
-                //projectile.transform.rotation = Quaternion.LookRotation(projectile.transform.forward);
-            }
-
-        }
+        yield return null;
 
     }
 

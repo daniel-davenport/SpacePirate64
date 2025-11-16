@@ -2,7 +2,7 @@
 	"styles" : [
 		{
 			"name": "kill",
-			"displayName": "Kill",
+			"displayName": "Scrapped",
 			"amount": 10
 		},
 
@@ -32,6 +32,20 @@
 			"name": "enemyObstacle",
 			"displayName": "Smashed",
 			"amount": 25
+		},
+
+
+		{
+			"name": "projectileIntercept",
+			"displayName": "Intercepted",
+			"amount": 10
+		},
+
+
+		{
+			"name": "bombed",
+			"displayName": "BOMBED",
+			"amount": 100
 		},
 		
 

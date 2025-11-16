@@ -181,11 +181,17 @@ public class SpawnDirector : MonoBehaviour
     }
 
 
-    // destroying all enemies and resetting the list
-    public void DestroyAllEnemies()
+    // just destroys projectiles, useful for blanks and stuff
+    public void DestroyAllProjectiles()
     {
         // tells the projectiles to destroy themselves
         BroadcastMessage("LevelEnded", SendMessageOptions.DontRequireReceiver);
+    }
+
+    // destroying all enemies and resetting the list
+    public void DestroyAllEnemies()
+    {
+        DestroyAllProjectiles();
 
         for (int i = 0; i < spawnedEnemies.Count; i++)
         {
