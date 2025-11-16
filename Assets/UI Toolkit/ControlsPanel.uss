@@ -1,0 +1,32 @@
+.titleText {
+    background-size: 25% 100%;
+    width: 32%;
+    flex-basis: auto;
+    -unity-text-align: upper-center;
+    -unity-font-definition: url("project://database/Assets/Fonts/VCR_OSD_MONO_1.001.ttf?fileID=12800000&guid=ecb0fbdead74fa543810aebc587fec7b&type=3#VCR_OSD_MONO_1.001");
+    flex-direction: row;
+    font-size: 227%;
+    -unity-font-style: bold;
+}
+
+.actionText {
+    background-size: 25% 100%;
+    width: 32%;
+    flex-basis: auto;
+    -unity-text-align: upper-center;
+    -unity-font-definition: url("project://database/Assets/Fonts/VCR_OSD_MONO_1.001.ttf?fileID=12800000&guid=ecb0fbdead74fa543810aebc587fec7b&type=3#VCR_OSD_MONO_1.001");
+    flex-direction: row;
+    font-size: 227%;
+    -unity-font-style: normal;
+}
+
+.controlText {
+    background-size: 25% 100%;
+    width: 32%;
+    flex-basis: auto;
+    -unity-text-align: upper-center;
+    -unity-font-definition: url("project://database/Assets/Fonts/VCR_OSD_MONO_1.001.ttf?fileID=12800000&guid=ecb0fbdead74fa543810aebc587fec7b&type=3#VCR_OSD_MONO_1.001");
+    flex-direction: row;
+    font-size: 227%;
+    -unity-font-style: normal;
+}

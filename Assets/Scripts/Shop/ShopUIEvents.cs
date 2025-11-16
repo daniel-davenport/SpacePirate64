@@ -254,6 +254,8 @@ public class ShopUIEvents : MonoBehaviour
     // slot 1 is the actual slot
     private void ItemMouseEnter(MouseEnterEvent me, int[] slotInfo)
     {
+        print(slotInfo[0]);
+
         if (slotInfo[0] == 0)
             hoveringOverWeapon = true;
         else
@@ -265,6 +267,9 @@ public class ShopUIEvents : MonoBehaviour
 
     private void ItemMouseExit(MouseLeaveEvent me, int[] slotInfo)
     {
+        hoveringOverWeapon = false;
+        hoveringOverItem = false;
+
         hoveringLabel = false;
         hoveringSlot = -1;
     }
@@ -439,6 +444,8 @@ public class ShopUIEvents : MonoBehaviour
                 slot1Equipped.text = playerController.weaponHandler.weaponInfoArr[0].weaponDisplayName + " [" + playerController.weaponHandler.weaponLevels[0] + "]";
                 slot2Equipped.text = playerController.weaponHandler.weaponInfoArr[1].weaponDisplayName + " [" + playerController.weaponHandler.weaponLevels[1] + "]";
             }
+
+            print(hoveringOverWeapon + " | " + hoveringOverItem);
 
             if (hoveringOverWeapon == true)
             {
