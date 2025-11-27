@@ -23,6 +23,7 @@ public class EnemyInit : MonoBehaviour
     public PlayerController playerController;
     public GameObject expDrop;
     public GameObject scrapDrop;
+    public SFXScript sfxScript;
 
     [Header("Stats")]
     public int enemyHealth;
@@ -40,6 +41,9 @@ public class EnemyInit : MonoBehaviour
 
         // get their state machine
         stateMachine = GetComponent<StateMachine>();
+
+        // references
+        sfxScript = playerController.sfxScript;
 
         // dynamically adding the enemy ai based on the defined name in the ScriptableObject
         enemyAIName = enemyInfo.enemyName + "AI";
@@ -116,6 +120,9 @@ public class EnemyInit : MonoBehaviour
 
         particleHandler.CreateParticle(transform.position, "explosion");
 
+        // play SFX
+        sfxScript.PlaySFX("EnemyScrapped");
+
     }
 
     // creating a pickup, either exp or scrap
@@ -138,7 +145,10 @@ public class EnemyInit : MonoBehaviour
                     Random.Range(-maxAngularVelocity, maxAngularVelocity)
                 );
 
-            break;
+                // playing sfx
+                sfxScript.PlaySFX("ExpSpawn");
+
+                break;
 
 
             // dropping scrap

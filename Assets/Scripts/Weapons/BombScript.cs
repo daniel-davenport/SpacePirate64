@@ -18,6 +18,7 @@ public class BombScript : MonoBehaviour
     public SpawnDirector spawnDirector;
     public ScoreHandler scoreHandler;
     public EnemyPlane enemyPlane;
+    public SFXScript sfxScript;
 
     [Header("Stats")]
     public string bombDisplayName;

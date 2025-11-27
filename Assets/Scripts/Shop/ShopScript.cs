@@ -22,6 +22,7 @@ public class ShopScript : MonoBehaviour
     public int resupplyCost; // how much restocking the shop costs
     public int baseResupplyCost; 
     public float resupplyModifier; // how much the price increases per restock
+    public bool currentlyInShop;
 
     private TextAsset itemListJson;
     

@@ -67,6 +67,9 @@ public class PlayerController : MonoBehaviour
     public ParticleHandler particleHandler;
     public CameraFollow cameraFollow;
     public GameObject missileIndicator;
+    public SFXScript sfxScript;
+    public LevelDirector levelDirector;
+    public ShopScript shopScript;
 
     // Tilting Inputs
     InputAction tiltLeftAction;
@@ -117,6 +120,8 @@ public class PlayerController : MonoBehaviour
         // getting references
         weaponHandler = transform.GetComponent<WeaponHandler>();
         bombScript = transform.GetComponent<BombScript>();
+        levelDirector = scoreHandler.levelDirector;
+        shopScript = levelDirector.shopScript;
         //playerUI = transform.GetComponent<PlayerUI>();
 
         // setting their health
@@ -136,6 +141,10 @@ public class PlayerController : MonoBehaviour
     {
         // player death
         if (playerHealth <= 0)
+            return;
+
+        // whenever the game is not currently active (in a shop, etc), lose all input
+        if (shopScript.currentlyInShop == true)
             return;
 
         // note: getaxisraw is basically binary with no smoothing
@@ -289,6 +298,9 @@ public class PlayerController : MonoBehaviour
 
         // update their UI
         //playerUI.UpdateHealth(playerHealth);
+
+        // play sfx
+        sfxScript.PlaySFX("PlayerHit");
 
 
     }
@@ -684,7 +696,12 @@ public class PlayerController : MonoBehaviour
     // note: they have to have IsTrigger set to true
     private void OnTriggerEnter(Collider other)
     {
+        // ignoring on player death
         if (playerHealth <= 0)
+            return;
+        
+        // ignoring if the player is in a shop
+        if (shopScript.currentlyInShop == true)
             return;
 
         // checking the layer
@@ -849,6 +866,9 @@ public class PlayerController : MonoBehaviour
                     // fire to the score handler that they parried
                     scoreHandler.ChangePlayerScore("parry");
 
+                    // play SFX
+                    sfxScript.PlaySFX("Parry");
+
                 }
                 else
                 {
@@ -864,6 +884,9 @@ public class PlayerController : MonoBehaviour
 
                     // gain slight score for a deflection
                     scoreHandler.ChangePlayerScore("deflect");
+
+                    // play SFX
+                    sfxScript.PlaySFX("Deflect");
 
                 }
 
@@ -891,6 +914,8 @@ public class PlayerController : MonoBehaviour
 
                 // move it to the player
                 pickupScript.CollectItem(gameObject);
+
+
 
             }
         }
