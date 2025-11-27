@@ -6,6 +6,7 @@ public class QuitChecker : MonoBehaviour
     public static QuitChecker Instance;
 
     InputAction quitAction;
+    public int targetFPS = 60;
 
 
     private void Awake()
@@ -21,6 +22,9 @@ public class QuitChecker : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        // setting the target framerate
+        Application.targetFrameRate = targetFPS;
 
     }
 
