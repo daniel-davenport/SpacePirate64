@@ -294,7 +294,6 @@ public class IonCannonScript : MonoBehaviour
 
         }
 
-
         Destroy(chainLightning);
         yield break;
     }
@@ -323,10 +322,6 @@ public class IonCannonScript : MonoBehaviour
 
 
         }
-
-        // TODO:
-        // the rest of the weapon ngl.
-        // paste the stuff from the other weapon handlers cuz the missile launcher was really heavily changed
 
 
     }

@@ -114,11 +114,11 @@ public class BombScript : MonoBehaviour
             // some score for bombing
             scoreHandler.ChangePlayerScore("bombed");
 
-
         }
         else if (heldBombs <= 0)
         {
-            print("out of bombs!");
+            // play a sound effect
+            sfxScript.PlaySFX("NoBombs");
         }
 
     }
@@ -222,6 +222,9 @@ public class BombScript : MonoBehaviour
             case "normal":
                 //print("firing normal bomb");
 
+                // play a launch effect
+                sfxScript.PlaySFX("BombLaunch");
+
                 StartCoroutine(CreateBomb(1f));
 
                 // wait for the bomb to detonate
@@ -236,6 +239,9 @@ public class BombScript : MonoBehaviour
                     enemyScript.TakeDamage(bombDamage);
                 }
 
+                // play another launch effect
+                sfxScript.PlaySFX("BigBoom");
+                sfxScript.PlaySFX("BiggerBoom");
 
                 break;
 
@@ -267,6 +273,8 @@ public class BombScript : MonoBehaviour
 
                 Destroy(explosion, 0.7f);
 
+                // play a launch effect
+                sfxScript.PlaySFX("Blank");
 
 
                 break;

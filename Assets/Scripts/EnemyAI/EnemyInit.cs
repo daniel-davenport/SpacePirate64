@@ -111,6 +111,7 @@ public class EnemyInit : MonoBehaviour
                 CreatePickup("exp", enemyPos, 1);
             }
 
+            //print(enemyPos);
 
             // drop some scrap based on the scrap value of the enemy
             CreatePickup("scrap", enemyPos, enemyInfo.scrapDropped);
@@ -179,6 +180,8 @@ public class EnemyInit : MonoBehaviour
         // create an exp drop and give it a random rotation
         GameObject droppedObject = Instantiate(dropObject);
         droppedObject.transform.position = enemyPos;
+
+        //print(enemyPos + " " + droppedObject.transform.position);
 
         // clamp it within the player's bounds so they can pick it up
         Vector3 position = droppedObject.transform.position;
