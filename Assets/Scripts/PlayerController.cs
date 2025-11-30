@@ -499,6 +499,9 @@ public class PlayerController : MonoBehaviour
         perfectParry = true;
         int dir = side == "left" ? -1 : 1;
 
+        // playing sfx
+        sfxScript.PlaySFX("Barrelroll");
+
         StartCoroutine(ResetPerfectParry());
 
         playerHolder.DOLocalRotate(new Vector3(playerHolder.localEulerAngles.x, playerHolder.localEulerAngles.y, 720 * -dir), aileronTime, RotateMode.LocalAxisAdd).SetEase(Ease.OutSine)
@@ -530,6 +533,9 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(cooldown);
         canAileron = true;
+
+        // playing sfx
+        sfxScript.PlaySFX("SpinCooldown");
     }
 
     // resets the weapon's slot after X amount of time. 
