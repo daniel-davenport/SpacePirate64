@@ -486,6 +486,7 @@ MonoBehaviour:
   particleHandler: {fileID: 0}
   cameraFollow: {fileID: 4317299313475425023}
   missileIndicator: {fileID: 0}
+  sfxScript: {fileID: 5800451733743580513}
 --- !u!114 &8025418266089119036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -506,6 +507,7 @@ MonoBehaviour:
   - {fileID: 0}
   levelUpText: {fileID: 0}
   levelDownText: {fileID: 0}
+  sfxScript: {fileID: 5800451733743580513}
   weaponInfoArr:
   - {fileID: 0}
   - {fileID: 0}
@@ -602,6 +604,7 @@ MonoBehaviour:
   spawnDirector: {fileID: 0}
   scoreHandler: {fileID: 0}
   enemyPlane: {fileID: 0}
+  sfxScript: {fileID: 5800451733743580513}
   bombDisplayName: 
   equippedBomb: 
   bombCooldown: 0
@@ -1033,6 +1036,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1502677281145269370, guid: 76cc0d7aa92b3d44f8f70e17d6ceb910, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1594587725184856346, guid: 76cc0d7aa92b3d44f8f70e17d6ceb910, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1100,6 +1107,10 @@ PrefabInstance:
     - target: {fileID: 1928100154192784622, guid: 76cc0d7aa92b3d44f8f70e17d6ceb910, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2444705072280056311, guid: 76cc0d7aa92b3d44f8f70e17d6ceb910, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3313077419864811765, guid: 76cc0d7aa92b3d44f8f70e17d6ceb910, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1233,6 +1244,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5800451733743580513 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2867122204851212316, guid: 76cc0d7aa92b3d44f8f70e17d6ceb910, type: 3}
+  m_PrefabInstance: {fileID: 8625880284713133437}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c5654f3dd13ff04eb2c64152d76e3a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &6507457605675765128 stripped

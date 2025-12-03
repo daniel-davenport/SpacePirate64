@@ -142,7 +142,6 @@ public class DroneAssaultAI : MonoBehaviour
         //transform.localPosition = new Vector3(Mathf.Clamp(localPos.x, -limits.x, limits.x), Mathf.Clamp(localPos.y, -limits.y, limits.y), planePos.z);
     }
 
-
     // check if there's an obstacle in front of it
     private void CheckObstacle()
     {
@@ -242,6 +241,8 @@ public class DroneAssaultAI : MonoBehaviour
             lockOnLine.SetPosition(1, transform.position);
         }
 
+
+
     }
 
     private IEnumerator Attack()
@@ -311,6 +312,9 @@ public class DroneAssaultAI : MonoBehaviour
         // setting the lockon
         lockingOn = true;
         lockOnLine.SetPosition(1, playerShip.transform.position);
+
+        if (scoreHandler != null)
+            scoreHandler.playerController.sfxScript.PlaySFX("Alert");
 
         yield return new WaitForSeconds(attackPrepTime);
 

@@ -10,6 +10,7 @@ public class ProjectileInfo : MonoBehaviour
     public ScoreHandler scoreHandler; // ref to score intercepts
     public Transform projectileHolder;
     public GameObject projectileOwner;
+    public SFXScript sfxScript;
     public int projectileDamage;
     public bool parried;
     public bool interceptable;
@@ -66,6 +67,20 @@ public class ProjectileInfo : MonoBehaviour
                 // score for intercepting
                 if (scoreHandler != null)
                     scoreHandler.ChangePlayerScore("projectileIntercept");
+
+                // play SFX
+                if (sfxScript != null)
+                {
+                    sfxScript.PlaySFX("Intercept", true);
+                }
+                else
+                {
+                    if (pc != null)
+                    {
+                        pc.sfxScript.PlaySFX("Intercept", true);
+                    }
+                }
+                
             }
         }
 
@@ -125,6 +140,12 @@ public class ProjectileInfo : MonoBehaviour
             spawnedParticle.transform.localScale = new Vector3(explosionRadius, explosionRadius, explosionRadius);
             spawnedParticle.transform.position = transform.position;
 
+            // play SFX
+            if (sfxScript != null)
+            {
+                sfxScript.PlaySFX("MissileLauncherExplosion", true);
+            }
+            
         }
 
     }

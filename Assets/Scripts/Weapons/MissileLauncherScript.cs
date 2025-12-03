@@ -216,7 +216,11 @@ public class MissileLauncherScript : MonoBehaviour
 
         // starting the scanning
         if (projInfo != null)
+        {
             projInfo.StartFindEnemy(projectileSpeed);
+            projInfo.sfxScript = weaponHandler.sfxScript;
+        }
+            
 
         
 

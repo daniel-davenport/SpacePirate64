@@ -23,6 +23,7 @@ public class EnemyInit : MonoBehaviour
     public PlayerController playerController;
     public GameObject expDrop;
     public GameObject scrapDrop;
+    public SFXScript sfxScript;
 
     [Header("Stats")]
     public int enemyHealth;
@@ -40,6 +41,9 @@ public class EnemyInit : MonoBehaviour
 
         // get their state machine
         stateMachine = GetComponent<StateMachine>();
+
+        // references
+        sfxScript = playerController.sfxScript;
 
         // dynamically adding the enemy ai based on the defined name in the ScriptableObject
         enemyAIName = enemyInfo.enemyName + "AI";
@@ -107,6 +111,7 @@ public class EnemyInit : MonoBehaviour
                 CreatePickup("exp", enemyPos, 1);
             }
 
+            //print(enemyPos);
 
             // drop some scrap based on the scrap value of the enemy
             CreatePickup("scrap", enemyPos, enemyInfo.scrapDropped);
@@ -115,6 +120,9 @@ public class EnemyInit : MonoBehaviour
         }
 
         particleHandler.CreateParticle(transform.position, "explosion");
+
+        // play SFX
+        sfxScript.PlaySFX("EnemyScrapped");
 
     }
 
@@ -138,7 +146,10 @@ public class EnemyInit : MonoBehaviour
                     Random.Range(-maxAngularVelocity, maxAngularVelocity)
                 );
 
-            break;
+                // playing sfx
+                sfxScript.PlaySFX("ExpSpawn");
+
+                break;
 
 
             // dropping scrap
@@ -169,6 +180,8 @@ public class EnemyInit : MonoBehaviour
         // create an exp drop and give it a random rotation
         GameObject droppedObject = Instantiate(dropObject);
         droppedObject.transform.position = enemyPos;
+
+        //print(enemyPos + " " + droppedObject.transform.position);
 
         // clamp it within the player's bounds so they can pick it up
         Vector3 position = droppedObject.transform.position;

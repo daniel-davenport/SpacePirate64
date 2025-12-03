@@ -107,6 +107,7 @@ public class LevelDirector : MonoBehaviour
 
 
         // show the shop and do transition
+        shopScript.currentlyInShop = true;
         shopScript.RefreshShop();
 
     }
@@ -120,6 +121,9 @@ public class LevelDirector : MonoBehaviour
 
         // restart level generation
         StartGeneration();
+
+        // allow player controls
+        shopScript.currentlyInShop = false;
 
     }
 

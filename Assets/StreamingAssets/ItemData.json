@@ -16,7 +16,7 @@
 			"description": "A modified Basic Laser that removes the charged shot in favor of a rapid-fire barrage.",
 			"tier": 2,
 			"itemType": "weapon",
-			"cost": 300
+			"cost": 175
 		},
 
 
@@ -26,7 +26,7 @@
 			"description": "A slow-charging, overclocked EMF generator that shoots homing orbs of electrostatic destruction.",
 			"tier": 2,
 			"itemType": "weapon",
-			"cost": 400
+			"cost": 300
 		},
 
 

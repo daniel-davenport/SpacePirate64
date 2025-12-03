@@ -18,6 +18,7 @@ public class WeaponHandler : MonoBehaviour
     private GameObject[] indicators = new GameObject[2];
     public GameObject levelUpText;
     public GameObject levelDownText;
+    public SFXScript sfxScript;
 
     [Header("Stats")]
     public WeaponInfo[] weaponInfoArr = new WeaponInfo[2];
@@ -36,6 +37,8 @@ public class WeaponHandler : MonoBehaviour
     public int[] weaponEXP = new int[2];
 
     private float lockOnRadius = 4f;
+
+    private bool[] weaponChargeSFXDB = new bool[2];
 
     // end of vars ------------------------------------------------------------------
 
@@ -85,6 +88,16 @@ public class WeaponHandler : MonoBehaviour
 
             // clear the locked on enemy
             lockedOnEnemies[slot] = null;
+
+            // trying to play respective sfx
+            if (isChargedShot)
+                sfxScript.PlaySFX(equippedWeaponNames[slot] + "ChargedShot");
+            else
+                sfxScript.PlaySFX(equippedWeaponNames[slot] + "Shot");
+
+            // clearing the charge db
+            weaponChargeSFXDB[slot] = false;
+
         }
     }
 
@@ -212,6 +225,9 @@ public class WeaponHandler : MonoBehaviour
         reticle.transform.DOScale(baseScale, 0.25f).SetEase(Ease.OutQuad).SetLink(reticle);
 
         StartCoroutine(RemoveIndicator(slot));
+
+        // play sfx
+        sfxScript.PlaySFX("TargetLock", true);
     }
 
 
@@ -267,6 +283,15 @@ public class WeaponHandler : MonoBehaviour
             ShowLockOn(slot, lockedOnEnemies[slot]);
 
         }
+
+        // playing sfx only once
+        if (weaponChargeSFXDB[slot] == false)
+        {
+            weaponChargeSFXDB[slot] = true;
+            // play SFX
+            sfxScript.PlaySFX("WeaponCharged", true);
+        }
+
 
     }
 
@@ -349,6 +374,8 @@ public class WeaponHandler : MonoBehaviour
 
                     Destroy(levelText, 1f);
 
+                    // play SFX
+                    sfxScript.PlaySFX("LevelDown", true);
 
                 }
                 else
@@ -412,6 +439,9 @@ public class WeaponHandler : MonoBehaviour
 
                             Destroy(levelText, 1f);
 
+                            // play SFX
+                            sfxScript.PlaySFX("LevelUp", true);
+
                         } else
                         {
                             // weapon max level
@@ -428,6 +458,9 @@ public class WeaponHandler : MonoBehaviour
 
                 // move it to the player
                 pickupScript.CollectItem(gameObject);
+
+                // play SFX
+                sfxScript.PlaySFX("ExpCollect", true);
 
             }
 

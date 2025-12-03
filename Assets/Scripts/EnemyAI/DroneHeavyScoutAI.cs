@@ -132,16 +132,24 @@ public class DroneHeavyScoutAI : MonoBehaviour
         stateMachine.currentState = StateMachine.EnemyState.Cooldown;
         ChangeColor(Color.grey);
 
+        // play a sound effect
+        enemyInit.sfxScript.PlaySFX("EnemyLaser");
+
         // waiting for the cooldown
         yield return new WaitForSeconds(Random.Range(minCooldown, maxCooldown));
 
         stateMachine.currentState = StateMachine.EnemyState.Idle;
+
+
     }
 
     private IEnumerator AttackCooldown()
     {
         stateMachine.currentState = StateMachine.EnemyState.Preparing;
         ChangeColor(Color.red);
+
+        // play a sound effect
+        enemyInit.sfxScript.PlaySFX("EnemyAlert");
 
         yield return new WaitForSeconds(attackPrepTime);
 
