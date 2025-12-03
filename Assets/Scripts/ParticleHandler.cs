@@ -10,13 +10,18 @@ public class ParticleHandler : MonoBehaviour
     public PlayerController playerController;
     public GameObject FinalScoreHolder;
     public TextMeshProUGUI finalScoreText;
+    public TextMeshProUGUI playerHighScoreText;
     public GameObject ScoreTitle;
     public GameObject ScoreText;
+
+    private int highScore;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        // high scores
+        highScore = PlayerPrefs.GetInt("HighScore", 0);
+        playerHighScoreText.text = highScore.ToString();
     }
 
     // Update is called once per frame
@@ -73,10 +78,26 @@ public class ParticleHandler : MonoBehaviour
 
         float finalScore = int.Parse(ScoreText.GetComponent<TextMeshProUGUI>().text);
         float showingScore = 0;
+        int scoreIncrease = 5;
+
+        // updating the high score
+        if (finalScore > highScore)
+        {
+            highScore = (int)finalScore;
+
+            PlayerPrefs.SetInt("HighScore", highScore);
+            PlayerPrefs.Save();
+        }
+
+        // making it go faster if your score is really high
+        if (finalScore >= 3000)
+        {
+            scoreIncrease = 50;
+        }
 
         while (showingScore < finalScore)
         {
-            showingScore += 5;
+            showingScore += scoreIncrease;
             showingScore = Mathf.Clamp(showingScore, 0f, finalScore);
             finalScoreText.text = showingScore + "";
 
@@ -84,8 +105,8 @@ public class ParticleHandler : MonoBehaviour
         }
 
         finalScoreText.text = finalScore + "";
+        playerHighScoreText.text = highScore.ToString();
 
-        
     }
 
     private IEnumerator ExplosionLoop(Transform player, float duration, int amount)
@@ -110,6 +131,8 @@ public class ParticleHandler : MonoBehaviour
             spawnedParticle.transform.rotation = Quaternion.Euler(0, 0, Random.Range(-360, 360));
             spawnedParticle.transform.localScale = new Vector3(2, 2, 2);
 
+            playerController.sfxScript.PlaySFX("DeathExplosion");
+
             yield return new WaitForSeconds(timeBetween);
         }
 
@@ -119,6 +142,9 @@ public class ParticleHandler : MonoBehaviour
         bigBoom.transform.localPosition = Vector3.zero;
 
         GibPlayer(player);
+
+        playerController.sfxScript.PlaySFX("BiggerBoom");
+        playerController.sfxScript.PlaySFX("PlayerDeath", true);
 
         // showing the final stuff
         StartCoroutine(FinalScore());
